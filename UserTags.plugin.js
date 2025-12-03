@@ -146,51 +146,53 @@ const IconWrapperClasses = BdApi.Webpack.getByKeys("iconWrapper", "clickable");
 const IconClasses = BdApi.Webpack.getByKeys("browser", "icon");
 const [ChannelHeader, ChannelHeaderKey] = BdApi.Webpack.getWithKey(BdApi.Webpack.Filters.byKeys("Icon", "Divider"));
 
-function ToolbarComponent({ onClick }) {
-    const Tooltip = BdApi.Components?.Tooltip;
+function UserTagsToolbarButton() {
+    const Tooltip = BdApi.Webpack.getModule(m => m?.Tooltip)?.Tooltip ?? BdApi.Webpack.getByKeys("TooltipContainer")?.Tooltip;
+
     const label = "UserTags Settings";
-    const className = `${IconClasses?.icon ?? ""} ${IconWrapperClasses?.iconWrapper ?? ""} ${IconWrapperClasses?.clickable ?? ""}`.trim();
 
-    const button = BdApi.React.createElement(
-        "div",
-        {
-            className,
-            onClick,
-            role: "button",
-            "aria-label": label,
-            "data-usetags-toolbar-button": true
-        },
-        BdApi.React.createElement(
-            "svg",
-            {
-                className: IconWrapperClasses?.icon,
-                "aria-hidden": "true",
-                role: "img",
-                width: "24",
-                height: "24",
-                fill: "none",
-                viewBox: "0 0 24 24"
-            },
-            BdApi.React.createElement("path", {
-                fill: "currentColor",
-                d: "M20.59 13.41 11 3.83C10.63 3.45 10.14 3.26 9.64 3.26H4c-.55 0-1 .45-1 1v5.66c0 .5.19.99.57 1.36l9.59 9.59c.78.78 2.05.78 2.83 0l4.6-4.6c.78-.78.78-2.05 0-2.83ZM7 8.5C6.17 8.5 5.5 7.83 5.5 7S6.17 5.5 7 5.5 8.5 6.17 8.5 7 7.83 8.5 7 8.5Z"
-            })
-        )
-    );
+    // Get the running plugin instance
+    const pluginInstance = BdApi.Plugins.get("UserTags"); // must match the plugin's name
 
-    if (Tooltip) {
-        return BdApi.React.createElement(
-            Tooltip,
-            { text: label },
-            ({ onMouseEnter, onMouseLeave }) =>
-                BdApi.React.cloneElement(button, {
+    if (!Tooltip || !pluginInstance) return null;
+
+    return BdApi.React.createElement(
+        Tooltip,
+        { text: "UserTags" },
+        ({ onMouseEnter, onMouseLeave }) =>
+            BdApi.React.createElement(
+                "div",
+                {
+                    className: `${IconClasses.icon} ${IconWrapperClasses.iconWrapper} ${IconWrapperClasses.clickable}`,
                     onMouseEnter,
-                    onMouseLeave
-                })
-        );
-    }
-
-    return button;
+                    onMouseLeave,
+                    role: "button",
+                    "aria-label": label,
+                    "data-usetags-toolbar-button": true,
+                    onClick: () => {
+                        if (typeof pluginInstance.showSettingsModal === "function") {
+                            pluginInstance.showSettingsModal();
+                        }
+                    }
+                },
+                BdApi.React.createElement(
+                    "svg",
+                    {
+                        className: IconWrapperClasses?.icon,
+                        "aria-hidden": "true",
+                        role: "img",
+                        width: "24",
+                        height: "24",
+                        fill: "none",
+                        viewBox: "0 0 24 24"
+                    },
+                    BdApi.React.createElement("path", {
+                        fill: "currentColor",
+                        d: "M20.59 13.41 11 3.83C10.63 3.45 10.14 3.26 9.64 3.26H4c-.55 0-1 .45-1 1v5.66c0 .5.19.99.57 1.36l9.59 9.59c.78.78 2.05.78 2.83 0l4.6-4.6c.78-.78.78-2.05 0-2.83ZM7 8.5C6.17 8.5 5.5 7.83 5.5 7S6.17 5.5 7 5.5 8.5 6.17 8.5 7 7.83 8.5 7 8.5Z"
+                    })
+                )
+            )
+    );
 }
 
 // Column key for the user column (used for width state)
@@ -1711,10 +1713,15 @@ class UserTags {
      * Settings panel: reuse the overview panel wrapped in a single root element.
      */
     getSettingsPanel() {
-        const container = document.createElement("div");
-        container.className = "usertags-settings-root";
-        this.buildSettingsUI(container);
-        return container;
+        setTimeout(() => {
+            try {
+                this.showSettingsModal();
+            } catch (e) {
+                console.error("UserTags: Failed to open settings modal from getSettingsPanel", e);
+            }
+        }, 0);
+
+        return BdApi.React.createElement("div", { style: { display: "none" } });
     }
 
     openOverviewModal() {
@@ -1730,23 +1737,24 @@ class UserTags {
     }
 
     showSettingsModal() {
-        if (BdApi?.Plugins?.showAddonSettingsModal) {
-            BdApi.Plugins.showAddonSettingsModal(this.getName(), this);
+        if (typeof UI?.showConfirmationModal === "function") {
+            UI.showConfirmationModal(
+                "UserTags Overview",
+                BdApi.React.createElement(
+                    "div",
+                    { className: "usertags-settings-root" },
+                    this.renderOverviewPanel()
+                ),
+                {
+                    confirmText: "Done",
+                    cancelText: null,
+                    danger: false
+                }
+            );
             return;
         }
 
-        const openAddonSettings =
-            UI?.showAddonSettingsModal ||
-            UI?.openAddonSettingsModal ||
-            UI?.showAddonSettings ||
-            UI?.openAddonSettings;
-
-        if (typeof openAddonSettings === "function") {
-            openAddonSettings(this.getName());
-            return;
-        }
-
-        console.warn("[UserTags] Could not locate BetterDiscord addon settings modal API to open the overview.");
+        console.warn("[UserTags] Could not open the UserTags overview modal.");
     }
 
     patchChannelHeaderToolbar() {
@@ -1775,10 +1783,7 @@ class UserTags {
                 }
 
                 ToolbarArray.unshift(
-                    BdApi.React.createElement(ToolbarComponent, {
-                        onClick: () => this.openSettingsFromToolbar(),
-                        key: "usertags-toolbar-button"
-                    })
+                    BdApi.React.createElement(UserTagsToolbarButton, { key: "usertags-toolbar-button" })
                 );
 
                 return returnValue;
