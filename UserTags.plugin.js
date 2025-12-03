@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.8.10
+ * @version 1.8.11
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
                 discord_id: "381157302369255424"
             }
         ],
-        version: "1.8.10",
+        version: "1.8.11",
         description: "Add user-localized customizable tags to other users using a searchable table or context menu."
     },
     github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
     github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
     changelog: [
+        {
+            title: "1.8.11",
+            items: [
+                "Scaled the UserTags Settings modal to use more of the Discord window.",
+                "Adjusted overview grid height to better fit available vertical space."
+            ]
+        },
         {
             title: "1.8.10",
             items: [
@@ -704,6 +711,20 @@ class UserTags {
             .usertags-channel-toolbar-button {
                 margin-left: 6px;
                 height: 32px;
+            }
+
+            .bd-modal-root.bd-addon-modal:has(.usertags-settings) {
+                width: min(90vw, 1200px);
+                max-width: 95vw;
+                max-height: 90vh;
+            }
+
+            .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-inner {
+                max-height: 90vh;
+            }
+
+            .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body {
+                max-height: calc(90vh - 120px);
             }
         `);
 
