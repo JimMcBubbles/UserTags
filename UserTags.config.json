@@ -1,6 +1,6 @@
 {
     "currentVersionInfo": {
-        "version": "1.8.10",
+        "version": "1.8.11",
         "hasShownChangelog": true
     },
     "UserData": {
@@ -3267,7 +3267,9 @@
         },
         "608260483471900672": {
             "username": "syrono",
-            "tags": []
+            "tags": [
+                "AQU"
+            ]
         },
         "613664227617669130": {
             "username": "hazzy_vr",
@@ -6215,6 +6217,10 @@
             {
                 "userId": "509853807895773239",
                 "username": "hjochs"
+            },
+            {
+                "userId": "608260483471900672",
+                "username": "syrono"
             },
             {
                 "userId": "624309720508923934",
