@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.8.11
+ * @version 1.9.0
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
                 discord_id: "381157302369255424"
             }
         ],
-        version: "1.8.11",
+        version: "1.9.0",
         description: "Add user-localized customizable tags to other users using a searchable table or context menu."
     },
     github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
     github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
     changelog: [
+        {
+            title: "1.9.0",
+            items: [
+                "Added a toolbar button in the channel header to open UserTags Settings.",
+                "Made the UserTags overview accessible directly from any channel."
+            ]
+        },
         {
             title: "1.8.11",
             items: [
@@ -91,6 +98,11 @@ const UserProfileActions = Webpack.getModule(
 
 const Button = Webpack.getModule(
     m => m?.Colors && m?.Looks && m?.Sizes,
+    { searchExports: true }
+);
+
+const Tooltip = Webpack.getModule(
+    m => (m?.default ?? m)?.displayName === "Tooltip",
     { searchExports: true }
 );
 
@@ -711,6 +723,16 @@ class UserTags {
             .usertags-channel-toolbar-button {
                 margin-left: 6px;
                 height: 32px;
+            }
+
+            .usertags-toolbar-icon {
+                width: 20px;
+                height: 20px;
+                color: var(--interactive-normal);
+            }
+
+            .usertags-channel-toolbar-button:hover .usertags-toolbar-icon {
+                color: var(--interactive-hover);
             }
 
             .bd-modal-root.bd-addon-modal:has(.usertags-settings) {
@@ -1719,8 +1741,16 @@ class UserTags {
     }
 
     openOverviewModal() {
+        this.showSettingsModal("UserTags Overview");
+    }
+
+    openSettingsModalFromToolbar() {
+        this.showSettingsModal("UserTags Settings");
+    }
+
+    showSettingsModal(title = "UserTags Settings") {
         UI.showConfirmationModal(
-            "UserTags Overview",
+            title,
             this.renderOverviewPanel(),
             {
                 confirmText: "Close",
@@ -1793,19 +1823,50 @@ class UserTags {
     buildToolbarButton() {
         if (!Button) return null;
 
-        const label = "Tags";
+        const label = "UserTags Settings";
 
-        return React.createElement(
+        const icon = React.createElement(
+            "svg",
+            {
+                viewBox: "0 0 24 24",
+                role: "img",
+                "aria-hidden": true,
+                className: "usertags-toolbar-icon"
+            },
+            React.createElement("path", {
+                fill: "currentColor",
+                d: "M20.59 13.41 11 3.83C10.63 3.45 10.14 3.26 9.64 3.26H4c-.55 0-1 .45-1 1v5.66c0 .5.19.99.57 1.36l9.59 9.59c.78.78 2.05.78 2.83 0l4.6-4.6c.78-.78.78-2.05 0-2.83ZM7 8.5C6.17 8.5 5.5 7.83 5.5 7S6.17 5.5 7 5.5 8.5 6.17 8.5 7 7.83 8.5 7 8.5Z"
+            })
+        );
+
+        const buttonElement = React.createElement(
             Button,
             {
                 size: Button.Sizes?.NONE || Button.Sizes?.SMALL,
                 look: Button.Looks?.BLANK || Button.Looks?.GHOST,
-                onClick: () => this.openOverviewModal(),
+                onClick: () => this.openSettingsModalFromToolbar(),
                 className: "usertags-channel-toolbar-button",
-                "data-usetags-toolbar-button": true
+                "data-usetags-toolbar-button": true,
+                title: label,
+                "aria-label": label
             },
-            label
+            icon
         );
+
+        const TooltipComponent = Tooltip?.default ?? Tooltip;
+        if (TooltipComponent) {
+            return React.createElement(
+                TooltipComponent,
+                {
+                    text: label,
+                    position: "bottom",
+                    "data-usetags-toolbar-button": true
+                },
+                (props) => React.cloneElement(buttonElement, props)
+            );
+        }
+
+        return buttonElement;
     }
 
     checkForChangelog() {
