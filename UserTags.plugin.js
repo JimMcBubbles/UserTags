@@ -584,6 +584,10 @@ class UserTags {
             /* Settings panel grid (CSS grid) */
             .usertags-settings {
                 padding: 10px;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                box-sizing: border-box;
             }
             .usertags-settings h2 {
                 margin-bottom: 8px;
@@ -602,7 +606,9 @@ class UserTags {
                 border: 1px solid var(--background-tertiary);
                 border-radius: 4px;
                 overflow: hidden;
-                max-height: 400px;
+                flex: 1 1 auto;
+                max-height: 100%;
+                min-height: 0;
                 overflow-x: auto;
                 overflow-y: auto;
             }
@@ -815,6 +821,26 @@ class UserTags {
 
             .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body {
                 max-height: calc(90vh - 120px);
+                display: flex;
+            }
+
+            .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body > .usertags-settings {
+                flex: 1 1 auto;
+                min-height: 0;
+            }
+
+            .bd-modal-root.bd-addon-modal.usertags-toolbar-modal:has(.usertags-settings) {
+                width: min(95vw, 1400px);
+                max-width: 95vw;
+                max-height: 95vh;
+            }
+
+            .bd-modal-root.bd-addon-modal.usertags-toolbar-modal:has(.usertags-settings) .bd-modal-inner {
+                max-height: 95vh;
+            }
+
+            .bd-modal-root.bd-addon-modal.usertags-toolbar-modal:has(.usertags-settings) .bd-modal-body {
+                max-height: calc(95vh - 120px);
             }
         `);
 
@@ -1814,20 +1840,21 @@ class UserTags {
     }
 
     openSettingsFromToolbar() {
-        this.showSettingsModal("UserTags Settings");
+        this.showSettingsModal("UserTags Settings", { className: "usertags-toolbar-modal" });
     }
 
     openSettingsModalFromToolbar() {
         this.openSettingsFromToolbar();
     }
 
-    showSettingsModal(title = "UserTags Settings") {
+    showSettingsModal(title = "UserTags Settings", modalOptions = {}) {
         UI.showConfirmationModal(
             title,
             this.renderOverviewPanel(),
             {
                 confirmText: "Close",
-                cancelText: null
+                cancelText: null,
+                ...modalOptions
             }
         );
     }
