@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.9.0
+ * @version 1.9.1
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
                 discord_id: "381157302369255424"
             }
         ],
-        version: "1.9.0",
+        version: "1.9.1",
         description: "Add user-localized customizable tags to other users using a searchable table or context menu."
     },
     github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
     github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
     changelog: [
+        {
+            title: "1.9.1",
+            items: [
+                "Fixed the UserTags toolbar button so it appears in the channel header.",
+                "Toolbar button now opens the UserTags Settings overview from any channel."
+            ]
+        },
         {
             title: "1.9.0",
             items: [
@@ -82,6 +89,14 @@ const config = {
 };
 
 const { Data, UI, Webpack, React, DOM } = BdApi;
+const WebpackModules = BdApi?.WebpackModules ?? BdApi?.Webpack ?? Webpack;
+
+if (!WebpackModules.findByProps && Webpack?.getModule) {
+    WebpackModules.findByProps = (...props) => Webpack.getModule(
+        module => props.every(prop => module?.[prop] !== undefined),
+        { searchExports: true }
+    );
+}
 
 const StoreModules = {
     UserStore: Webpack.getStore("UserStore"),
@@ -1744,8 +1759,12 @@ class UserTags {
         this.showSettingsModal("UserTags Overview");
     }
 
-    openSettingsModalFromToolbar() {
+    openSettingsFromToolbar() {
         this.showSettingsModal("UserTags Settings");
+    }
+
+    openSettingsModalFromToolbar() {
+        this.openSettingsFromToolbar();
     }
 
     showSettingsModal(title = "UserTags Settings") {
@@ -1760,45 +1779,25 @@ class UserTags {
     }
 
     patchChannelHeaderToolbar() {
-        const ChannelHeaderModule = Webpack.getModule(
-            m => typeof m?.default === "function" && m?.default?.toString?.().includes("toolbar__9293f"),
-            { searchExports: true }
-        );
+        const HeaderBar = WebpackModules.findByProps("toolbar", "upperContainer");
 
-        if (!ChannelHeaderModule || !ChannelHeaderModule.default || !Button) {
+        if (!HeaderBar || !HeaderBar.default) {
             console.warn("[UserTags] Could not find channel header toolbar module – toolbar button disabled.");
             return;
         }
 
-        const findToolbar = (node) => {
-            if (!node || typeof node !== "object") return null;
-            if (
-                node.props?.className &&
-                typeof node.props.className === "string" &&
-                node.props.className.includes("toolbar__9293f")
-            ) {
-                return node;
-            }
-
-            const children = node.props?.children;
-            if (Array.isArray(children)) {
-                for (const child of children) {
-                    const found = findToolbar(child);
-                    if (found) return found;
-                }
-            } else if (children) {
-                return findToolbar(children);
-            }
-
-            return null;
-        };
-
         BdApi.Patcher.after(
             "UserTagsChannelHeaderToolbar",
-            ChannelHeaderModule,
+            HeaderBar,
             "default",
             (_, __, res) => {
-                const toolbar = findToolbar(res);
+                if (!res) return res;
+
+                const toolbar = this.findInReactTree(res, (node) => {
+                    const className = node?.props?.className;
+                    return typeof className === "string" && className.includes("toolbar");
+                });
+
                 if (!toolbar || !toolbar.props) return res;
 
                 const button = this.buildToolbarButton();
@@ -1821,8 +1820,6 @@ class UserTags {
     }
 
     buildToolbarButton() {
-        if (!Button) return null;
-
         const label = "UserTags Settings";
 
         const icon = React.createElement(
@@ -1831,7 +1828,7 @@ class UserTags {
                 viewBox: "0 0 24 24",
                 role: "img",
                 "aria-hidden": true,
-                className: "usertags-toolbar-icon"
+                className: "icon__9293f usertags-toolbar-icon"
             },
             React.createElement("path", {
                 fill: "currentColor",
@@ -1840,15 +1837,17 @@ class UserTags {
         );
 
         const buttonElement = React.createElement(
-            Button,
+            "div",
             {
-                size: Button.Sizes?.NONE || Button.Sizes?.SMALL,
-                look: Button.Looks?.BLANK || Button.Looks?.GHOST,
-                onClick: () => this.openSettingsModalFromToolbar(),
-                className: "usertags-channel-toolbar-button",
-                "data-usetags-toolbar-button": true,
-                title: label,
-                "aria-label": label
+                className: "iconWrapper__9293f clickable__9293f usertags-channel-toolbar-button",
+                role: "button",
+                tabIndex: 0,
+                onClick: () => this.openSettingsFromToolbar(),
+                onKeyDown: (event) => {
+                    if (event?.key === "Enter") this.openSettingsFromToolbar();
+                },
+                "aria-label": label,
+                "data-usetags-toolbar-button": true
             },
             icon
         );
@@ -1867,6 +1866,22 @@ class UserTags {
         }
 
         return buttonElement;
+    }
+
+    findInReactTree(tree, filter) {
+        if (BdApi?.Utils?.findInTree) {
+            return BdApi.Utils.findInTree(tree, filter, { walkable: ["props", "children"] });
+        }
+
+        const stack = [tree];
+        while (stack.length) {
+            const node = stack.shift();
+            if (filter(node)) return node;
+            const children = node?.props?.children;
+            if (Array.isArray(children)) stack.push(...children);
+            else if (children) stack.push(children);
+        }
+        return null;
     }
 
     checkForChangelog() {
