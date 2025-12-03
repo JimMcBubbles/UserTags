@@ -110,7 +110,10 @@
         },
         "108151437392912384": {
             "username": "thatcatwh0",
-            "tags": []
+            "tags": [
+                "AQU",
+                "IDC"
+            ]
         },
         "108444452632137728": {
             "username": "cassiecollision",
@@ -6129,6 +6132,10 @@
                 "username": "fuzzyhead12"
             },
             {
+                "userId": "108151437392912384",
+                "username": "thatcatwh0"
+            },
+            {
                 "userId": "142472896982417409",
                 "username": "diamondmaker"
             },
@@ -6697,6 +6704,36 @@
                 "username": "miles12_11"
             }
         ],
+        "IDC": [
+            {
+                "userId": "108151437392912384",
+                "username": "thatcatwh0"
+            },
+            {
+                "userId": "136184028704407552",
+                "username": "notfraust"
+            },
+            {
+                "userId": "185201213518774272",
+                "username": "doctorpups"
+            },
+            {
+                "userId": "185837287052017664",
+                "username": "strikerv3"
+            },
+            {
+                "userId": "217057343534399488",
+                "username": "katlee"
+            },
+            {
+                "userId": "226194747834892288",
+                "username": "mrherninator"
+            },
+            {
+                "userId": "299858581132410891",
+                "username": "bobross2919"
+            }
+        ],
         "HTG": [
             {
                 "userId": "108444452632137728",
@@ -6829,32 +6866,6 @@
             {
                 "userId": "1343509393655992330",
                 "username": "hopperbnuy"
-            }
-        ],
-        "IDC": [
-            {
-                "userId": "136184028704407552",
-                "username": "notfraust"
-            },
-            {
-                "userId": "185201213518774272",
-                "username": "doctorpups"
-            },
-            {
-                "userId": "185837287052017664",
-                "username": "strikerv3"
-            },
-            {
-                "userId": "217057343534399488",
-                "username": "katlee"
-            },
-            {
-                "userId": "226194747834892288",
-                "username": "mrherninator"
-            },
-            {
-                "userId": "299858581132410891",
-                "username": "bobross2919"
             }
         ],
         "HMM": [
