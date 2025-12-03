@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.10.0
+ * @version 1.10.1
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
                 discord_id: "381157302369255424"
             }
         ],
-        version: "1.10.0",
+        version: "1.10.1",
         description: "Add user-localized customizable tags to other users using a searchable table or context menu."
     },
     github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
     github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
     changelog: [
+        {
+            title: "1.10.1",
+            items: [
+                "Fixed the UserTags Overview modal scaling when opened from the toolbar button.",
+                "Ensured both entry points share the same overview modal layout and viewport-based sizing."
+            ]
+        },
         {
             title: "1.10.0",
             items: [
@@ -176,6 +183,503 @@ function ToolbarComponent({ onClick }) {
 
 // Column key for the user column (used for width state)
 const USER_COL_KEY = "__USER__";
+
+function UserTagsOverview({ plugin }) {
+    // Default width for User column so it doesn't start at 0
+    const [colWidths, setColWidths] = React.useState({ [USER_COL_KEY]: 220 });
+    const [version, setVersion] = React.useState(0); // eslint-disable-line no-unused-vars
+    const [filter, setFilter] = React.useState("");
+    const [includeTags, setIncludeTags] = React.useState([]);
+    const [excludeTags, setExcludeTags] = React.useState([]);
+    const [hoverUserId, setHoverUserId] = React.useState(null);
+    const [hoverTag, setHoverTag] = React.useState(null);
+
+    const data = Data.load(plugin._config.info.name, "UserData") || {};
+    const idSet = new Set();
+
+    // Friend IDs from RelationshipStore
+    try {
+        const rel = StoreModules.RelationshipStore;
+        if (rel) {
+            if (typeof rel.getFriendIDs === "function") {
+                rel.getFriendIDs().forEach(id => idSet.add(id));
+            } else if (typeof rel.getRelationships === "function") {
+                const rels = rel.getRelationships();
+                for (const id in rels) {
+                    // 1 = Friend in Discord's RelationshipType enum
+                    if (rels[id] === 1) idSet.add(id);
+                }
+            }
+        }
+    } catch (e) {
+        console.warn("[UserTags] Failed to read friends from RelationshipStore", e);
+    }
+
+    // Also include any users that already have tags
+    Object.keys(data).forEach(id => idSet.add(id));
+
+    const userIds = Array.from(idSet);
+
+    const users = userIds.map(userId => {
+        const entry = plugin.getOrInitUserEntry(data, userId);
+        const userObj = StoreModules.UserStore.getUser(userId);
+
+        const username = userObj?.username || entry.username || userId;
+        // "screenname or nickname": prefer global display name if present
+        const displayName = userObj?.globalName || userObj?.username || entry.username || userId;
+
+        let avatarUrl = null;
+        if (userObj) {
+            if (typeof userObj.getAvatarURL === "function") {
+                avatarUrl = userObj.getAvatarURL(false, 32);
+            } else if (userObj.avatarURL) {
+                avatarUrl = userObj.avatarURL;
+            } else if (userObj.avatar) {
+                avatarUrl = `https://cdn.discordapp.com/avatars/${userId}/${userObj.avatar}.webp?size=32`;
+            }
+        }
+
+        // Mutual servers -> names (from GuildStore + GuildMemberStore)
+        let mutualGuildNames = [];
+        try {
+            const guildStore = StoreModules.GuildStore;
+            const memberStore = StoreModules.GuildMemberStore;
+            if (
+                guildStore &&
+                memberStore &&
+                typeof guildStore.getGuilds === "function"
+            ) {
+                const rawGuilds = guildStore.getGuilds();
+                let guildList = [];
+
+                if (rawGuilds) {
+                    if (Array.isArray(rawGuilds)) {
+                        guildList = rawGuilds;
+                    } else if (typeof rawGuilds.values === "function") {
+                        guildList = Array.from(rawGuilds.values());
+                    } else {
+                        guildList = Object.values(rawGuilds);
+                    }
+                }
+
+                mutualGuildNames = guildList
+                    .filter(g => {
+                        const members = memberStore.getMembers?.(g.id);
+                        if (members && members[userId]) return true;
+                        if (typeof memberStore.isMember === "function") {
+                            return memberStore.isMember(g.id, userId);
+                        }
+                        return false;
+                    })
+                    .map(g => g.name);
+            }
+        } catch (e) {
+            // ignore mutual guild errors
+        }
+
+        return {
+            userId,
+            username,
+            displayName,
+            avatarUrl,
+            mutualGuildNames,
+            tags: Array.isArray(entry.tags) ? entry.tags : []
+        };
+    });
+
+    const allTags = Array.from(
+        new Set(
+            users.flatMap(u => u.tags)
+        )
+    ).sort((a, b) => a.localeCompare(b));
+
+    // Build include/exclude arrays from filter input
+    React.useEffect(() => {
+        const raw = filter.trim();
+        const include = [];
+        const exclude = [];
+
+        if (!raw) {
+            setIncludeTags([]);
+            setExcludeTags([]);
+            return;
+        }
+
+        const tokens = raw.split(/\s+/).filter(Boolean);
+        tokens.forEach(t => {
+            if (t.startsWith("-")) exclude.push(t.substring(1));
+            else include.push(t);
+        });
+
+        setIncludeTags(include);
+        setExcludeTags(exclude);
+    }, [filter]);
+
+    // Tag ordering: default by count (descending) based on visible users
+    const tagCountMap = {};
+    const matchesTag = (tagList, term) => tagList.some(t => t.toLowerCase().includes(term.toLowerCase()));
+
+    // Filter logic
+    const [regexError, setRegexError] = React.useState(false);
+    let serverTerm = null;
+    let nameTerm = null;
+
+    let regex = null;
+    let filterTerm = filter.trim();
+    if (filterTerm.startsWith("$")) {
+        serverTerm = filterTerm.substring(1).trim();
+    } else if (filterTerm.startsWith("@")) {
+        nameTerm = filterTerm.substring(1).trim();
+    } else if (filterTerm) {
+        try {
+            regex = new RegExp(filterTerm, "i");
+            setRegexError(false);
+        } catch (e) {
+            setRegexError(true);
+        }
+    } else {
+        setRegexError(false);
+    }
+
+    const visibleUsers = users.filter(user => {
+        const includeOk = includeTags.every(tag => matchesTag(user.tags, tag));
+        const excludeOk = excludeTags.every(tag => !matchesTag(user.tags, tag));
+        if (!includeOk || !excludeOk) return false;
+
+        if (serverTerm) {
+            return user.mutualGuildNames.some(name => name.toLowerCase().includes(serverTerm.toLowerCase()));
+        }
+
+        if (nameTerm) {
+            return user.displayName.toLowerCase().includes(nameTerm.toLowerCase());
+        }
+
+        if (regex) {
+            return regex.test(user.displayName) || regex.test(user.username) || user.tags.some(tag => regex.test(tag));
+        }
+
+        return true;
+    });
+
+    visibleUsers.forEach(user => {
+        user.tags.forEach(tag => {
+            tagCountMap[tag] = (tagCountMap[tag] || 0) + 1;
+        });
+    });
+
+    const sortedTags = allTags.sort((a, b) => {
+        const countDiff = (tagCountMap[b] || 0) - (tagCountMap[a] || 0);
+        if (countDiff !== 0) return countDiff;
+        return a.localeCompare(b);
+    });
+
+    // Total assignments for summary
+    let totalAssignments = 0;
+    users.forEach(u => { totalAssignments += u.tags.length; });
+    const visibleAssignments = visibleUsers.reduce((sum, u) => sum + u.tags.length, 0);
+
+    const handleAddTagClick = () => {
+        const tag = prompt("Enter new tag name (alphanumeric and underscore only):");
+        if (!tag) return;
+
+        const sanitized = tag.replace(/[^a-zA-Z0-9_]/g, "");
+        if (!sanitized) return;
+
+        // Add this tag to TagIndex if not present
+        const tagIndex = Data.load(plugin._config.info.name, "TagIndex") || {};
+        if (!tagIndex[sanitized]) {
+            tagIndex[sanitized] = [];
+            Data.save(plugin._config.info.name, "TagIndex", tagIndex);
+        }
+
+        // Force re-render by bumping version
+        setVersion(v => v + 1);
+    };
+
+    const startResize = (event, colKey) => {
+        const headerEl = event.target.closest(".usertags-grid-header");
+        if (!headerEl) return;
+
+        const startX = event.clientX;
+        const startWidth = headerEl.offsetWidth;
+
+        const onMove = (e) => {
+            const delta = e.clientX - startX;
+            const newWidth = Math.max(40, startWidth + delta);
+            setColWidths(prev => ({ ...prev, [colKey]: newWidth }));
+        };
+
+        const onUp = () => {
+            document.removeEventListener("mousemove", onMove);
+            document.removeEventListener("mouseup", onUp);
+        };
+
+        document.addEventListener("mousemove", onMove);
+        document.addEventListener("mouseup", onUp);
+    };
+
+    const handleToggle = (userId, tag) => {
+        const data = Data.load(plugin._config.info.name, "UserData") || {};
+        const entry = plugin.getOrInitUserEntry(data, userId);
+
+        const idx = entry.tags.indexOf(tag);
+        if (idx === -1) entry.tags.push(tag);
+        else entry.tags.splice(idx, 1);
+
+        // Save username for display purposes
+        const userObj = StoreModules.UserStore.getUser(userId);
+        entry.username = userObj?.username || entry.username || userId;
+
+        plugin.saveUserData(data);
+        setVersion(v => v + 1);
+    };
+
+    const openTagContextMenu = (event, tag) => {
+        const items = [
+            {
+                label: "Require only this tag",
+                action: () => setFilter(tag)
+            },
+            {
+                label: "Hide this tag",
+                action: () => setFilter("-" + tag)
+            },
+            {
+                label: "Rename",
+                action: () => plugin.renameTag(tag, () => setVersion(v => v + 1))
+            },
+            {
+                label: "Duplicate",
+                action: () => plugin.duplicateTag(tag, () => setVersion(v => v + 1))
+            },
+            {
+                label: "Delete",
+                danger: true,
+                action: () => plugin.deleteTag(tag, () => setVersion(v => v + 1))
+            }
+        ];
+
+        const menu = BdApi.ContextMenu.buildMenu(items);
+        BdApi.ContextMenu.open(event, menu);
+    };
+
+    if (userIds.length === 0 || sortedTags.length === 0) {
+        return React.createElement("div", { className: "usertags-settings" },
+            React.createElement("h2", null, "UserTags Overview"),
+            React.createElement("p", null, "No tags or users to display yet. Add tags to users by opening their profile and using the Tags section, or create a new tag here."),
+            React.createElement(
+                "div",
+                { className: "usertags-toolbar" },
+                React.createElement(
+                    "div",
+                    { className: "usertags-toolbar-left" },
+                    React.createElement("div", { className: "usertags-count" }, "Users: 0 · Tags: 0 · Tag assignments: 0/0")
+                ),
+                React.createElement(
+                    "button",
+                    { className: "usertags-addtag-btn", onClick: handleAddTagClick },
+                    "Add Tag"
+                )
+            )
+        );
+    }
+
+    // Build grid template columns based on current widths
+    const columnWidths = [
+        colWidths[USER_COL_KEY] || 220,
+        // default tag width: 40px
+        ...sortedTags.map(tag => colWidths[tag] || 40)
+    ];
+    const gridTemplateColumns = columnWidths.map(w => `${w}px`).join(" ");
+
+    const gridChildren = [];
+
+    // Header row: User column
+    gridChildren.push(
+        React.createElement(
+            "div",
+            {
+                key: "header-user",
+                className: "usertags-grid-header usertags-grid-header-user"
+            },
+            React.createElement(
+                "div",
+                { className: "usertags-header-cell" },
+                React.createElement("span", { className: "usertags-header-label" }, "User"),
+                React.createElement("span", {
+                    className: "usertags-col-resizer",
+                    onMouseDown: (e) => startResize(e, USER_COL_KEY)
+                })
+            )
+        )
+    );
+
+    // Header row: Tag columns
+    sortedTags.forEach(tag => {
+        const headerClass =
+            "usertags-grid-header" +
+            (hoverTag === tag ? " usertags-col-hover-header" : "");
+        const count = tagCountMap[tag] || 0;
+        const percent = visibleUsers.length
+            ? (count * 100) / visibleUsers.length
+            : 0;
+        const headerTitle = `${tag} — ${count} (${percent.toFixed(1)}%)`;
+
+        gridChildren.push(
+            React.createElement(
+                "div",
+                {
+                    key: `header-${tag}`,
+                    className: headerClass,
+                    title: headerTitle,
+                    onContextMenu: (e) => openTagContextMenu(e, tag),
+                    onMouseEnter: () => setHoverTag(tag),
+                    onMouseLeave: () =>
+                        setHoverTag(prev => (prev === tag ? null : prev))
+                },
+                React.createElement(
+                    "div",
+                    { className: "usertags-header-cell" },
+                    React.createElement("span", { className: "usertags-header-label" }, tag),
+                    React.createElement("span", {
+                        className: "usertags-col-resizer",
+                        onMouseDown: (e) => startResize(e, tag)
+                    })
+                )
+            )
+        );
+    });
+
+    // Body rows
+    visibleUsers.forEach(user => {
+        // User cell
+        const userCellClass =
+            "usertags-usercell" +
+            (hoverUserId === user.userId ? " usertags-row-hover" : "");
+        gridChildren.push(
+            React.createElement(
+                "div",
+                {
+                    key: `row-${user.userId}-user`,
+                    className: userCellClass,
+                    onMouseEnter: () => setHoverUserId(user.userId),
+                    onMouseLeave: () =>
+                        setHoverUserId(prev => (prev === user.userId ? null : prev))
+                },
+                React.createElement(
+                    "div",
+                    {
+                        className: "usertags-userinfo",
+                        title: `${user.username} (${user.userId})`,
+                        onClick: () => {
+                            if (UserProfileActions && typeof UserProfileActions.openUserProfileModal === "function") {
+                                UserProfileActions.openUserProfileModal({ userId: user.userId });
+                            }
+                        }
+                    },
+                    user.avatarUrl
+                        ? React.createElement("img", {
+                              className: "usertags-avatar",
+                              src: user.avatarUrl
+                          })
+                        : null,
+                    React.createElement("span", { className: "usertags-username" }, user.displayName)
+                )
+            )
+        );
+
+        // Tag cells
+        sortedTags.forEach(tag => {
+            const has = user.tags.includes(tag);
+            let cellClass = has ? "usertags-cell has-tag" : "usertags-cell";
+            if (hoverUserId === user.userId) cellClass += " usertags-row-hover";
+            if (hoverTag === tag) cellClass += " usertags-col-hover";
+
+            gridChildren.push(
+                React.createElement(
+                    "div",
+                    {
+                        key: `row-${user.userId}-tag-${tag}`,
+                        className: cellClass,
+                        onMouseEnter: () => {
+                            setHoverUserId(user.userId);
+                            setHoverTag(tag);
+                        },
+                        onMouseLeave: () => {
+                            setHoverUserId(prev => (prev === user.userId ? null : prev));
+                            setHoverTag(prev => (prev === tag ? null : prev));
+                        },
+                        onClick: () => handleToggle(user.userId, tag)
+                    },
+                    has ? "✓" : ""
+                )
+            );
+        });
+    });
+
+    const parts = [];
+    if (includeTags.length > 0) parts.push(`Require: ${includeTags.join(", ")}`);
+    if (excludeTags.length > 0) parts.push(`Exclude: ${excludeTags.join(", ")}`);
+    const tagFilterLabel = parts.length ? parts.join(" · ") : null;
+
+    const summaryText =
+        filter && regexError
+            ? `Users: ${visibleUsers.length}/${users.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`
+            : `Users: ${visibleUsers.length}/${users.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`;
+
+    return React.createElement(
+        "div",
+        { className: "usertags-settings" },
+        React.createElement("h2", null, "UserTags Overview"),
+        React.createElement(
+            "p",
+            null,
+            "Grid view of all friends (plus any tagged non-friends) and which tags they have. ",
+            "Click a cell to toggle a tag for that user. Drag any header edge to resize its column. ",
+            "Right-click a tag header for more options (require/hide/rename/duplicate/delete). Click a user to open their profile. ",
+            "Use the filter box for regex search, @Name for name-only, or $Server for mutual-server-only search ",
+            "(use \\@ / \\$ at the start if you want a literal regex beginning with those symbols)."
+        ),
+        React.createElement(
+            "div",
+            { className: "usertags-toolbar" },
+            React.createElement(
+                "div",
+                { className: "usertags-toolbar-left" },
+                React.createElement("div", { className: "usertags-count" }, summaryText),
+                React.createElement("input", {
+                    className: "usertags-filter-input" + (regexError ? " usertags-filter-input-error" : ""),
+                    placeholder: "Filter: regex, @name, or $server",
+                    value: filter,
+                    onChange: (e) => setFilter(e.target.value)
+                }),
+                regexError
+                    ? React.createElement("div", { className: "usertags-filter-error" }, "Invalid regex")
+                    : tagFilterLabel
+                        ? React.createElement("div", { className: "usertags-tagfilter-pill" }, tagFilterLabel)
+                        : serverTerm
+                            ? React.createElement("div", { className: "usertags-tagfilter-pill" }, `Server search: "${filter.trim().slice(1).trim()}"`)
+                            : nameTerm
+                                ? React.createElement("div", { className: "usertags-tagfilter-pill" }, `Name search: "${filter.trim().slice(1).trim()}"`)
+                                : null
+            ),
+            React.createElement(
+                "button",
+                { className: "usertags-addtag-btn", onClick: handleAddTagClick },
+                "Add Tag"
+            )
+        ),
+        React.createElement(
+            "div",
+            { className: "usertags-grid" },
+            React.createElement(
+                "div",
+                { className: "usertags-grid-inner", style: { gridTemplateColumns } },
+                gridChildren
+            )
+        )
+    );
+}
 
 class UserTags {
     constructor() {
@@ -602,7 +1106,7 @@ class UserTags {
                 border: 1px solid var(--background-tertiary);
                 border-radius: 4px;
                 overflow: hidden;
-                max-height: 400px;
+                max-height: calc(90vh - 220px);
                 overflow-x: auto;
                 overflow-y: auto;
             }
@@ -807,14 +1311,20 @@ class UserTags {
                 width: min(90vw, 1200px);
                 max-width: 95vw;
                 max-height: 90vh;
+                display: flex;
+                flex-direction: column;
             }
 
             .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-inner {
                 max-height: 90vh;
+                display: flex;
+                flex-direction: column;
             }
 
             .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body {
                 max-height: calc(90vh - 120px);
+                flex: 1 1 auto;
+                overflow: auto;
             }
         `);
 
@@ -1163,643 +1673,7 @@ class UserTags {
      * Shared overview UI: clickable + resizable CSS grid of Friends+TaggedUsers × Tags.
      */
     renderOverviewPanel() {
-        const plugin = this;
-
-        function Panel() {
-            // Default width for User column so it doesn't start at 0
-            const [colWidths, setColWidths] = React.useState({ [USER_COL_KEY]: 220 });
-            const [version, setVersion] = React.useState(0); // eslint-disable-line no-unused-vars
-            const [filter, setFilter] = React.useState("");
-            const [includeTags, setIncludeTags] = React.useState([]);
-            const [excludeTags, setExcludeTags] = React.useState([]);
-            const [hoverUserId, setHoverUserId] = React.useState(null);
-            const [hoverTag, setHoverTag] = React.useState(null);
-
-            const data = Data.load(plugin._config.info.name, "UserData") || {};
-            const idSet = new Set();
-
-            // Friend IDs from RelationshipStore
-            try {
-                const rel = StoreModules.RelationshipStore;
-                if (rel) {
-                    if (typeof rel.getFriendIDs === "function") {
-                        rel.getFriendIDs().forEach(id => idSet.add(id));
-                    } else if (typeof rel.getRelationships === "function") {
-                        const rels = rel.getRelationships();
-                        for (const id in rels) {
-                            // 1 = Friend in Discord's RelationshipType enum
-                            if (rels[id] === 1) idSet.add(id);
-                        }
-                    }
-                }
-            } catch (e) {
-                console.warn("[UserTags] Failed to read friends from RelationshipStore", e);
-            }
-
-            // Also include any users that already have tags
-            Object.keys(data).forEach(id => idSet.add(id));
-
-            const userIds = Array.from(idSet);
-
-            const users = userIds.map(userId => {
-                const entry = plugin.getOrInitUserEntry(data, userId);
-                const userObj = StoreModules.UserStore.getUser(userId);
-
-                const username = userObj?.username || entry.username || userId;
-                // "screenname or nickname": prefer global display name if present
-                const displayName = userObj?.globalName || userObj?.username || entry.username || userId;
-
-                let avatarUrl = null;
-                if (userObj) {
-                    if (typeof userObj.getAvatarURL === "function") {
-                        avatarUrl = userObj.getAvatarURL(false, 32);
-                    } else if (userObj.avatarURL) {
-                        avatarUrl = userObj.avatarURL;
-                    } else if (userObj.avatar) {
-                        avatarUrl = `https://cdn.discordapp.com/avatars/${userId}/${userObj.avatar}.webp?size=32`;
-                    }
-                }
-
-                // Mutual servers -> names (from GuildStore + GuildMemberStore)
-                let mutualGuildNames = [];
-                try {
-                    const guildStore = StoreModules.GuildStore;
-                    const memberStore = StoreModules.GuildMemberStore;
-                    if (
-                        guildStore &&
-                        memberStore &&
-                        typeof guildStore.getGuilds === "function"
-                    ) {
-                        const rawGuilds = guildStore.getGuilds();
-                        let guildList = [];
-
-                        if (rawGuilds) {
-                            if (Array.isArray(rawGuilds)) {
-                                guildList = rawGuilds;
-                            } else if (typeof rawGuilds.values === "function") {
-                                guildList = Array.from(rawGuilds.values());
-                            } else {
-                                guildList = Object.values(rawGuilds);
-                            }
-                        }
-
-                        guildList.forEach(guild => {
-                            if (!guild || !guild.id || !guild.name) return;
-                            let isMember = false;
-                            if (typeof memberStore.isMember === "function") {
-                                isMember = memberStore.isMember(guild.id, userId);
-                            } else if (typeof memberStore.getMember === "function") {
-                                isMember = !!memberStore.getMember(guild.id, userId);
-                            }
-                            if (isMember) mutualGuildNames.push(guild.name);
-                        });
-                    }
-                } catch (e) {
-                    // ignore
-                }
-
-                return {
-                    userId,
-                    username,
-                    displayName,
-                    avatarUrl,
-                    tags: Array.isArray(entry.tags) ? entry.tags : [],
-                    mutualGuildNames
-                };
-            }).sort((a, b) => a.displayName.localeCompare(b.displayName));
-
-            // Persist any upgrades
-            plugin.saveUserData(data);
-
-            const allTags = plugin.getAllTags();
-
-            const handleToggle = (userId, tagKey) => {
-                const data = Data.load(plugin._config.info.name, "UserData") || {};
-                const entry = plugin.getOrInitUserEntry(data, userId);
-                if (!Array.isArray(entry.tags)) entry.tags = [];
-                const idx = entry.tags.indexOf(tagKey);
-                if (idx === -1) entry.tags.push(tagKey);
-                else entry.tags.splice(idx, 1);
-                plugin.saveUserData(data);
-                setVersion(v => v + 1);
-            };
-
-            const startResize = (event, colKey) => {
-                event.preventDefault();
-                event.stopPropagation();
-
-                const headerEl = event.target.closest(".usertags-grid-header");
-                if (!headerEl) return;
-
-                const startX = event.clientX;
-                const startWidth = headerEl.offsetWidth;
-
-                const onMouseMove = (e) => {
-                    const delta = e.clientX - startX;
-                    const newWidth = Math.max(40, startWidth + delta);
-                    setColWidths(prev => ({
-                        ...prev,
-                        [colKey]: newWidth
-                    }));
-                };
-
-                const onMouseUp = () => {
-                    document.removeEventListener("mousemove", onMouseMove);
-                    document.removeEventListener("mouseup", onMouseUp);
-                };
-
-                document.addEventListener("mousemove", onMouseMove);
-                document.addEventListener("mouseup", onMouseUp);
-            };
-
-            const handleAddTagClick = () => {
-                let value = "";
-
-                UI.showConfirmationModal(
-                    "Add Tag",
-                    React.createElement(
-                        "div",
-                        null,
-                        React.createElement(
-                            "div",
-                            { style: { marginBottom: 8 } },
-                            "Enter a new tag name (letters, numbers, and underscores only)."
-                        ),
-                        React.createElement("input", {
-                            type: "text",
-                            autoFocus: true,
-                            placeholder: "Tag name",
-                            style: {
-                                width: "100%",
-                                boxSizing: "border-box",
-                                padding: "4px 6px"
-                            },
-                            onChange: (e) => {
-                                value = e.target.value;
-                            }
-                        })
-                    ),
-                    {
-                        confirmText: "Add",
-                        cancelText: "Cancel",
-                        onConfirm: () => {
-                            if (!value) return;
-                            const cleaned = value.replace(/[^a-zA-Z0-9_]/g, "");
-                            if (!cleaned) return;
-                            plugin.addGlobalTag(cleaned);
-                            setVersion(v => v + 1);
-                        }
-                    }
-                );
-            };
-
-            // Filter handling: special @ / $ modes vs regex
-            let regex = null;
-            let regexError = null;
-            let serverTerm = null;
-            let nameTerm = null;
-
-            if (filter) {
-                const raw = filter.trim();
-                if (raw.startsWith("$")) {
-                    const term = raw.slice(1).trim();
-                    if (term) serverTerm = term.toLowerCase();
-                } else if (raw.startsWith("@")) {
-                    const term = raw.slice(1).trim();
-                    if (term) nameTerm = term.toLowerCase();
-                } else {
-                    try {
-                        regex = new RegExp(filter, "i");
-                    } catch (e) {
-                        regexError = e.message || "Invalid regex";
-                    }
-                }
-            }
-
-            let filteredByRegex = users;
-            if (serverTerm) {
-                filteredByRegex = users.filter(user =>
-                    (user.mutualGuildNames || []).some(name =>
-                        name.toLowerCase().includes(serverTerm)
-                    )
-                );
-            } else if (nameTerm) {
-                filteredByRegex = users.filter(user => {
-                    const composite = `${user.displayName || ""} ${user.username || ""}`.toLowerCase();
-                    return composite.includes(nameTerm);
-                });
-            } else if (regex && !regexError) {
-                filteredByRegex = users.filter(user => {
-                    const haystacks = [
-                        user.displayName || "",
-                        user.username || "",
-                        user.userId || "",
-                        (user.tags || []).join(" "),
-                        (user.mutualGuildNames || []).join(" ")
-                    ];
-                    return haystacks.some(h => regex.test(h));
-                });
-            }
-
-            // Tag filters: includeTags (AND) & excludeTags
-            let visibleUsers = filteredByRegex;
-
-            if (includeTags.length > 0) {
-                visibleUsers = visibleUsers.filter(u =>
-                    includeTags.every(t => u.tags.includes(t))
-                );
-            }
-
-            if (excludeTags.length > 0) {
-                visibleUsers = visibleUsers.filter(u =>
-                    excludeTags.every(t => !u.tags.includes(t))
-                );
-            }
-
-            // Precompute counts per tag for current visible users
-            const tagCountMap = {};
-            allTags.forEach(tag => {
-                let count = 0;
-                for (const u of visibleUsers) {
-                    if (u.tags.includes(tag)) count++;
-                }
-                tagCountMap[tag] = count;
-            });
-
-            // Sort tag columns by count (desc), then alphabetical
-            const sortedTags = [...allTags].sort((a, b) => {
-                const ca = tagCountMap[a] || 0;
-                const cb = tagCountMap[b] || 0;
-                if (cb !== ca) return cb - ca;
-                return a.localeCompare(b);
-            });
-
-            // Tag assignment counts (visible vs total)
-            const visibleAssignments = visibleUsers.reduce(
-                (sum, u) => sum + (Array.isArray(u.tags) ? u.tags.length : 0),
-                0
-            );
-            const totalAssignments = users.reduce(
-                (sum, u) => sum + (Array.isArray(u.tags) ? u.tags.length : 0),
-                0
-            );
-
-            const toggleInclude = (tag) => {
-                setIncludeTags(prev => {
-                    const exists = prev.includes(tag);
-                    let next = exists ? prev.filter(t => t !== tag) : [...prev, tag];
-                    return next;
-                });
-                // remove from exclude if present
-                setExcludeTags(prev => prev.filter(t => t !== tag));
-            };
-
-            const toggleExclude = (tag) => {
-                setExcludeTags(prev => {
-                    const exists = prev.includes(tag);
-                    let next = exists ? prev.filter(t => t !== tag) : [...prev, tag];
-                    return next;
-                });
-                // remove from include if present
-                setIncludeTags(prev => prev.filter(t => t !== tag));
-            };
-
-            const clearAllTagFilters = () => {
-                setIncludeTags([]);
-                setExcludeTags([]);
-            };
-
-            const handleRenameTag = (tag) => {
-                let value = tag;
-                UI.showConfirmationModal(
-                    "Rename Tag",
-                    React.createElement(
-                        "div",
-                        null,
-                        React.createElement(
-                            "div",
-                            { style: { marginBottom: 8 } },
-                            `Rename tag "${tag}" to:`
-                        ),
-                        React.createElement("input", {
-                            type: "text",
-                            autoFocus: true,
-                            defaultValue: tag,
-                            style: {
-                                width: "100%",
-                                boxSizing: "border-box",
-                                padding: "4px 6px"
-                            },
-                            onChange: (e) => {
-                                value = e.target.value;
-                            }
-                        })
-                    ),
-                    {
-                        confirmText: "Rename",
-                        cancelText: "Cancel",
-                        onConfirm: () => {
-                            if (!value) return;
-                            const cleaned = value.replace(/[^a-zA-Z0-9_]/g, "");
-                            if (!cleaned || cleaned === tag) return;
-                            plugin.renameTag(tag, cleaned);
-
-                            // Update include/exclude filters
-                            setIncludeTags(prev => prev.map(t => t === tag ? cleaned : t));
-                            setExcludeTags(prev => prev.map(t => t === tag ? cleaned : t));
-                            setVersion(v => v + 1);
-                        }
-                    }
-                );
-            };
-
-            const handleDeleteTag = (tag) => {
-                UI.showConfirmationModal(
-                    "Delete Tag",
-                    `Are you sure you want to delete the tag "${tag}" from all users?`,
-                    {
-                        confirmText: "Delete",
-                        cancelText: "Cancel",
-                        danger: true,
-                        onConfirm: () => {
-                            plugin.deleteTag(tag);
-                            setIncludeTags(prev => prev.filter(t => t !== tag));
-                            setExcludeTags(prev => prev.filter(t => t !== tag));
-                            setVersion(v => v + 1);
-                        }
-                    }
-                );
-            };
-
-            const handleDuplicateTag = (tag) => {
-                plugin.duplicateTag(tag);
-                setVersion(v => v + 1);
-            };
-
-            const openTagContextMenu = (event, tag) => {
-                event.preventDefault();
-                if (!BdApi.ContextMenu || !BdApi.ContextMenu.open || !BdApi.ContextMenu.buildMenu) return;
-
-                const items = [
-                    {
-                        label: "Rename…",
-                        action: () => handleRenameTag(tag)
-                    },
-                    {
-                        type: "separator"
-                    },
-                    {
-                        label: "Require this tag",
-                        checked: includeTags.includes(tag),
-                        action: () => toggleInclude(tag)
-                    },
-                    {
-                        label: "Hide users with this tag",
-                        checked: excludeTags.includes(tag),
-                        action: () => toggleExclude(tag)
-                    },
-                    {
-                        label: "Clear all tag filters",
-                        disabled: includeTags.length === 0 && excludeTags.length === 0,
-                        action: () => clearAllTagFilters()
-                    },
-                    {
-                        type: "separator"
-                    },
-                    {
-                        label: "Duplicate",
-                        action: () => handleDuplicateTag(tag)
-                    },
-                    {
-                        label: "Delete…",
-                        style: "color-danger",
-                        action: () => handleDeleteTag(tag)
-                    }
-                ];
-
-                const menu = BdApi.ContextMenu.buildMenu(items);
-                BdApi.ContextMenu.open(event, menu);
-            };
-
-            if (userIds.length === 0 || sortedTags.length === 0) {
-                return React.createElement("div", { className: "usertags-settings" },
-                    React.createElement("h2", null, "UserTags Overview"),
-                    React.createElement("p", null, "No tags or users to display yet. Add tags to users by opening their profile and using the Tags section, or create a new tag here."),
-                    React.createElement(
-                        "div",
-                        { className: "usertags-toolbar" },
-                        React.createElement(
-                            "div",
-                            { className: "usertags-toolbar-left" },
-                            React.createElement("div", { className: "usertags-count" }, "Users: 0 · Tags: 0 · Tag assignments: 0/0")
-                        ),
-                        React.createElement(
-                            "button",
-                            { className: "usertags-addtag-btn", onClick: handleAddTagClick },
-                            "Add Tag"
-                        )
-                    )
-                );
-            }
-
-            // Build grid template columns based on current widths
-            const columnWidths = [
-                colWidths[USER_COL_KEY] || 220,
-                // default tag width: 40px
-                ...sortedTags.map(tag => colWidths[tag] || 40)
-            ];
-            const gridTemplateColumns = columnWidths.map(w => `${w}px`).join(" ");
-
-            const gridChildren = [];
-
-            // Header row: User column
-            gridChildren.push(
-                React.createElement(
-                    "div",
-                    {
-                        key: "header-user",
-                        className: "usertags-grid-header usertags-grid-header-user"
-                    },
-                    React.createElement(
-                        "div",
-                        { className: "usertags-header-cell" },
-                        React.createElement("span", { className: "usertags-header-label" }, "User"),
-                        React.createElement("span", {
-                            className: "usertags-col-resizer",
-                            onMouseDown: (e) => startResize(e, USER_COL_KEY)
-                        })
-                    )
-                )
-            );
-
-            // Header row: Tag columns
-            sortedTags.forEach(tag => {
-                const headerClass =
-                    "usertags-grid-header" +
-                    (hoverTag === tag ? " usertags-col-hover-header" : "");
-                const count = tagCountMap[tag] || 0;
-                const percent = visibleUsers.length
-                    ? (count * 100) / visibleUsers.length
-                    : 0;
-                const headerTitle = `${tag} — ${count} (${percent.toFixed(1)}%)`;
-
-                gridChildren.push(
-                    React.createElement(
-                        "div",
-                        {
-                            key: `header-${tag}`,
-                            className: headerClass,
-                            title: headerTitle,
-                            onContextMenu: (e) => openTagContextMenu(e, tag),
-                            onMouseEnter: () => setHoverTag(tag),
-                            onMouseLeave: () =>
-                                setHoverTag(prev => (prev === tag ? null : prev))
-                        },
-                        React.createElement(
-                            "div",
-                            { className: "usertags-header-cell" },
-                            React.createElement("span", { className: "usertags-header-label" }, tag),
-                            React.createElement("span", {
-                                className: "usertags-col-resizer",
-                                onMouseDown: (e) => startResize(e, tag)
-                            })
-                        )
-                    )
-                );
-            });
-
-            // Body rows
-            visibleUsers.forEach(user => {
-                // User cell
-                const userCellClass =
-                    "usertags-usercell" +
-                    (hoverUserId === user.userId ? " usertags-row-hover" : "");
-                gridChildren.push(
-                    React.createElement(
-                        "div",
-                        {
-                            key: `row-${user.userId}-user`,
-                            className: userCellClass,
-                            onMouseEnter: () => setHoverUserId(user.userId),
-                            onMouseLeave: () =>
-                                setHoverUserId(prev => (prev === user.userId ? null : prev))
-                        },
-                        React.createElement(
-                            "div",
-                            {
-                                className: "usertags-userinfo",
-                                title: `${user.username} (${user.userId})`,
-                                onClick: () => {
-                                    if (UserProfileActions && typeof UserProfileActions.openUserProfileModal === "function") {
-                                        UserProfileActions.openUserProfileModal({ userId: user.userId });
-                                    }
-                                }
-                            },
-                            user.avatarUrl
-                                ? React.createElement("img", {
-                                      className: "usertags-avatar",
-                                      src: user.avatarUrl
-                                  })
-                                : null,
-                            React.createElement("span", { className: "usertags-username" }, user.displayName)
-                        )
-                    )
-                );
-
-                // Tag cells
-                sortedTags.forEach(tag => {
-                    const has = user.tags.includes(tag);
-                    let cellClass = has ? "usertags-cell has-tag" : "usertags-cell";
-                    if (hoverUserId === user.userId) cellClass += " usertags-row-hover";
-                    if (hoverTag === tag) cellClass += " usertags-col-hover";
-
-                    gridChildren.push(
-                        React.createElement(
-                            "div",
-                            {
-                                key: `row-${user.userId}-tag-${tag}`,
-                                className: cellClass,
-                                onMouseEnter: () => {
-                                    setHoverUserId(user.userId);
-                                    setHoverTag(tag);
-                                },
-                                onMouseLeave: () => {
-                                    setHoverUserId(prev => (prev === user.userId ? null : prev));
-                                    setHoverTag(prev => (prev === tag ? null : prev));
-                                },
-                                onClick: () => handleToggle(user.userId, tag)
-                            },
-                            has ? "✓" : ""
-                        )
-                    );
-                });
-            });
-
-            const parts = [];
-            if (includeTags.length > 0) parts.push(`Require: ${includeTags.join(", ")}`);
-            if (excludeTags.length > 0) parts.push(`Exclude: ${excludeTags.join(", ")}`);
-            const tagFilterLabel = parts.length ? parts.join(" · ") : null;
-
-            const summaryText =
-                filter && regexError
-                    ? `Users: ${visibleUsers.length}/${users.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`
-                    : `Users: ${visibleUsers.length}/${users.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`;
-
-            return React.createElement(
-                "div",
-                { className: "usertags-settings" },
-                React.createElement("h2", null, "UserTags Overview"),
-                React.createElement(
-                    "p",
-                    null,
-                    "Grid view of all friends (plus any tagged non-friends) and which tags they have. ",
-                    "Click a cell to toggle a tag for that user. Drag any header edge to resize its column. ",
-                    "Right-click a tag header for more options (require/hide/rename/duplicate/delete). Click a user to open their profile. ",
-                    "Use the filter box for regex search, @Name for name-only, or $Server for mutual-server-only search ",
-                    "(use \\@ / \\$ at the start if you want a literal regex beginning with those symbols)."
-                ),
-                React.createElement(
-                    "div",
-                    { className: "usertags-toolbar" },
-                    React.createElement(
-                        "div",
-                        { className: "usertags-toolbar-left" },
-                        React.createElement("div", { className: "usertags-count" }, summaryText),
-                        React.createElement("input", {
-                            className: "usertags-filter-input" + (regexError ? " usertags-filter-input-error" : ""),
-                            placeholder: "Filter: regex, @name, or $server",
-                            value: filter,
-                            onChange: (e) => setFilter(e.target.value)
-                        }),
-                        regexError
-                            ? React.createElement("div", { className: "usertags-filter-error" }, "Invalid regex")
-                            : tagFilterLabel
-                                ? React.createElement("div", { className: "usertags-tagfilter-pill" }, tagFilterLabel)
-                                : serverTerm
-                                    ? React.createElement("div", { className: "usertags-tagfilter-pill" }, `Server search: "${filter.trim().slice(1).trim()}"`)
-                                    : nameTerm
-                                        ? React.createElement("div", { className: "usertags-tagfilter-pill" }, `Name search: "${filter.trim().slice(1).trim()}"`)
-                                        : null
-                    ),
-                    React.createElement(
-                        "button",
-                        { className: "usertags-addtag-btn", onClick: handleAddTagClick },
-                        "Add Tag"
-                    )
-                ),
-                React.createElement(
-                    "div",
-                    { className: "usertags-grid" },
-                    React.createElement(
-                        "div",
-                        { className: "usertags-grid-inner", style: { gridTemplateColumns } },
-                        gridChildren
-                    )
-                )
-            );
-        }
-
-        return React.createElement(Panel);
+        return React.createElement(UserTagsOverview, { plugin: this });
     }
 
     /**
@@ -1822,14 +1696,36 @@ class UserTags {
     }
 
     showSettingsModal(title = "UserTags Settings") {
-        UI.showConfirmationModal(
-            title,
-            this.renderOverviewPanel(),
-            {
-                confirmText: "Close",
-                cancelText: null
-            }
-        );
+        UI.openModal((modalProps) => {
+            const close = () => modalProps?.onClose?.();
+            return React.createElement(
+                "div",
+                { className: "bd-modal-root bd-addon-modal" },
+                React.createElement(
+                    "div",
+                    { className: "bd-modal-header" },
+                    React.createElement("div", { className: "bd-title" }, title),
+                    React.createElement(
+                        "button",
+                        {
+                            className: "bd-modal-close", 
+                            "aria-label": "Close",
+                            onClick: close
+                        },
+                        "×"
+                    )
+                ),
+                React.createElement(
+                    "div",
+                    { className: "bd-modal-inner" },
+                    React.createElement(
+                        "div",
+                        { className: "bd-modal-body" },
+                        this.renderOverviewPanel()
+                    )
+                )
+            );
+        }, { modalKey: "usertags-settings-modal" });
     }
 
     patchChannelHeaderToolbar() {
