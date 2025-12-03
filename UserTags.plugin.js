@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.10.1
+ * @version 1.10.2
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,18 @@ const config = {
                 discord_id: "381157302369255424"
             }
         ],
-        version: "1.10.1",
+        version: "1.10.2",
         description: "Add user-localized customizable tags to other users using a searchable table or context menu."
     },
     github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
     github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
     changelog: [
+        {
+            title: "1.10.2",
+            items: [
+                "Fixed a runtime error from UI.openModal and restored the correctly scaled overview modal for the toolbar button."
+            ]
+        },
         {
             title: "1.10.1",
             items: [
@@ -1307,7 +1313,8 @@ class UserTags {
                 color: var(--interactive-hover);
             }
 
-            .bd-modal-root.bd-addon-modal:has(.usertags-settings) {
+            .bd-modal-root.bd-addon-modal:has(.usertags-settings),
+            .bd-confirmation-modal:has(.usertags-settings) {
                 width: min(90vw, 1200px);
                 max-width: 95vw;
                 max-height: 90vh;
@@ -1315,13 +1322,15 @@ class UserTags {
                 flex-direction: column;
             }
 
-            .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-inner {
+            .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-inner,
+            .bd-confirmation-modal:has(.usertags-settings) {
                 max-height: 90vh;
                 display: flex;
                 flex-direction: column;
             }
 
-            .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body {
+            .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body,
+            .bd-confirmation-modal:has(.usertags-settings) .bd-modal-body {
                 max-height: calc(90vh - 120px);
                 flex: 1 1 auto;
                 overflow: auto;
@@ -1696,36 +1705,15 @@ class UserTags {
     }
 
     showSettingsModal(title = "UserTags Settings") {
-        UI.openModal((modalProps) => {
-            const close = () => modalProps?.onClose?.();
-            return React.createElement(
-                "div",
-                { className: "bd-modal-root bd-addon-modal" },
-                React.createElement(
-                    "div",
-                    { className: "bd-modal-header" },
-                    React.createElement("div", { className: "bd-title" }, title),
-                    React.createElement(
-                        "button",
-                        {
-                            className: "bd-modal-close", 
-                            "aria-label": "Close",
-                            onClick: close
-                        },
-                        "×"
-                    )
-                ),
-                React.createElement(
-                    "div",
-                    { className: "bd-modal-inner" },
-                    React.createElement(
-                        "div",
-                        { className: "bd-modal-body" },
-                        this.renderOverviewPanel()
-                    )
-                )
-            );
-        }, { modalKey: "usertags-settings-modal" });
+        UI.showConfirmationModal(
+            title,
+            this.renderOverviewPanel(),
+            {
+                confirmText: "Close",
+                cancelText: null,
+                modalKey: "usertags-settings-modal"
+            }
+        );
     }
 
     patchChannelHeaderToolbar() {
