@@ -1098,6 +1098,11 @@ class UserTags {
             }
 
             /* Settings panel grid (CSS grid) */
+            .usertags-settings-root {
+                max-height: 80vh;
+                max-width: 90vw;
+                overflow: auto;
+            }
             .usertags-settings {
                 padding: 10px;
             }
@@ -1692,10 +1697,24 @@ class UserTags {
     }
 
     /**
-     * Settings panel: reuse the overview panel.
+     * Build the settings UI into a provided container.
+     */
+    buildSettingsUI(container) {
+        if (!container) return null;
+        if (BdApi?.ReactDOM?.render) {
+            BdApi.ReactDOM.render(this.renderOverviewPanel(), container);
+        }
+        return container;
+    }
+
+    /**
+     * Settings panel: reuse the overview panel wrapped in a single root element.
      */
     getSettingsPanel() {
-        return this.renderOverviewPanel();
+        const container = document.createElement("div");
+        container.className = "usertags-settings-root";
+        this.buildSettingsUI(container);
+        return container;
     }
 
     openOverviewModal() {
@@ -1703,14 +1722,19 @@ class UserTags {
     }
 
     openSettingsFromToolbar() {
-        this.openOverviewModal();
+        this.showSettingsModal();
     }
 
     openSettingsModalFromToolbar() {
-        this.openOverviewModal();
+        this.showSettingsModal();
     }
 
     showSettingsModal() {
+        if (BdApi?.Plugins?.showAddonSettingsModal) {
+            BdApi.Plugins.showAddonSettingsModal(this.getName(), this);
+            return;
+        }
+
         const openAddonSettings =
             UI?.showAddonSettingsModal ||
             UI?.openAddonSettingsModal ||
