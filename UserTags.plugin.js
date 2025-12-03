@@ -1384,6 +1384,7 @@ class UserTags {
             let regexError = null;
             let serverTerm = null;
             let nameTerm = null;
+            let isEmptyTagFilter = false;
 
             if (filter) {
                 const raw = filter.trim();
@@ -1394,16 +1395,21 @@ class UserTags {
                     const term = raw.slice(1).trim();
                     if (term) nameTerm = term.toLowerCase();
                 } else {
-                    try {
-                        regex = new RegExp(filter, "i");
-                    } catch (e) {
-                        regexError = e.message || "Invalid regex";
+                    // Special-case "^$" to mean "users with no tags"
+                    if (raw === "^$") {
+                        isEmptyTagFilter = true;
+                    } else {
+                        try {
+                            regex = new RegExp(filter, "i");
+                        } catch (e) {
+                            regexError = e.message || "Invalid regex";
+                        }
                     }
                 }
             }
 
-            // Note: since tags are included in the regex haystack as a joined string,
-            // using the regex "^$" in the filter will show only users with no tags.
+            // Special case: when the filter is exactly "^$", we don't use a generic regex.
+            // Instead we treat it as "show only users with no tags" (see isEmptyTagFilter logic).
             let filteredByRegex = users;
             if (serverTerm) {
                 filteredByRegex = users.filter(user =>
@@ -1416,6 +1422,11 @@ class UserTags {
                     const composite = `${user.displayName || ""} ${user.username || ""}`.toLowerCase();
                     return composite.includes(nameTerm);
                 });
+            } else if (isEmptyTagFilter) {
+                // Special "^$" behavior: only users with no tags at all
+                filteredByRegex = users.filter(user =>
+                    !user.tags || user.tags.length === 0
+                );
             } else if (regex && !regexError) {
                 filteredByRegex = users.filter(user => {
                     const haystacks = [
@@ -1424,7 +1435,9 @@ class UserTags {
                         user.userId || "",
                         (user.tags || []).join(" "),
                         (user.mutualGuildNames || []).join(" ")
-                    ];
+                    ]
+                        // Ignore completely empty strings so "^$" doesn't match them
+                        .filter(h => h && h.length > 0);
                     return haystacks.some(h => regex.test(h));
                 });
             }
