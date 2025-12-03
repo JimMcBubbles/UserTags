@@ -1,10 +1,11 @@
 /**
  * @name UserTags
- * @version 0.0.1
- * @description Adds custom tags next to usernames in Discord.
+ * @version 1.8.10
+ * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
+ * @authorId 270848136006729728
  * @author JimMcBubbles
- * @authorId jimmcbubbles
+ * @authorId 381157302369255424
  * @source https://github.com/JimMcBubbles/UserTags
  * @updateUrl https://raw.githubusercontent.com/JimMcBubbles/UserTags/main/UserTags.plugin.js
  */
@@ -16,14 +17,25 @@ const config = {
             {
                 name: "Nyx",
                 discord_id: "270848136006729728"
+            },
+            {
+                name: "JimMcBubbles",
+                discord_id: "381157302369255424"
             }
         ],
-        version: "1.8.9",
-        description: "Allows you to add custom tags to users. You can use these tags to filter users by their tags."
+        version: "1.8.10",
+        description: "Add user-localized customizable tags to other users using a searchable table or context menu."
     },
     github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
     github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
     changelog: [
+        {
+            title: "1.8.10",
+            items: [
+                "Updated plugin metadata to match the current tag filtering and overview experience.",
+                "Clarified the description to highlight tag management workflows."
+            ]
+        },
         {
             title: "Improvements",
             items: [
