@@ -1198,6 +1198,7 @@ class UserTags {
             const [filter, setFilter] = React.useState("");
             const [includeTags, setIncludeTags] = React.useState([]);
             const [excludeTags, setExcludeTags] = React.useState([]);
+            const [showUntaggedOnly, setShowUntaggedOnly] = React.useState(false);
             const [hoverUserId, setHoverUserId] = React.useState(null);
             const [hoverTag, setHoverTag] = React.useState(null);
 
@@ -1430,16 +1431,21 @@ class UserTags {
             // Tag filters: includeTags (AND) & excludeTags
             let visibleUsers = filteredByRegex;
 
-            if (includeTags.length > 0) {
-                visibleUsers = visibleUsers.filter(u =>
-                    includeTags.every(t => u.tags.includes(t))
-                );
-            }
+            if (showUntaggedOnly) {
+                // Only users with no tags at all
+                visibleUsers = visibleUsers.filter(u => !u.tags || u.tags.length === 0);
+            } else {
+                if (includeTags.length > 0) {
+                    visibleUsers = visibleUsers.filter(u =>
+                        includeTags.every(t => u.tags.includes(t))
+                    );
+                }
 
-            if (excludeTags.length > 0) {
-                visibleUsers = visibleUsers.filter(u =>
-                    excludeTags.every(t => !u.tags.includes(t))
-                );
+                if (excludeTags.length > 0) {
+                    visibleUsers = visibleUsers.filter(u =>
+                        excludeTags.every(t => !u.tags.includes(t))
+                    );
+                }
             }
 
             // Precompute counts per tag for current visible users
@@ -1766,10 +1772,14 @@ class UserTags {
             if (excludeTags.length > 0) parts.push(`Exclude: ${excludeTags.join(", ")}`);
             const tagFilterLabel = parts.length ? parts.join(" · ") : null;
 
-            const summaryText =
+            let summaryText =
                 filter && regexError
                     ? `Users: ${visibleUsers.length}/${users.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`
                     : `Users: ${visibleUsers.length}/${users.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`;
+
+            if (showUntaggedOnly) {
+                summaryText += " · (untagged only)";
+            }
 
             return React.createElement(
                 "div",
@@ -1805,7 +1815,24 @@ class UserTags {
                                     ? React.createElement("div", { className: "usertags-tagfilter-pill" }, `Server search: "${filter.trim().slice(1).trim()}"`)
                                     : nameTerm
                                         ? React.createElement("div", { className: "usertags-tagfilter-pill" }, `Name search: "${filter.trim().slice(1).trim()}"`)
-                                        : null
+                                        : null,
+                        React.createElement(
+                            "label",
+                            {
+                                style: {
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 4,
+                                    marginTop: 4
+                                }
+                            },
+                            React.createElement("input", {
+                                type: "checkbox",
+                                checked: showUntaggedOnly,
+                                onChange: (e) => setShowUntaggedOnly(e.target.checked)
+                            }),
+                            "Show only users with no tags"
+                        )
                     ),
                     React.createElement(
                         "button",
