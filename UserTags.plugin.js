@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.10.2
+ * @version 1.10.3
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,13 +23,19 @@ const config = {
                 discord_id: "381157302369255424"
             }
         ],
-        version: "1.10.2",
+        version: "1.10.3",
         description: "Add user-localized customizable tags to other users using a searchable table or context menu."
     },
     github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
     github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
     changelog: [
         {
+            title: "1.10.3",
+            items: [
+                "Fixed toolbar button modal to reuse the existing UserTags overview and resolved React 301 errors when opening it."
+            ]
+        },
+        { 
             title: "1.10.2",
             items: [
                 "Fixed a runtime error from UI.openModal and restored the correctly scaled overview modal for the toolbar button."
@@ -1693,27 +1699,30 @@ class UserTags {
     }
 
     openOverviewModal() {
-        this.showSettingsModal("UserTags Overview");
+        this.showSettingsModal();
     }
 
     openSettingsFromToolbar() {
-        this.showSettingsModal("UserTags Settings");
+        this.openOverviewModal();
     }
 
     openSettingsModalFromToolbar() {
-        this.openSettingsFromToolbar();
+        this.openOverviewModal();
     }
 
-    showSettingsModal(title = "UserTags Settings") {
-        UI.showConfirmationModal(
-            title,
-            this.renderOverviewPanel(),
-            {
-                confirmText: "Close",
-                cancelText: null,
-                modalKey: "usertags-settings-modal"
-            }
-        );
+    showSettingsModal() {
+        const openAddonSettings =
+            UI?.showAddonSettingsModal ||
+            UI?.openAddonSettingsModal ||
+            UI?.showAddonSettings ||
+            UI?.openAddonSettings;
+
+        if (typeof openAddonSettings === "function") {
+            openAddonSettings(this.getName());
+            return;
+        }
+
+        console.warn("[UserTags] Could not locate BetterDiscord addon settings modal API to open the overview.");
     }
 
     patchChannelHeaderToolbar() {
