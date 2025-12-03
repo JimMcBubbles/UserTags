@@ -9,7 +9,11 @@
  * @updateUrl https://raw.githubusercontent.com/JimMcBubbles/UserTags/main/UserTags.plugin.js
  */
 
-module.exports = class UserTags {
+const config = {
+    info: {
+        name: "UserTags",
+        authors: [
+            {
                 name: "Nyx",
                 discord_id: "270848136006729728"
             }
