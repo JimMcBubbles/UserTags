@@ -82,6 +82,11 @@ const UserProfileActions = Webpack.getModule(
     { searchExports: true }
 );
 
+const Button = Webpack.getModule(
+    m => m?.Colors && m?.Looks && m?.Sizes,
+    { searchExports: true }
+);
+
 // Column key for the user column (used for width state)
 const USER_COL_KEY = "__USER__";
 
@@ -695,7 +700,14 @@ class UserTags {
                 flex: 1 1 auto;
                 min-width: 0;
             }
+
+            .usertags-channel-toolbar-button {
+                margin-left: 6px;
+                height: 32px;
+            }
         `);
+
+        this.patchChannelHeaderToolbar();
 
         // SMALL USER PROFILE POPOUT
         const UserProfileModuleSmall = Webpack.getByStrings(
@@ -833,6 +845,7 @@ class UserTags {
         BdApi.Patcher.unpatchAll("userProfileSmall");
         BdApi.Patcher.unpatchAll("userProfileFull");
         BdApi.Patcher.unpatchAll("QuickSwitcher");
+        BdApi.Patcher.unpatchAll("UserTagsChannelHeaderToolbar");
         DOM.removeStyle(this._config.info.name);
     }
 
@@ -1035,9 +1048,9 @@ class UserTags {
     }
 
     /**
-     * Settings panel: clickable + resizable CSS grid of Friends+TaggedUsers × Tags.
+     * Shared overview UI: clickable + resizable CSS grid of Friends+TaggedUsers × Tags.
      */
-    getSettingsPanel() {
+    renderOverviewPanel() {
         const plugin = this;
 
         function Panel() {
@@ -1675,6 +1688,103 @@ class UserTags {
         }
 
         return React.createElement(Panel);
+    }
+
+    /**
+     * Settings panel: reuse the overview panel.
+     */
+    getSettingsPanel() {
+        return this.renderOverviewPanel();
+    }
+
+    openOverviewModal() {
+        UI.showConfirmationModal(
+            "UserTags Overview",
+            this.renderOverviewPanel(),
+            {
+                confirmText: "Close",
+                cancelText: null
+            }
+        );
+    }
+
+    patchChannelHeaderToolbar() {
+        const ChannelHeaderModule = Webpack.getModule(
+            m => typeof m?.default === "function" && m?.default?.toString?.().includes("toolbar__9293f"),
+            { searchExports: true }
+        );
+
+        if (!ChannelHeaderModule || !ChannelHeaderModule.default || !Button) {
+            console.warn("[UserTags] Could not find channel header toolbar module – toolbar button disabled.");
+            return;
+        }
+
+        const findToolbar = (node) => {
+            if (!node || typeof node !== "object") return null;
+            if (
+                node.props?.className &&
+                typeof node.props.className === "string" &&
+                node.props.className.includes("toolbar__9293f")
+            ) {
+                return node;
+            }
+
+            const children = node.props?.children;
+            if (Array.isArray(children)) {
+                for (const child of children) {
+                    const found = findToolbar(child);
+                    if (found) return found;
+                }
+            } else if (children) {
+                return findToolbar(children);
+            }
+
+            return null;
+        };
+
+        BdApi.Patcher.after(
+            "UserTagsChannelHeaderToolbar",
+            ChannelHeaderModule,
+            "default",
+            (_, __, res) => {
+                const toolbar = findToolbar(res);
+                if (!toolbar || !toolbar.props) return res;
+
+                const button = this.buildToolbarButton();
+                if (!button) return res;
+
+                const children = Array.isArray(toolbar.props.children)
+                    ? toolbar.props.children
+                    : toolbar.props.children
+                        ? [toolbar.props.children]
+                        : [];
+
+                if (children.some(child => child?.props?.["data-usetags-toolbar-button"])) {
+                    return res;
+                }
+
+                toolbar.props.children = [...children, button];
+                return res;
+            }
+        );
+    }
+
+    buildToolbarButton() {
+        if (!Button) return null;
+
+        const label = "Tags";
+
+        return React.createElement(
+            Button,
+            {
+                size: Button.Sizes?.NONE || Button.Sizes?.SMALL,
+                look: Button.Looks?.BLANK || Button.Looks?.GHOST,
+                onClick: () => this.openOverviewModal(),
+                className: "usertags-channel-toolbar-button",
+                "data-usetags-toolbar-button": true
+            },
+            label
+        );
     }
 
     checkForChangelog() {
