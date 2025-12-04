@@ -632,8 +632,7 @@ class UserTags {
             .usertags-grid-header {
                 background-color: var(--background-secondary-alt); /* solid header background */
                 font-weight: 600;
-                position: sticky;  /* stick to the top of .usertags-grid */
-                top: 0;
+                position: relative;
                 z-index: 3;        /* above body cells */
             }
             .usertags-grid-header-user {
@@ -1203,6 +1202,59 @@ class UserTags {
             const [excludeTags, setExcludeTags] = React.useState([]);
             const [hoverUserId, setHoverUserId] = React.useState(null);
             const [hoverTag, setHoverTag] = React.useState(null);
+            const rootRef = React.useRef(null);
+
+            React.useEffect(() => {
+                const root = rootRef.current;
+                if (!root) return;
+
+                const gridInner = root.querySelector(".usertags-grid-inner");
+                if (!gridInner) return;
+
+                // All header cells (User + tag headers)
+                const headerCells = Array.from(
+                    gridInner.querySelectorAll(".usertags-grid-header")
+                );
+                if (headerCells.length === 0) return;
+
+                // The BetterDiscord modal body that is actually scrolling
+                const modalBody = root.closest(".bd-modal-body");
+                if (!modalBody) return;
+
+                // Ensure the modal body is the scroll container
+                // (don’t force overflow here; just rely on existing behavior)
+                const headerHeight = headerCells[0].offsetHeight || 0;
+
+                const update = () => {
+                    const gridRect = gridInner.getBoundingClientRect();
+                    const bodyRect = modalBody.getBoundingClientRect();
+
+                    // How far the top of the body has moved past the top of the grid
+                    let offset = bodyRect.top - gridRect.top;
+                    if (offset < 0) offset = 0;
+
+                    // Clamp so the header doesn’t float past the bottom of the grid
+                    const maxOffset = Math.max(0, gridRect.height - headerHeight);
+                    if (offset > maxOffset) offset = maxOffset;
+
+                    const transform = `translateY(${offset}px)`;
+                    headerCells.forEach(el => {
+                        el.style.transform = transform;
+                    });
+                };
+
+                update();
+                modalBody.addEventListener("scroll", update);
+                window.addEventListener("resize", update);
+
+                return () => {
+                    modalBody.removeEventListener("scroll", update);
+                    window.removeEventListener("resize", update);
+                    headerCells.forEach(el => {
+                        el.style.transform = "";
+                    });
+                };
+            }, []);
 
             const data = Data.load(plugin._config.info.name, "UserData") || {};
             const idSet = new Set();
@@ -1626,7 +1678,7 @@ class UserTags {
             };
 
             if (userIds.length === 0 || sortedTags.length === 0) {
-                return React.createElement("div", { className: "usertags-settings" },
+                return React.createElement("div", { className: "usertags-settings", ref: rootRef },
                     React.createElement("h2", null, "UserTags Overview"),
                     React.createElement("p", null, "No tags or users to display yet. Add tags to users by opening their profile and using the Tags section, or create a new tag here."),
                     React.createElement(
@@ -1791,7 +1843,7 @@ class UserTags {
 
             return React.createElement(
                 "div",
-                { className: "usertags-settings" },
+                { className: "usertags-settings", ref: rootRef },
                 React.createElement("h2", null, "UserTags Overview"),
                 React.createElement(
                     "p",
