@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.10.0
+ * @version 1.10.1
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
                 discord_id: "381157302369255424"
             }
         ],
-        version: "1.10.0",
+        version: "1.10.1",
         description: "Add user-localized customizable tags to other users using a searchable table or context menu."
     },
     github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
     github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
     changelog: [
+        {
+            title: "1.10.1",
+            items: [
+                "Scaled the overview grid to fill the available modal space.",
+                "Made the header row and left User column sticky while scrolling."
+            ]
+        },
         {
             title: "1.10.0",
             items: [
@@ -607,8 +614,8 @@ class UserTags {
                 border: 1px solid var(--background-tertiary);
                 border-radius: 4px;
                 flex: 1 1 auto;
-                max-height: 100%;
                 min-height: 0;
+                width: 100%;
                 overflow-x: auto;
                 overflow-y: auto;   /* vertical scroll lives here */
                 position: relative; /* needed for sticky */
@@ -616,7 +623,8 @@ class UserTags {
             .usertags-grid-inner {
                 display: grid;
                 grid-auto-rows: minmax(28px, auto);
-                width: max-content;
+                width: 100%;
+                min-width: max-content;
             }
             .usertags-grid-header,
             .usertags-usercell,
@@ -632,11 +640,13 @@ class UserTags {
             .usertags-grid-header {
                 background-color: var(--background-secondary-alt); /* solid header background */
                 font-weight: 600;
-                position: relative;
+                position: sticky;
+                top: 0;
                 z-index: 3;        /* above body cells */
             }
             .usertags-grid-header-user {
                 position: sticky;
+                top: 0;
                 left: 0;
                 z-index: 4;  /* above other header cells and body cells */
                 background-color: var(--background-secondary-alt); /* ensure corner is solid too */
@@ -822,7 +832,9 @@ class UserTags {
             .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body {
                 max-height: calc(90vh - 120px);
                 display: flex;
+                flex-direction: column;
                 overflow: hidden; /* keep scrolling inside .usertags-grid */
+                min-height: 0;
             }
 
             .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body > .usertags-settings {
@@ -842,7 +854,10 @@ class UserTags {
 
             .bd-modal-root.bd-addon-modal.usertags-toolbar-modal:has(.usertags-settings) .bd-modal-body {
                 max-height: calc(95vh - 120px);
+                display: flex;
+                flex-direction: column;
                 overflow: hidden; /* keep scrolling inside .usertags-grid */
+                min-height: 0;
             }
         `);
 
@@ -1202,70 +1217,6 @@ class UserTags {
             const [excludeTags, setExcludeTags] = React.useState([]);
             const [hoverUserId, setHoverUserId] = React.useState(null);
             const [hoverTag, setHoverTag] = React.useState(null);
-            const rootRef = React.useRef(null);
-
-            React.useEffect(() => {
-                const root = rootRef.current;
-                if (!root) return;
-
-                const gridInner = root.querySelector(".usertags-grid-inner");
-                if (!gridInner) return;
-
-                // All header cells (User + tag headers)
-                const headerCells = Array.from(
-                    gridInner.querySelectorAll(".usertags-grid-header")
-                );
-                if (headerCells.length === 0) return;
-
-                const headerHeight = headerCells[0].offsetHeight || 0;
-
-                // Where (in viewport coordinates) we want the header to "stick".
-                // This is the header's top position when the modal first opens.
-                let pinnedTop = headerCells[0].getBoundingClientRect().top;
-
-                const updatePinnedTop = () => {
-                    const rect = headerCells[0].getBoundingClientRect();
-                    pinnedTop = rect.top;
-                };
-
-                const update = () => {
-                    const gridRect = gridInner.getBoundingClientRect();
-
-                    // How far we need to push the header down so its visual top
-                    // stays at pinnedTop while the grid scrolls past.
-                    let offset = pinnedTop - gridRect.top;
-                    if (offset < 0) offset = 0;
-
-                    // Clamp so the header stops when we reach the bottom of the grid
-                    const maxOffset = Math.max(0, gridRect.height - headerHeight);
-                    if (offset > maxOffset) offset = maxOffset;
-
-                    const transform = `translateY(${offset}px)`;
-                    headerCells.forEach(el => {
-                        el.style.transform = transform;
-                    });
-                };
-
-                // Initial layout
-                updatePinnedTop();
-                update();
-
-                // The real scroll container is the main window / app, so listen to window.
-                window.addEventListener("scroll", update, { passive: true });
-                const onResize = () => {
-                    updatePinnedTop();
-                    update();
-                };
-                window.addEventListener("resize", onResize);
-
-                return () => {
-                    window.removeEventListener("scroll", update);
-                    window.removeEventListener("resize", onResize);
-                    headerCells.forEach(el => {
-                        el.style.transform = "";
-                    });
-                };
-            }, []);
 
             const data = Data.load(plugin._config.info.name, "UserData") || {};
             const idSet = new Set();
@@ -1689,7 +1640,7 @@ class UserTags {
             };
 
             if (userIds.length === 0 || sortedTags.length === 0) {
-                return React.createElement("div", { className: "usertags-settings", ref: rootRef },
+                return React.createElement("div", { className: "usertags-settings" },
                     React.createElement("h2", null, "UserTags Overview"),
                     React.createElement("p", null, "No tags or users to display yet. Add tags to users by opening their profile and using the Tags section, or create a new tag here."),
                     React.createElement(
@@ -1710,12 +1661,11 @@ class UserTags {
             }
 
             // Build grid template columns based on current widths
-            const columnWidths = [
-                colWidths[USER_COL_KEY] || 220,
+            const gridTemplateColumns = [
+                `minmax(${colWidths[USER_COL_KEY] || 220}px, 2fr)`,
                 // default tag width: 40px
-                ...sortedTags.map(tag => colWidths[tag] || 40)
-            ];
-            const gridTemplateColumns = columnWidths.map(w => `${w}px`).join(" ");
+                ...sortedTags.map(tag => `minmax(${colWidths[tag] || 40}px, 1fr)`) 
+            ].join(" ");
 
             const gridChildren = [];
 
@@ -1854,7 +1804,7 @@ class UserTags {
 
             return React.createElement(
                 "div",
-                { className: "usertags-settings", ref: rootRef },
+                { className: "usertags-settings" },
                 React.createElement("h2", null, "UserTags Overview"),
                 React.createElement(
                     "p",
