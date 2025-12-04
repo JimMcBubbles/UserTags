@@ -605,12 +605,12 @@ class UserTags {
             .usertags-grid {
                 border: 1px solid var(--background-tertiary);
                 border-radius: 4px;
-                overflow: hidden;
                 flex: 1 1 auto;
                 max-height: 100%;
                 min-height: 0;
                 overflow-x: auto;
-                overflow-y: auto;
+                overflow-y: auto;   /* vertical scroll lives here */
+                position: relative; /* needed for sticky */
             }
             .usertags-grid-inner {
                 display: grid;
@@ -631,14 +631,14 @@ class UserTags {
             .usertags-grid-header {
                 background-color: var(--background-secondary-alt); /* solid header background */
                 font-weight: 600;
-                position: sticky;
+                position: sticky;  /* stick to the top of .usertags-grid */
                 top: 0;
-                z-index: 3;
+                z-index: 3;        /* above body cells */
             }
             .usertags-grid-header-user {
-                z-index: 4;
-                left: 0;
                 position: sticky;
+                left: 0;
+                z-index: 4;  /* above other header cells and body cells */
                 background-color: var(--background-secondary-alt); /* ensure corner is solid too */
             }
             .usertags-usercell {
