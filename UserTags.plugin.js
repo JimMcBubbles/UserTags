@@ -587,6 +587,7 @@ class UserTags {
                 display: flex;
                 flex-direction: column;
                 height: 100%;
+                min-height: 0;
                 box-sizing: border-box;
             }
             .usertags-settings h2 {
@@ -822,6 +823,7 @@ class UserTags {
             .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body {
                 max-height: calc(90vh - 120px);
                 display: flex;
+                overflow: hidden; /* keep scrolling inside .usertags-grid */
             }
 
             .bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body > .usertags-settings {
@@ -841,6 +843,7 @@ class UserTags {
 
             .bd-modal-root.bd-addon-modal.usertags-toolbar-modal:has(.usertags-settings) .bd-modal-body {
                 max-height: calc(95vh - 120px);
+                overflow: hidden; /* keep scrolling inside .usertags-grid */
             }
         `);
 
