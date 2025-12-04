@@ -1217,26 +1217,23 @@ class UserTags {
                 );
                 if (headerCells.length === 0) return;
 
+                // The BetterDiscord modal body that is actually scrolling
+                const modalBody = root.closest(".bd-modal-body");
+                if (!modalBody) return;
+
+                // Ensure the modal body is the scroll container
+                // (don’t force overflow here; just rely on existing behavior)
                 const headerHeight = headerCells[0].offsetHeight || 0;
-
-                // Where (in viewport coordinates) we want the header to "stick".
-                // This is the header's top position when the modal first opens.
-                let pinnedTop = headerCells[0].getBoundingClientRect().top;
-
-                const updatePinnedTop = () => {
-                    const rect = headerCells[0].getBoundingClientRect();
-                    pinnedTop = rect.top;
-                };
 
                 const update = () => {
                     const gridRect = gridInner.getBoundingClientRect();
+                    const bodyRect = modalBody.getBoundingClientRect();
 
-                    // How far we need to push the header down so its visual top
-                    // stays at pinnedTop while the grid scrolls past.
-                    let offset = pinnedTop - gridRect.top;
+                    // How far the top of the body has moved past the top of the grid
+                    let offset = bodyRect.top - gridRect.top;
                     if (offset < 0) offset = 0;
 
-                    // Clamp so the header stops when we reach the bottom of the grid
+                    // Clamp so the header doesn’t float past the bottom of the grid
                     const maxOffset = Math.max(0, gridRect.height - headerHeight);
                     if (offset > maxOffset) offset = maxOffset;
 
@@ -1246,21 +1243,13 @@ class UserTags {
                     });
                 };
 
-                // Initial layout
-                updatePinnedTop();
                 update();
-
-                // The real scroll container is the main window / app, so listen to window.
-                window.addEventListener("scroll", update, { passive: true });
-                const onResize = () => {
-                    updatePinnedTop();
-                    update();
-                };
-                window.addEventListener("resize", onResize);
+                modalBody.addEventListener("scroll", update);
+                window.addEventListener("resize", update);
 
                 return () => {
-                    window.removeEventListener("scroll", update);
-                    window.removeEventListener("resize", onResize);
+                    modalBody.removeEventListener("scroll", update);
+                    window.removeEventListener("resize", update);
                     headerCells.forEach(el => {
                         el.style.transform = "";
                     });
