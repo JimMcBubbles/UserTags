@@ -688,7 +688,8 @@
         "191804205424443392": {
             "username": "isafemboy",
             "tags": [
-                "IDK"
+                "IDK",
+                "LOC"
             ]
         },
         "192035843043622913": {
@@ -2384,7 +2385,8 @@
         "398015363238985728": {
             "username": "w01fs",
             "tags": [
-                "IDK"
+                "IDK",
+                "LOC"
             ]
         },
         "398444380593192960": {
@@ -2395,7 +2397,8 @@
             "username": ".lex.5",
             "tags": [
                 "LWD",
-                "HTG"
+                "HTG",
+                "LOC"
             ]
         },
         "399784777630220298": {
@@ -3715,7 +3718,8 @@
             "username": "itsnebs5700",
             "tags": [
                 "OLD",
-                "100"
+                "100",
+                "LOC"
             ]
         },
         "796612140059590668": {
@@ -3783,7 +3787,8 @@
         "841745750576726057": {
             "username": ".gold",
             "tags": [
-                "IDK"
+                "NEW",
+                "LOC"
             ]
         },
         "849870019717627934": {
@@ -6162,10 +6167,6 @@
                 "username": "marshcxrpse"
             },
             {
-                "userId": "841745750576726057",
-                "username": ".gold"
-            },
-            {
                 "userId": "849870019717627934",
                 "username": "darkesper7"
             },
@@ -7038,6 +7039,32 @@
                 "username": "puffpastry1923"
             }
         ],
+        "LOC": [
+            {
+                "userId": "191804205424443392",
+                "username": "isafemboy"
+            },
+            {
+                "userId": "398015363238985728",
+                "username": "w01fs"
+            },
+            {
+                "userId": "399383408733716481",
+                "username": ".lex.5"
+            },
+            {
+                "userId": "670326053553700866",
+                "username": "_silvermoon_"
+            },
+            {
+                "userId": "792620096462782475",
+                "username": "itsnebs5700"
+            },
+            {
+                "userId": "841745750576726057",
+                "username": ".gold"
+            }
+        ],
         "zALT": [
             {
                 "userId": "196315114717184000",
@@ -7086,18 +7113,16 @@
                 "username": "nauctustheavali"
             },
             {
+                "userId": "841745750576726057",
+                "username": ".gold"
+            },
+            {
                 "userId": "888758845227286538",
                 "username": "2tata"
             },
             {
                 "userId": "391354925210271744",
                 "username": "klula"
-            }
-        ],
-        "LOC": [
-            {
-                "userId": "670326053553700866",
-                "username": "_silvermoon_"
             }
         ]
     },
