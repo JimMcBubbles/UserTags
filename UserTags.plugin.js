@@ -1192,6 +1192,99 @@ class UserTags {
      */
     renderOverviewPanel() {
         const plugin = this;
+            function tokenizeTagExpr(input) {
+        if (!input) return [];
+        let src = input.trim();
+
+        // Allow #SFW style
+        src = src.replace(/#/g, "");
+
+        // Text operators -> symbolic
+        src = src
+            .replace(/\bNOT\b/gi, " ! ")
+            .replace(/\bAND\b/gi, " & ")
+            .replace(/\bOR\b/gi, " | ");
+
+        const tokens = [];
+        const re = /[A-Za-z0-9_]+|[()!&|]/g;
+        let m;
+        while ((m = re.exec(src)) !== null) {
+            tokens.push(m[0]);
+        }
+        return tokens;
+    }
+
+    function parseTagExpr(input) {
+        const tokens = tokenizeTagExpr(input);
+        if (!tokens.length) throw new Error("Empty expression");
+
+        let pos = 0;
+
+        function parsePrimary() {
+            const tok = tokens[pos];
+            if (!tok) throw new Error("Unexpected end of expression");
+
+            if (tok === "!") {
+                pos++;
+                return { type: "not", child: parsePrimary() };
+            }
+
+            if (tok === "(") {
+                pos++;
+                const node = parseOr();
+                if (tokens[pos] !== ")") throw new Error("Expected ')'");
+                pos++;
+                return node;
+            }
+
+            if (/^[A-Za-z0-9_]+$/.test(tok)) {
+                pos++;
+                return { type: "tag", name: tok };
+            }
+
+            throw new Error("Unexpected token '" + tok + "'");
+        }
+
+        function parseAnd() {
+            let node = parsePrimary();
+            while (tokens[pos] === "&") {
+                pos++;
+                node = { type: "and", left: node, right: parsePrimary() };
+            }
+            return node;
+        }
+
+        function parseOr() {
+            let node = parseAnd();
+            while (tokens[pos] === "|") {
+                pos++;
+                node = { type: "or", left: node, right: parseAnd() };
+            }
+            return node;
+        }
+
+        const ast = parseOr();
+        if (pos !== tokens.length) {
+            throw new Error("Unexpected token '" + tokens[pos] + "'");
+        }
+        return ast;
+    }
+
+    function evalTagExpr(ast, tags) {
+        switch (ast.type) {
+            case "tag":
+                return Array.isArray(tags) && tags.includes(ast.name);
+            case "not":
+                return !evalTagExpr(ast.child, tags);
+            case "and":
+                return evalTagExpr(ast.left, tags) && evalTagExpr(ast.right, tags);
+            case "or":
+                return evalTagExpr(ast.left, tags) || evalTagExpr(ast.right, tags);
+            default:
+                return false;
+        }
+    }
+
 
         function Panel() {
             // Default width for User column so it doesn't start at 0
@@ -1445,12 +1538,14 @@ class UserTags {
                 );
             };
 
-            // Filter handling: special @ / $ modes vs regex
+            // Filter handling: special @ / $ modes vs regex / tag-expr
             let regex = null;
             let regexError = null;
             let serverTerm = null;
             let nameTerm = null;
             let isEmptyTagFilter = false;
+            let tagExprAst = null;
+            let tagExprError = null;
 
             if (filter) {
                 const raw = filter.trim();
@@ -1461,14 +1556,27 @@ class UserTags {
                     const term = raw.slice(1).trim();
                     if (term) nameTerm = term.toLowerCase();
                 } else {
-                    // Special-case "^$" to mean "users with no tags"
-                    if (raw === "^$") {
-                        isEmptyTagFilter = true;
-                    } else {
+                    // Decide whether this looks like a tag expression or a regex
+                    const looksLikeTagExpr =
+                        /[&|()!]/.test(raw) ||
+                        /\b(?:AND|OR|NOT)\b/i.test(raw) ||
+                        raw.includes("#");
+
+                    if (looksLikeTagExpr) {
                         try {
-                            regex = new RegExp(filter, "i");
+                            tagExprAst = parseTagExpr(raw);
                         } catch (e) {
-                            regexError = e.message || "Invalid regex";
+                            tagExprError = e.message || "Invalid tag expression";
+                        }
+                    } else {
+                        if (raw === "^$") {
+                            isEmptyTagFilter = true;
+                        } else {
+                            try {
+                                regex = new RegExp(filter, "i");
+                            } catch (e) {
+                                regexError = e.message || "Invalid regex";
+                            }
                         }
                     }
                 }
@@ -1492,6 +1600,10 @@ class UserTags {
                 // Special "^$" behavior: only users with no tags at all
                 filteredByRegex = users.filter(user =>
                     !user.tags || user.tags.length === 0
+                );
+            } else if (tagExprAst && !tagExprError) {
+                filteredByRegex = users.filter(user =>
+                    evalTagExpr(tagExprAst, user.tags || [])
                 );
             } else if (regex && !regexError) {
                 filteredByRegex = users.filter(user => {
@@ -1880,6 +1992,8 @@ class UserTags {
                         }),
                         regexError
                             ? React.createElement("div", { className: "usertags-filter-error" }, "Invalid regex")
+                        : tagExprError
+                        ? React.createElement("div", { className: "usertags-filter-error" }, "Invalid tag expression")
                             : tagFilterLabel
                                 ? React.createElement("div", { className: "usertags-tagfilter-pill" }, tagFilterLabel)
                                 : serverTerm
