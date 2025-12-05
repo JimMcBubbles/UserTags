@@ -687,7 +687,8 @@
         "187361179247575040": {
             "username": "witte_konijn",
             "tags": [
-                "DNI"
+                "DNI",
+                "SFW"
             ]
         },
         "187441751223566337": {
@@ -1580,7 +1581,8 @@
         "272109755391148032": {
             "username": "_kreig",
             "tags": [
-                "100"
+                "100",
+                "SFW"
             ]
         },
         "272277341277782017": {
@@ -1910,7 +1912,9 @@
         "313367547028176898": {
             "username": "kyunoxic",
             "tags": [
-                "IRL"
+                "IRL",
+                "100",
+                "SFW"
             ]
         },
         "313416874245357588": {
@@ -2585,7 +2589,8 @@
             "username": "innocentchibi",
             "tags": [
                 "IRL",
-                "100"
+                "100",
+                "SFW"
             ]
         },
         "406112495917465601": {
@@ -2633,7 +2638,8 @@
         "415205144528158722": {
             "username": "weed_nose420",
             "tags": [
-                "100"
+                "100",
+                "SFW"
             ]
         },
         "415359530281467906": {
@@ -2939,7 +2945,8 @@
         "474771035195965451": {
             "username": "daffodilly",
             "tags": [
-                "HTG"
+                "HTG",
+                "SFW"
             ]
         },
         "476510340452974592": {
@@ -3703,7 +3710,8 @@
         "670326053553700866": {
             "username": "_silvermoon_",
             "tags": [
-                "AQU"
+                "AQU",
+                "SFW"
             ]
         },
         "671907823264727071": {
@@ -3739,7 +3747,7 @@
         "681195533175619627": {
             "username": "snepking",
             "tags": [
-                "IDK"
+                "NEW"
             ]
         },
         "685316604673916952": {
@@ -4423,6 +4431,10 @@
             {
                 "userId": "300854441840607234",
                 "username": "soundcrunch"
+            },
+            {
+                "userId": "313367547028176898",
+                "username": "kyunoxic"
             },
             {
                 "userId": "328529063482228736",
@@ -7151,10 +7163,6 @@
                 "username": "kukiomi"
             },
             {
-                "userId": "681195533175619627",
-                "username": "snepking"
-            },
-            {
                 "userId": "697993923741876363",
                 "username": "acethefox6591"
             },
@@ -8241,6 +8249,48 @@
                 "username": "hopperbnuy"
             }
         ],
+        "SFW": [
+            {
+                "userId": "187361179247575040",
+                "username": "witte_konijn"
+            },
+            {
+                "userId": "264862702621425664",
+                "username": "morbidoboe"
+            },
+            {
+                "userId": "272109755391148032",
+                "username": "_kreig"
+            },
+            {
+                "userId": "313367547028176898",
+                "username": "kyunoxic"
+            },
+            {
+                "userId": "389471392115982338",
+                "username": "canadianblue"
+            },
+            {
+                "userId": "403512559631728641",
+                "username": "frosty7273"
+            },
+            {
+                "userId": "404233323066556416",
+                "username": "innocentchibi"
+            },
+            {
+                "userId": "415205144528158722",
+                "username": "weed_nose420"
+            },
+            {
+                "userId": "474771035195965451",
+                "username": "daffodilly"
+            },
+            {
+                "userId": "670326053553700866",
+                "username": "_silvermoon_"
+            }
+        ],
         "zALT": [
             {
                 "userId": "196315114717184000",
@@ -8301,6 +8351,10 @@
                 "username": "nauctustheavali"
             },
             {
+                "userId": "681195533175619627",
+                "username": "snepking"
+            },
+            {
                 "userId": "841745750576726057",
                 "username": ".gold"
             },
@@ -8311,20 +8365,6 @@
             {
                 "userId": "391354925210271744",
                 "username": "klula"
-            }
-        ],
-        "SFW": [
-            {
-                "userId": "264862702621425664",
-                "username": "morbidoboe"
-            },
-            {
-                "userId": "389471392115982338",
-                "username": "canadianblue"
-            },
-            {
-                "userId": "403512559631728641",
-                "username": "frosty7273"
             }
         ],
         "MRK": [
