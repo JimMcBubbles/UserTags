@@ -1192,7 +1192,8 @@ class UserTags {
 	 */
 	renderOverviewPanel() {
 		const plugin = this;
-			function tokenizeTagExpr(input) {
+		const Tooltip = BdApi.Components?.Tooltip;
+		function tokenizeTagExpr(input) {
 		if (!input) return [];
 		let src = input.trim();
 
@@ -1862,29 +1863,60 @@ class UserTags {
 					: 0;
 				const headerTitle = `${tag} — ${count} (${percent.toFixed(1)}%)`;
 
-				gridChildren.push(
-					React.createElement(
-						"div",
-						{
-							key: `header-${tag}`,
-							className: headerClass,
-							title: headerTitle,
-							onContextMenu: (e) => openTagContextMenu(e, tag),
-							onMouseEnter: () => setHoverTag(tag),
-							onMouseLeave: () =>
-								setHoverTag(prev => (prev === tag ? null : prev))
-						},
+				const headerInner = React.createElement(
+					"div",
+					{ className: "usertags-header-cell" },
+					React.createElement("span", { className: "usertags-header-label" }, tag),
+					React.createElement("span", {
+						className: "usertags-col-resizer",
+						onMouseDown: (e) => startResize(e, tag)
+					})
+				);
+
+				if (Tooltip) {
+					// Fast Discord-style tooltip
+					gridChildren.push(
+						React.createElement(
+							Tooltip,
+							{ text: headerTitle, position: "top" },
+							({ onMouseEnter, onMouseLeave }) =>
+								React.createElement(
+									"div",
+									{
+										key: `header-${tag}`,
+										className: headerClass,
+										onContextMenu: (e) => openTagContextMenu(e, tag),
+										onMouseEnter: (e) => {
+											onMouseEnter(e);
+											setHoverTag(tag);
+										},
+										onMouseLeave: (e) => {
+											onMouseLeave(e);
+											setHoverTag(prev => (prev === tag ? null : prev));
+										}
+									},
+									headerInner
+								)
+						)
+					);
+				} else {
+					// Fallback to native title if Tooltip isn’t available
+					gridChildren.push(
 						React.createElement(
 							"div",
-							{ className: "usertags-header-cell" },
-							React.createElement("span", { className: "usertags-header-label" }, tag),
-							React.createElement("span", {
-								className: "usertags-col-resizer",
-								onMouseDown: (e) => startResize(e, tag)
-							})
+							{
+								key: `header-${tag}`,
+								className: headerClass,
+								title: headerTitle,
+								onContextMenu: (e) => openTagContextMenu(e, tag),
+								onMouseEnter: () => setHoverTag(tag),
+								onMouseLeave: () =>
+									setHoverTag(prev => (prev === tag ? null : prev))
+							},
+							headerInner
 						)
-					)
-				);
+					);
+				}
 			});
 
 			// Body rows
@@ -1938,6 +1970,7 @@ class UserTags {
 							{
 								key: `row-${user.userId}-tag-${tag}`,
 								className: cellClass,
+								title: tag,
 								onMouseEnter: () => {
 									setHoverUserId(user.userId);
 									setHoverTag(tag);
