@@ -1971,11 +1971,18 @@ class UserTags {
 				React.createElement(
 					"p",
 					null,
-					"Grid view of all friends (plus any tagged non-friends) and which tags they have. ",
-					"Click a cell to toggle a tag for that user. Drag any header edge to resize its column. ",
-					"Right-click a tag header for more options (require/hide/rename/duplicate/delete). Click a user to open their profile. ",
-					"Use the filter box for regex search, @Name for name-only, or $Server for mutual-server-only search ",
-					"(use \\@ / \\$ at the start if you want a literal regex beginning with those symbols)."
+					"Grid of all friends (plus any tagged non-friends) and which tags they have. ",
+					"Click a cell to toggle that tag for a user; drag any header edge to resize its column. ",
+					"Right-click a tag header for more options (require/hide/rename/duplicate/delete). ",
+					"Click a user to open their profile."
+				),
+				React.createElement(
+					"p",
+					null,
+					"Filter box: use regex, @Name for name-only, or $Server for mutual-server-only search. ",
+					"You can also type tag expressions like !TAG_A & (TAG_2 | TAG_3) to combine tags with AND / OR / NOT. ",
+					"Use ^$ to show only users with no tags. ",
+					"Use \\\\@ or \\\\$ at the start if you want a literal @ or $."
 				),
 				React.createElement(
 					"div",
