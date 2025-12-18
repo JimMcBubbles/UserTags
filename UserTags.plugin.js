@@ -174,6 +174,59 @@ function ToolbarComponent({ onClick }) {
 	return button;
 }
 
+let CachedChannelStore = null;
+let CachedMessageStore = null;
+
+function getFriendSince(userId) {
+	const { RelationshipStore } = StoreModules;
+	if (!RelationshipStore || !RelationshipStore.isFriend?.(userId)) return null;
+
+	const rel = RelationshipStore.getRelationship?.(userId);
+	if (!rel) return null;
+
+	return rel.since ?? rel.sinceDate ?? rel.since_at ?? null;
+}
+
+function getLastMessagedAt(userId) {
+	const ChannelStore =
+		CachedChannelStore ||
+		BdApi.Webpack.getModule(m => m?.getDMFromUserId, { searchExports: true });
+	if (ChannelStore && !CachedChannelStore) CachedChannelStore = ChannelStore;
+
+	const MessageStore =
+		CachedMessageStore ||
+		BdApi.Webpack.getModule(m => m?.getMessages && m?.getMessage, { searchExports: true });
+	if (MessageStore && !CachedMessageStore) CachedMessageStore = MessageStore;
+
+	if (!ChannelStore || !MessageStore) return null;
+
+	const dmChannelId = ChannelStore.getDMFromUserId?.(userId);
+	if (!dmChannelId) return null;
+
+	const messagesWrapper = MessageStore.getMessages?.(dmChannelId);
+	if (!messagesWrapper) return null;
+
+	const lastMessage =
+		typeof messagesWrapper.last === "function"
+			? messagesWrapper.last()?.[1] ?? messagesWrapper.last()
+			: null;
+	const mostRecent =
+		(typeof messagesWrapper.getMostRecentMessage === "function" && messagesWrapper.getMostRecentMessage()) ||
+		(typeof messagesWrapper.getLatestMessage === "function" && messagesWrapper.getLatestMessage()) ||
+		(typeof messagesWrapper.getLastMessage === "function" && messagesWrapper.getLastMessage());
+	const fallbackArray = messagesWrapper._array;
+	const message =
+		lastMessage ||
+		mostRecent ||
+		(Array.isArray(fallbackArray) && fallbackArray.length > 0
+			? fallbackArray[fallbackArray.length - 1]
+			: null);
+	if (!message) return null;
+
+	const ts = message.timestamp ?? message.editedTimestamp ?? null;
+	return ts ? +new Date(ts) : null;
+}
+
 // Column key for the user column (used for width state)
 const USER_COL_KEY = "__USER__";
 
@@ -793,6 +846,28 @@ class UserTags {
 				flex: 1 1 auto;
 				min-width: 0;
 			}
+			.usertags-toolbar-right {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-end;
+				gap: 4px;
+			}
+			.usertags-sort-label {
+				font-size: 11px;
+				color: var(--text-muted);
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				white-space: nowrap;
+			}
+			.usertags-sort-select {
+				font-size: 11px;
+				padding: 2px 6px;
+				border-radius: 4px;
+				border: 1px solid var(--background-tertiary);
+				background-color: var(--background-secondary);
+				color: var(--text-normal);
+			}
 
 			.usertags-channel-toolbar-button {
 				margin-left: 6px;
@@ -1292,6 +1367,7 @@ class UserTags {
 			const [colWidths, setColWidths] = React.useState({ [USER_COL_KEY]: 220 });
 			const [version, setVersion] = React.useState(0); // eslint-disable-line no-unused-vars
 			const [filter, setFilter] = React.useState("");
+			const [sortMode, setSortMode] = React.useState("alpha");
 			const [includeTags, setIncludeTags] = React.useState([]);
 			const [excludeTags, setExcludeTags] = React.useState([]);
 			const [hoverUserId, setHoverUserId] = React.useState(null);
@@ -1387,7 +1463,7 @@ class UserTags {
 
 			const userIds = Array.from(idSet);
 
-			const users = userIds.map(userId => {
+			const baseUsers = userIds.map(userId => {
 				const entry = plugin.getOrInitUserEntry(data, userId);
 				const userObj = StoreModules.UserStore.getUser(userId);
 
@@ -1448,11 +1524,12 @@ class UserTags {
 					userId,
 					username,
 					displayName,
+					user: userObj || null,
 					avatarUrl,
 					tags: Array.isArray(entry.tags) ? entry.tags : [],
 					mutualGuildNames
 				};
-			}).sort((a, b) => a.displayName.localeCompare(b.displayName));
+			}).filter(u => !!u);
 
 			// Persist any upgrades
 			plugin.saveUserData(data);
@@ -1585,29 +1662,30 @@ class UserTags {
 
 			// Special case: when the filter is exactly "^$", we don't use a generic regex.
 			// Instead we treat it as "show only users with no tags" (see isEmptyTagFilter logic).
-			let filteredByRegex = users;
+			let visibleUsers = baseUsers;
+			let filteredByRegex = baseUsers;
 			if (serverTerm) {
-				filteredByRegex = users.filter(user =>
+				filteredByRegex = baseUsers.filter(user =>
 					(user.mutualGuildNames || []).some(name =>
 						name.toLowerCase().includes(serverTerm)
 					)
 				);
 			} else if (nameTerm) {
-				filteredByRegex = users.filter(user => {
+				filteredByRegex = baseUsers.filter(user => {
 					const composite = `${user.displayName || ""} ${user.username || ""}`.toLowerCase();
 					return composite.includes(nameTerm);
 				});
 			} else if (isEmptyTagFilter) {
 				// Special "^$" behavior: only users with no tags at all
-				filteredByRegex = users.filter(user =>
+				filteredByRegex = baseUsers.filter(user =>
 					!user.tags || user.tags.length === 0
 				);
 			} else if (tagExprAst && !tagExprError) {
-				filteredByRegex = users.filter(user =>
+				filteredByRegex = baseUsers.filter(user =>
 					evalTagExpr(tagExprAst, user.tags || [])
 				);
 			} else if (regex && !regexError) {
-				filteredByRegex = users.filter(user => {
+				filteredByRegex = baseUsers.filter(user => {
 					const haystacks = [
 						user.displayName || "",
 						user.username || "",
@@ -1622,7 +1700,7 @@ class UserTags {
 			}
 
 			// Tag filters: includeTags (AND) & excludeTags
-			let visibleUsers = filteredByRegex;
+			visibleUsers = filteredByRegex;
 
 			if (includeTags.length > 0) {
 				visibleUsers = visibleUsers.filter(u =>
@@ -1659,10 +1737,67 @@ class UserTags {
 				(sum, u) => sum + (Array.isArray(u.tags) ? u.tags.length : 0),
 				0
 			);
-			const totalAssignments = users.reduce(
+			const totalAssignments = baseUsers.reduce(
 				(sum, u) => sum + (Array.isArray(u.tags) ? u.tags.length : 0),
 				0
 			);
+
+			const friendSinceCache = new Map();
+			const lastMessagedCache = new Map();
+
+			const getCachedFriendSince = (id) => {
+				if (friendSinceCache.has(id)) return friendSinceCache.get(id);
+				const value = getFriendSince(id);
+				friendSinceCache.set(id, value);
+				return value;
+			};
+
+			const getCachedLastMessaged = (id) => {
+				if (lastMessagedCache.has(id)) return lastMessagedCache.get(id);
+				const value = getLastMessagedAt(id);
+				lastMessagedCache.set(id, value);
+				return value;
+			};
+
+			const sortedUsers = [...visibleUsers];
+
+			if (sortMode === "alpha") {
+				sortedUsers.sort((a, b) =>
+					a.displayName.localeCompare(b.displayName)
+				);
+			} else if (sortMode === "friendSince") {
+				sortedUsers.sort((a, b) => {
+					const aSince = getCachedFriendSince(a.user?.id ?? a.userId);
+					const bSince = getCachedFriendSince(b.user?.id ?? b.userId);
+
+					if (aSince == null && bSince == null) {
+						return a.displayName.localeCompare(b.displayName);
+					}
+					if (aSince == null) return 1;
+					if (bSince == null) return -1;
+					if (aSince === bSince) {
+						return a.displayName.localeCompare(b.displayName);
+					}
+					return aSince - bSince;
+				});
+			} else if (sortMode === "lastMessaged") {
+				sortedUsers.sort((a, b) => {
+					const aTs = getCachedLastMessaged(a.user?.id ?? a.userId);
+					const bTs = getCachedLastMessaged(b.user?.id ?? b.userId);
+
+					if (aTs == null && bTs == null) {
+						return a.displayName.localeCompare(b.displayName);
+					}
+					if (aTs == null) return 1;
+					if (bTs == null) return -1;
+					if (aTs === bTs) {
+						return a.displayName.localeCompare(b.displayName);
+					}
+					return bTs - aTs;
+				});
+			}
+
+			const usersToRender = sortedUsers;
 
 			const toggleInclude = (tag) => {
 				setIncludeTags(prev => {
@@ -1814,9 +1949,29 @@ class UserTags {
 							React.createElement("div", { className: "usertags-count" }, "Users: 0 · Tags: 0 · Tag assignments: 0/0")
 						),
 						React.createElement(
-							"button",
-							{ className: "usertags-addtag-btn", onClick: handleAddTagClick },
-							"Add Tag"
+							"div",
+							{ className: "usertags-toolbar-right" },
+							React.createElement(
+								"label",
+								{ className: "usertags-sort-label" },
+								"Sort by:",
+								React.createElement(
+									"select",
+									{
+										className: "usertags-sort-select",
+										value: sortMode,
+										onChange: (e) => setSortMode(e.target.value)
+									},
+									React.createElement("option", { value: "alpha" }, "A–Z (name)"),
+									React.createElement("option", { value: "friendSince" }, "Friends since"),
+									React.createElement("option", { value: "lastMessaged" }, "Last messaged")
+								)
+							),
+							React.createElement(
+								"button",
+								{ className: "usertags-addtag-btn", onClick: handleAddTagClick },
+								"Add Tag"
+							)
 						)
 					)
 				);
@@ -1920,7 +2075,7 @@ class UserTags {
 			});
 
 			// Body rows
-			visibleUsers.forEach(user => {
+			usersToRender.forEach(user => {
 				// User cell
 				const userCellClass =
 					"usertags-usercell" +
@@ -1994,8 +2149,8 @@ class UserTags {
 
 			let summaryText =
 				filter && regexError
-					? `Users: ${visibleUsers.length}/${users.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`
-					: `Users: ${visibleUsers.length}/${users.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`;
+					? `Users: ${visibleUsers.length}/${baseUsers.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`
+					: `Users: ${visibleUsers.length}/${baseUsers.length} · Tags: ${sortedTags.length} · Tag assignments: ${visibleAssignments}/${totalAssignments}`;
 
 			return React.createElement(
 				"div",
@@ -2043,9 +2198,29 @@ class UserTags {
 										: null,
 					),
 					React.createElement(
-						"button",
-						{ className: "usertags-addtag-btn", onClick: handleAddTagClick },
-						"Add Tag"
+						"div",
+						{ className: "usertags-toolbar-right" },
+						React.createElement(
+							"label",
+							{ className: "usertags-sort-label" },
+							"Sort by:",
+							React.createElement(
+								"select",
+								{
+									className: "usertags-sort-select",
+									value: sortMode,
+									onChange: (e) => setSortMode(e.target.value)
+								},
+								React.createElement("option", { value: "alpha" }, "A–Z (name)"),
+								React.createElement("option", { value: "friendSince" }, "Friends since"),
+								React.createElement("option", { value: "lastMessaged" }, "Last messaged")
+							)
+						),
+						React.createElement(
+							"button",
+							{ className: "usertags-addtag-btn", onClick: handleAddTagClick },
+							"Add Tag"
+						)
 					)
 				),
 				React.createElement(
