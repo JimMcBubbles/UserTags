@@ -1684,6 +1684,11 @@ class UserTags {
 				setIncludeTags(prev => prev.filter(t => t !== tag));
 			};
 
+			const clearTagFilter = (tag) => {
+				setIncludeTags(prev => prev.filter(t => t !== tag));
+				setExcludeTags(prev => prev.filter(t => t !== tag));
+			};
+
 			const clearAllTagFilters = () => {
 				setIncludeTags([]);
 				setExcludeTags([]);
@@ -1779,6 +1784,11 @@ class UserTags {
 						action: () => toggleExclude(tag)
 					},
 					{
+						label: "Clear tag filter",
+						disabled: !includeTags.includes(tag) && !excludeTags.includes(tag),
+						action: () => clearTagFilter(tag)
+					},
+					{
 						label: "Clear all tag filters",
 						disabled: includeTags.length === 0 && excludeTags.length === 0,
 						action: () => clearAllTagFilters()
@@ -1796,6 +1806,7 @@ class UserTags {
 						action: () => handleDeleteTag(tag)
 					}
 				];
+
 
 				const menu = BdApi.ContextMenu.buildMenu(items);
 				BdApi.ContextMenu.open(event, menu);
