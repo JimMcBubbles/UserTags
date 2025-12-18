@@ -764,7 +764,9 @@
         },
         "192714074537197578": {
             "username": "omylettuce",
-            "tags": []
+            "tags": [
+                "IRL"
+            ]
         },
         "193674471675133955": {
             "username": "spluffy",
@@ -962,7 +964,9 @@
         },
         "207341803291017217": {
             "username": "atomicbeaver",
-            "tags": []
+            "tags": [
+                "IDR"
+            ]
         },
         "210072231143931914": {
             "username": "bogdan.blazkowiz",
@@ -1378,7 +1382,9 @@
         },
         "252692269952532481": {
             "username": "omnicat",
-            "tags": []
+            "tags": [
+                "AQU"
+            ]
         },
         "253722184319631360": {
             "username": "smoiler",
@@ -1740,8 +1746,6 @@
             "tags": [
                 "DTF",
                 "IRL",
-                "TRY",
-                "CIR",
                 "TOP",
                 "LWD"
             ]
@@ -2902,7 +2906,6 @@
             "tags": [
                 "IRL",
                 "DTF",
-                "DNI",
                 "LWD"
             ]
         },
@@ -4355,7 +4358,9 @@
         },
         "381157302369255424": {
             "username": "jimmcbubbles",
-            "tags": []
+            "tags": [
+                "zALT"
+            ]
         }
     },
     "TagIndex": {
@@ -5995,10 +6000,6 @@
                 "username": "puppyhousewife"
             },
             {
-                "userId": "465066351158099969",
-                "username": "remormoxi"
-            },
-            {
                 "userId": "470049629585539072",
                 "username": ".toostar"
             },
@@ -7361,6 +7362,10 @@
                 "username": "grimhaunting"
             },
             {
+                "userId": "252692269952532481",
+                "username": "omnicat"
+            },
+            {
                 "userId": "319848058957594625",
                 "username": "rook_a.c.s"
             },
@@ -7457,6 +7462,10 @@
             {
                 "userId": "193685198083325953",
                 "username": "narthos"
+            },
+            {
+                "userId": "207341803291017217",
+                "username": "atomicbeaver"
             },
             {
                 "userId": "214844732738764800",
@@ -7647,6 +7656,10 @@
             {
                 "userId": "192449631714541568",
                 "username": "robin66"
+            },
+            {
+                "userId": "192714074537197578",
+                "username": "omylettuce"
             },
             {
                 "userId": "205800996981571584",
@@ -7945,10 +7958,6 @@
             {
                 "userId": "286011668683816960",
                 "username": "itsbiffy"
-            },
-            {
-                "userId": "292800514008023040",
-                "username": "loxachi"
             },
             {
                 "userId": "295993933744570369",
@@ -8327,6 +8336,10 @@
             {
                 "userId": "903947951502655508",
                 "username": "bubblesmcjim6067"
+            },
+            {
+                "userId": "381157302369255424",
+                "username": "jimmcbubbles"
             }
         ],
         "NEW": [
@@ -8374,10 +8387,6 @@
             }
         ],
         "CIR": [
-            {
-                "userId": "292800514008023040",
-                "username": "loxachi"
-            },
             {
                 "userId": "791532292413325362",
                 "username": "serah64"
