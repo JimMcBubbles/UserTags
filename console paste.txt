@@ -1,0 +1,1407 @@
+VM4601 renderer_init:2 The vm module of Node.js is unsupported in Electron's renderer process due to incompatibilities with the Blink rendering engine. Crashes are likely and avoiding the module is highly recommended. This module may be removed in a future release.
+s._load @ VM4601 renderer_init:2
+traceSync @ VM4512 node:diagnostics_channel:322
+wrapModuleLoad @ VM4543 loader:244
+Module.require @ VM4543 loader:1470
+require @ VM4529 helpers:147
+(anonymous) @ VM4606 C:\Users\Jim\AppData\Roaming\BetterDiscord\data\betterdiscord.asar\preload.js:3
+(anonymous) @ VM4606 C:\Users\Jim\AppData\Roaming\BetterDiscord\data\betterdiscord.asar\preload.js:9
+Module._compile @ VM4543 loader:1714
+Module._extensions..js @ VM4543 loader:1848
+Module.load @ VM4543 loader:1448
+Module._load @ VM4543 loader:1270
+c._load @ VM4560 node_init:2
+s._load @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+___electron_webpack_init__ @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+compileForInternalLoader @ VM4489 realm:399
+compileForPublicLoader @ VM4489 realm:338
+loadBuiltinModule @ VM4529 helpers:121
+loadBuiltinWithHooks @ VM4543 loader:1161
+Module._load @ VM4543 loader:1235
+c._load @ VM4560 node_init:2
+traceSync @ VM4512 node:diagnostics_channel:322
+wrapModuleLoad @ VM4543 loader:244
+executeUserEntryPoint @ VM4550 run_main:186
+(anonymous) @ VM4557 run_main_module:36
+1395663324900753449:26 [FAST CONNECT] wss://gateway.discord.gg/?encoding=etf&v=9&compress=zstd-stream, encoding: etf, version: 9
+sentry.b938e8784595516b.js:14 [FAST CONNECT] connected in 296ms
+sentry.b938e8784595516b.js:14 [libdiscore] [experiment_manager] Loaded experiments from cache
+sentry.b938e8784595516b.js:14 [libdiscore] [BlockedDomainsStore] Deserialized 40550 hashes, revision 2294
+sentry.b938e8784595516b.js:14 [KvStore] GuildStore initialized in mode: typescript
+sentry.b938e8784595516b.js:14 [KkvStore] GuildRoleStore initialized in mode: typescript
+VM4736 C:\Users\Jim\AppData\Local\Discord\app-1.0.9219\modules\discord_desktop_core-1\discord_desktop_core\core.asar\app\node_modules\@sentry\utils\cjs\instrument\console.js:38 Initializing voice engine with audio subsystem: experimental
+VM4736 C:\Users\Jim\AppData\Local\Discord\app-1.0.9219\modules\discord_desktop_core-1\discord_desktop_core\core.asar\app\node_modules\@sentry\utils\cjs\instrument\console.js:38 service release channel: stable
+sentry.b938e8784595516b.js:14 [KkvStore] RawGuildEmojiStore initialized in mode: typescript
+sentry.b938e8784595516b.js:14 [KkvStore] StickersPackStore initialized in mode: typescript
+sentry.b938e8784595516b.js:14 [KkvStore] GuildStickersStore initialized in mode: typescript
+sentry.b938e8784595516b.js:14 [DatabaseManager] active user changed (now: 381157302369255424, was: null, was: undefined)
+sentry.b938e8784595516b.js:14 [default] [BUILD INFO] Release Channel: stable, Build Number: 481976, Version Hash: 4da492f9a495ef0234b27cbec62aaef43228defc
+sentry.b938e8784595516b.js:14 [KvStore] NoteStore initialized in mode: typescript
+sentry.b938e8784595516b.js:14 [default] [NATIVE INFO] host 1.0.9219, modules: discord_desktop_core: 1, discord_overlay2: 1, discord_utils: 1, discord_media: 1, discord_modules: 1, discord_desktop_overlay: 1, discord_game_utils: 1, discord_cloudsync: 1, discord_dispatch: 1, discord_voice: 2, discord_krisp: 1, discord_rpc: 1, discord_hook: 1, discord_erlpack: 1, discord_zstd: 1, discord_notifications: 1, discord_spellcheck: 1, build: 73385
+sentry.b938e8784595516b.js:14 [libdiscore] The answer for life the universe and everything is: 42
+sentry.b938e8784595516b.js:14 [Spellchecker] sh is not a valid locale.
+(anonymous) @ sentry.b938e8784595516b.js:14
+u @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+g @ web.d89e6f9ea18541a7.js:12
+v @ web.d89e6f9ea18541a7.js:12
+await in v
+601993 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+239091 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+194359 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+26151 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+808506 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+556296 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+929782 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+846027 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+861687 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+444852 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+959457 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+38618 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+912471 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+857613 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+323716 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+92138 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+750081 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+await in (anonymous)
+650204 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+(anonymous) @ web.d89e6f9ea18541a7.js:22
+(anonymous) @ web.d89e6f9ea18541a7.js:22
+main.js:1 {uYln4: 'g'}
+sentry.b938e8784595516b.js:14 [Spellchecker] Switching to en-US (available)
+sentry.b938e8784595516b.js:14 TypeError: Cannot redefine property: __esModule
+    at Object.defineProperty (<anonymous>)
+    at o.d (<anonymous>:1:389)
+    at __webpack_require__.t (web.d89e6f9ea18541a7.js:22:1495952)
+(anonymous) @ sentry.b938e8784595516b.js:14
+o.d @ VM4643:1
+__webpack_require__.t @ web.d89e6f9ea18541a7.js:22
+Promise.then
+92138 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+750081 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+await in (anonymous)
+650204 @ web.d89e6f9ea18541a7.js:12
+__webpack_require__ @ web.d89e6f9ea18541a7.js:22
+(anonymous) @ web.d89e6f9ea18541a7.js:22
+(anonymous) @ web.d89e6f9ea18541a7.js:22
+sentry.b938e8784595516b.js:14 [BetterDiscord] [DOM.createElement] Usage of the "target" option has been deprecated and will be removed in the next version.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+createElement @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:79
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:85
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:116
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [DOM.createElement] Usage of the "target" option has been deprecated and will be removed in the next version.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+createElement @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:79
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:85
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:116
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [DOM.createElement] Usage of the "target" option has been deprecated and will be removed in the next version.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+createElement @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:79
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:85
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:116
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [DOM.createElement] Usage of the "target" option has been deprecated and will be removed in the next version.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+createElement @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:79
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:85
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:116
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [DOM.createElement] Usage of the "target" option has been deprecated and will be removed in the next version.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+createElement @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:79
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:85
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:116
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [DOM.createElement] Usage of the "target" option has been deprecated and will be removed in the next version.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+createElement @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:64
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:79
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:83
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:85
+(anonymous) @ betterdiscord.js:4
+(anonymous) @ betterdiscord.js:116
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Remote~Require] The "request" module is marked as deprecated. Use BdApi.Net.fetch instead.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:92
+(anonymous) @ betterdiscord.js:153
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Injecting BD Styles
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing AddonStore
+sentry.b938e8784595516b.js:14 [BetterDiscord] [AddonStore] Requesting all addons
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing LocaleManager
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing Settings
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing DOMManager
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing CommandManager
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing Internal InstallCSS
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Waiting for connection...
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Deprecated] Usage of the Buffer global is deprecated. Consider using web standards such as Uint8Array and TextDecoder/TextEncoder.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+get @ betterdiscord.js:92
+(anonymous) @ betterdiscord.js:92
+(anonymous) @ VM4606 C:\Users\Jim\AppData\Roaming\BetterDiscord\data\betterdiscord.asar\preload.js:3
+emit @ VM4505 node:events:531
+endReadableNT @ VM4586 readable:1698
+processTicksAndRejections @ VM4513 task_queues:90
+sentry.b938e8784595516b.js:14 [RPCServer:WSS] Starting on 6463
+sentry.b938e8784595516b.js:14 [RPCServer:IPC] Starting on \\?\pipe\discord-ipc-0
+sentry.b938e8784595516b.js:14 [ConnectionStore] Socket is reconnecting because of starting new session
+sentry.b938e8784595516b.js:14 [GatewaySocket] .connect() called, new state is WILL_RECONNECT
+sentry.b938e8784595516b.js:14 [GatewaySocket] Setting connection state to WILL_RECONNECT
+sentry.b938e8784595516b.js:14 [GatewaySocket] Setting connection state to CONNECTING
+sentry.b938e8784595516b.js:14 [GatewaySocket] [CONNECT] wss://gateway.discord.gg, encoding: etf, version: 9, compression: zstd-stream
+sentry.b938e8784595516b.js:14 [GatewaySocket] [FAST CONNECT] successfully took over websocket, state: {open: true, identify: false, gateway: 'wss://gateway.discord.gg/?encoding=etf&v=9&compress=zstd-stream', messages: 1}
+sentry.b938e8784595516b.js:14 [GatewaySocket] [CONNECTED] wss://gateway.discord.gg/?encoding=etf&v=9&compress=zstd-stream in 1 ms
+sentry.b938e8784595516b.js:14 [ConnectionStore] handleIdentify called {hasToken: true}
+sentry.b938e8784595516b.js:14 [GatewaySocket] Setting connection state to IDENTIFYING
+sentry.b938e8784595516b.js:14 [GatewaySocket] [HELLO] via 
+gateway-prd-arm-us-east1-d-4ltj: 0, heartbeat interval: 41250, took 2 ms
+sentry.b938e8784595516b.js:14 [GatewaySocket] [IDENTIFY]
+sentry.b938e8784595516b.js:14 [GatewaySocket] [READY] took 2638ms, as fee250fb7f7f2de45c56d7a000ce145d
+sentry.b938e8784595516b.js:14 [GatewaySocket] 
+gateway-prd-arm-us-east1-d-4ltj: 1131.458
+|  id_created: 0.484
+|  session_lookup_time: 0.274
+|  session_lookup_finished: 0.011
+|  discord-sessions-prd-2-201: 1041.946
+|  |  start_session: 856.562
+|  |  |  discord-api-rpc-b77c97fb5-56tv2: 683.331
+|  |  |  |  get_user: 9.225
+|  |  |  |  get_guilds: 101.807
+|  |  |  |  user_settings_proto: 2.93
+|  |  |  |  relationships: 322.795
+|  |  |  |  game_relationships: 0.005
+|  |  |  |  friend_suggestion: 0.036
+|  |  |  |  connections: 0.187
+|  |  |  |  serialized_read_states: 0.007
+|  |  |  |  send_scheduled_deletion_message: 0.003
+|  |  |  |  sanitize_premium_perks: 0.002
+|  |  |  |  guild_join_requests: 0.002
+|  |  |  |  user_guild_settings: 0.002
+|  |  |  |  serialized_private_channels: 0.003
+|  |  |  |  user_segments: 0.017
+|  |  |  |  game_invites: 0.003
+|  |  |  |  blocker_ids: 0.003
+|  |  |  |  affine_user_ids: 76.497
+|  |  |  |  experiments: 148.247
+|  |  |  |  required_action: 0.009
+|  |  |  |  authorized_ip_coro: 0.004
+|  |  |  |  pending_payments: 0.871
+|  |  |  |  apex_experiments: 46.888
+|  |  |  |  user_activities: 0.007
+|  |  |  |  played_application_ids: 0.004
+|  |  |  |  linked_users: 0.01
+|  |  starting_guild_connect: 0.387
+|  |  presence_started: 0.423
+|  |  guilds_started: 7.362
+|  |  lobbies_started: 0.001
+|  |  guilds_connect: 68.412
+|  |  presence_connect: 0.001
+|  |  connect_finished: 71.5
+|  |  build_ready: 61.5
+|  |  clean_ready: 0.003
+|  |  optimize_ready: 43.515
+|  |  split_ready: 0.684
+sentry.b938e8784595516b.js:14 [GatewaySocket] Setting connection state to SESSION_ESTABLISHED
+sentry.b938e8784595516b.js:14 [GatewaySocket] Updating resume url to wss://gateway-us-east1-d.discord.gg
+web.d89e6f9ea18541a7.js:12 [Violation] 'message' handler took 1188ms
+sentry.b938e8784595516b.js:14 [Flux] Dispatching CONNECTION_OPEN
+sentry.b938e8784595516b.js:14 [AuthenticationStore] handleConnectionOpen called {tokenManagerHasToken: true, storageHasToken: true}
+sentry.b938e8784595516b.js:14 [DatabaseManager] removing database (user: 381157302369255424, database: undefined)
+sentry.b938e8784595516b.js:14 [DatabaseManager] added database (381157302369255424 → null)
+sentry.b938e8784595516b.js:14 [NativeDispatchUtils] Tried getting Dispatch instance before instantiated
+(anonymous) @ sentry.b938e8784595516b.js:14
+u @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+g @ web.d89e6f9ea18541a7.js:12
+setCredentials @ web.d89e6f9ea18541a7.js:12
+Y @ web.d89e6f9ea18541a7.js:12
+z @ web.d89e6f9ea18541a7.js:12
+DispatchManagerStore_CONNECTION_OPEN @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+r @ web.d89e6f9ea18541a7.js:12
+_dispatch @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+log @ web.d89e6f9ea18541a7.js:12
+_dispatchWithLogging @ web.d89e6f9ea18541a7.js:12
+_dispatchWithDevtools @ web.d89e6f9ea18541a7.js:12
+dispatch_CONNECTION_OPEN @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+flushWaitQueue @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+dispatch @ web.d89e6f9ea18541a7.js:12
+q @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+time @ web.d89e6f9ea18541a7.js:12
+measure @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+batched @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+time @ web.d89e6f9ea18541a7.js:12
+measure @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+dispatchOne @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+batched @ web.d89e6f9ea18541a7.js:12
+dispatchMultiple @ web.d89e6f9ea18541a7.js:12
+flush @ web.d89e6f9ea18541a7.js:12
+scheduleFlush @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+Promise.then
+maybePreload @ web.d89e6f9ea18541a7.js:12
+receiveDispatch @ web.d89e6f9ea18541a7.js:12
+_handleDispatch @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+feed @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+VM4736 C:\Users\Jim\AppData\Local\Discord\app-1.0.9219\modules\discord_desktop_core-1\discord_desktop_core\core.asar\app\node_modules\@sentry\utils\cjs\instrument\console.js:38 Deferring audio subsystem switch to experimental until next restart.
+sentry.b938e8784595516b.js:14 [Spotify] WS Connecting
+sentry.b938e8784595516b.js:14 [Spotify] Added account: 22i4siep4znptwjchde4zxlqq
+sentry.b938e8784595516b.js:14 [OverlayV3NativeModuleStore] Maybe Enable Overlay
+sentry.b938e8784595516b.js:14 [OverlayV3NativeModule] Loading Out of Process Overlay Module
+sentry.b938e8784595516b.js:14 [OverlayRenderStore] setOverlayEnabled: supported {newLegacyEnabled: true, newOopEnabled: true}
+sentry.b938e8784595516b.js:14 [OverlayRenderStore] setOverlayEnabled {newOopEnabled: true, newLegacyEnabled: true}
+sentry.b938e8784595516b.js:14 [MessageActionCreators] Fetching messages for 1395663324900753449 between undefined and undefined. jump={"jumpType":"ANIMATED"}
+sentry.b938e8784595516b.js:14 [Flux] Slow dispatch on CONNECTION_OPEN: 285.89999997615814ms
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing FloatingWindows
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing Toasts
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing Builtins
+sentry.b938e8784595516b.js:14 [BetterDiscord] [AddonStore] Enabled
+sentry.b938e8784595516b.js:14 [BetterDiscord] [BDContextMenu] Enabled
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Custom CSS] Enabled
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Custom CSS] Starting to watch content.
+sentry.b938e8784595516b.js:14 [BetterDiscord] [DevTools] Enabled
+sentry.b938e8784595516b.js:14 [BetterDiscord] [InspectElementHotkey] Enabled
+sentry.b938e8784595516b.js:14 [BetterDiscord] [DisableMediaKeys] Enabled
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Recovery] Enabled
+sentry.b938e8784595516b.js:14 [BetterDiscord] [RemoveMinimumSize] Enabled
+sentry.b938e8784595516b.js:14 [BetterDiscord] [ThemeAttributes] Enabled
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Loading Plugins
+sentry.b938e8784595516b.js:14 [BDFDB] (v4.4.2) Loading Library
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Remote~Require] The "request" module is marked as deprecated. Use BdApi.Net.fetch instead.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:92
+./src/modules/pluginupdater.js @ 0PluginLibrary.plugin.js:1725
+__webpack_require__ @ 0PluginLibrary.plugin.js:6076
+./src/structs/plugin.js @ 0PluginLibrary.plugin.js:3589
+__webpack_require__ @ 0PluginLibrary.plugin.js:6076
+./src/structs/structs.js @ 0PluginLibrary.plugin.js:3824
+__webpack_require__ @ 0PluginLibrary.plugin.js:6076
+./src/modules/domtools.js @ 0PluginLibrary.plugin.js:660
+__webpack_require__ @ 0PluginLibrary.plugin.js:6076
+./src/modules/modules.js @ 0PluginLibrary.plugin.js:1571
+__webpack_require__ @ 0PluginLibrary.plugin.js:6076
+eval @ 0PluginLibrary.plugin.js:6123
+eval @ 0PluginLibrary.plugin.js:6227
+eval @ 0PluginLibrary.plugin.js:6230
+requireAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Remote~Require] The "https" module is marked as deprecated. Use BdApi.Net.fetch instead.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:92
+buildPlugin @ 1XenoLib.plugin.js:416
+eval @ 1XenoLib.plugin.js:3004
+eval @ 1XenoLib.plugin.js:3005
+requireAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [WebpackModules~getModule] Module filter threw an exception. TypeError: o.toString is not a function
+    at betterdiscord.js:6:39409
+    at betterdiscord.js:6:40853
+    at H (betterdiscord.js:6:41479)
+    at Object.getModule (betterdiscord.js:154:15702)
+    at Object.getByRegex (betterdiscord.js:154:16963)
+    at buildPlugin (1XenoLib.plugin.js:1151:44)
+    at eval (1XenoLib.plugin.js:3004:7)
+    at eval (1XenoLib.plugin.js:3005:3)
+    at Zt.requireAddon (betterdiscord.js:92:135)
+    at Zt.loadAddon (betterdiscord.js:85:846)
+    at Zt.loadAddon (betterdiscord.js:91:860)
+    at Zt.loadAllAddons (betterdiscord.js:85:3953)
+    at Zt.initialize (betterdiscord.js:83:22742)
+    at Zt.initialize (betterdiscord.js:91:484)
+    at Object.startup (betterdiscord.js:154:1976) {module: {…}, filter: ƒ}
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:6
+H @ betterdiscord.js:6
+getModule @ betterdiscord.js:154
+getByRegex @ betterdiscord.js:154
+buildPlugin @ 1XenoLib.plugin.js:1151
+eval @ 1XenoLib.plugin.js:3004
+eval @ 1XenoLib.plugin.js:3005
+requireAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [XenoLib] Loaded in 1315ms
+sentry.b938e8784595516b.js:14 [BetterDiscord] [WebpackModules~getModule] Module filter threw an exception. TypeError: Cannot read properties of undefined (reading 'toString')
+    at eval (APlatformIndicators.plugin.js:666:67)
+    at Array.some (<anonymous>)
+    at betterdiscord.js:6:43415
+    at betterdiscord.js:6:40853
+    at H (betterdiscord.js:6:41479)
+    at At (betterdiscord.js:6:43393)
+    at At.next (<anonymous>)
+    at PlatformIndicators.patchDMList (APlatformIndicators.plugin.js:666:16)
+    at PlatformIndicators.start (APlatformIndicators.plugin.js:657:14)
+    at Zt.startPlugin (betterdiscord.js:92:578)
+    at Zt.startAddon (betterdiscord.js:92:377)
+    at Zt.loadAddon (betterdiscord.js:85:1241)
+    at Zt.loadAddon (betterdiscord.js:91:860)
+    at Zt.loadAllAddons (betterdiscord.js:85:3953)
+    at Zt.initialize (betterdiscord.js:83:22742)
+    at Zt.initialize (betterdiscord.js:91:484)
+    at Object.startup (betterdiscord.js:154:1976) {module: {…}, filter: ƒ}
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:6
+H @ betterdiscord.js:6
+At @ betterdiscord.js:6
+patchDMList @ APlatformIndicators.plugin.js:666
+start @ APlatformIndicators.plugin.js:657
+startPlugin @ betterdiscord.js:92
+startAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Remote~Require] The "https" module is marked as deprecated. Use BdApi.Net.fetch instead.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:92
+eval @ MessageLoggerV2.plugin.js:1066
+automaticallyUpdate @ MessageLoggerV2.plugin.js:1065
+initialize @ MessageLoggerV2.plugin.js:268
+onLoaded @ MessageLoggerV2.plugin.js:65
+start @ MessageLoggerV2.plugin.js:117
+startPlugin @ betterdiscord.js:92
+startAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Remote~Require] The "request" module is marked as deprecated. Use BdApi.Net.fetch instead.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:92
+initialize @ MessageLoggerV2.plugin.js:287
+onLoaded @ MessageLoggerV2.plugin.js:65
+start @ MessageLoggerV2.plugin.js:117
+startPlugin @ betterdiscord.js:92
+startAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [MessageActionCreators] Fetching messages for 1395663324900753449 between undefined and undefined. jump=undefined
+sentry.b938e8784595516b.js:14 [Tooltip] Side bottom does not exist.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ 0PluginLibrary.plugin.js:1530
+err @ 0PluginLibrary.plugin.js:1486
+Tooltip @ 0PluginLibrary.plugin.js:5879
+initialize @ MessageLoggerV2.plugin.js:969
+onLoaded @ MessageLoggerV2.plugin.js:65
+start @ MessageLoggerV2.plugin.js:117
+startPlugin @ betterdiscord.js:92
+startAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [WebpackModules~getModule] Module filter threw an exception. TypeError: Cannot read properties of undefined (reading 'minHeight')
+    at eval (NoMosaic.plugin.js:213:61)
+    at betterdiscord.js:6:40853
+    at H (betterdiscord.js:6:41283)
+    at Object.getModule (betterdiscord.js:154:15702)
+    at NoMosaic.start (NoMosaic.plugin.js:213:43)
+    at Zt.startPlugin (betterdiscord.js:92:578)
+    at Zt.startAddon (betterdiscord.js:92:377)
+    at Zt.loadAddon (betterdiscord.js:85:1241)
+    at Zt.loadAddon (betterdiscord.js:91:860)
+    at Zt.loadAllAddons (betterdiscord.js:85:3953)
+    at Zt.initialize (betterdiscord.js:83:22742)
+    at Zt.initialize (betterdiscord.js:91:484)
+    at Object.startup (betterdiscord.js:154:1976) {module: {…}, filter: ƒ}
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:6
+H @ betterdiscord.js:6
+getModule @ betterdiscord.js:154
+start @ NoMosaic.plugin.js:213
+startPlugin @ betterdiscord.js:92
+startAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [PermissionsViewer] version 0.3.1 has started.
+sentry.b938e8784595516b.js:14 [RemovedConnectionAlerts] version 0.9.4 has started.
+sentry.b938e8784595516b.js:14 [RoleMembers] version 0.1.25 has started.
+sentry.b938e8784595516b.js:14  SHC  LOG  All variables found. 
+
+(betterdiscord://plugins/ShowHiddenChannels.plugin.js:1143:9)
+sentry.b938e8784595516b.js:14 [BetterDiscord] [WebpackModules~getModule] Module filter threw an exception. TypeError: Cannot read properties of undefined (reading 'USER_AFFINITIES_V2')
+    at eval (UserAffinities.plugin.js:153:66)
+    at betterdiscord.js:6:40853
+    at H (betterdiscord.js:6:41283)
+    at Object.getModule (betterdiscord.js:154:15702)
+    at eval (UserAffinities.plugin.js:153:47)
+    at Zt.requireAddon (betterdiscord.js:92:135)
+    at Zt.loadAddon (betterdiscord.js:85:846)
+    at Zt.loadAddon (betterdiscord.js:91:860)
+    at Zt.loadAllAddons (betterdiscord.js:85:3953)
+    at Zt.initialize (betterdiscord.js:83:22742)
+    at Zt.initialize (betterdiscord.js:91:484)
+    at Object.startup (betterdiscord.js:154:1976) {module: {…}, filter: ƒ}
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:6
+H @ betterdiscord.js:6
+getModule @ betterdiscord.js:154
+eval @ UserAffinities.plugin.js:153
+requireAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [UserTags] Could not find UserProfileModuleFull – full profile tags disabled.
+(anonymous) @ sentry.b938e8784595516b.js:14
+start @ UserTags.plugin.js:1260
+startPlugin @ betterdiscord.js:92
+startAddon @ betterdiscord.js:92
+loadAddon @ betterdiscord.js:85
+loadAddon @ betterdiscord.js:91
+loadAllAddons @ betterdiscord.js:85
+initialize @ betterdiscord.js:83
+initialize @ betterdiscord.js:91
+startup @ betterdiscord.js:154
+await in startup
+(anonymous) @ betterdiscord.js:156
+(anonymous) @ betterdiscord.js:163
+(anonymous) @ VM4601 renderer_init:2
+(anonymous) @ VM4601 renderer_init:2
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:14 [BetterDiscord] [PluginManager] Starting to watch plugin addons.
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Loading Themes
+sentry.b938e8784595516b.js:14 [BetterDiscord] [ThemeManager] Starting to watch theme addons.
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Initializing Updater
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Removing Loading Icon
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Startup] Collecting Startup Errors
+web.d89e6f9ea18541a7.js:12 [Violation] 'message' handler took 850ms
+[Violation] Forced reflow while executing JavaScript took 95ms
+[Violation] Forced reflow while executing JavaScript took 63ms
+sentry.b938e8784595516b.js:14 [OverlayV3NativeModule] Native module callbacks setup
+sentry.b938e8784595516b.js:14 [OverlayV3NativeModule] OverlayV3 Module Loaded
+sentry.b938e8784595516b.js:14 [MessageActionCreators] Fetched 44 messages for 1395663324900753449 isBefore:false isAfter:false
+sentry.b938e8784595516b.js:14 [ChannelMessages] loadComplete: resetting state for channelId=1395663324900753449, sending.length=0
+sentry.b938e8784595516b.js:14 [MessageActionCreators] Fetched 44 messages for 1395663324900753449 isBefore:false isAfter:false
+sentry.b938e8784595516b.js:14 [ChannelMessages] loadComplete: resetting state for channelId=1395663324900753449, sending.length=0
+web.d89e6f9ea18541a7.js:12 [Violation] 'selectionchange' handler took 696ms
+[Violation] Forced reflow while executing JavaScript took 40ms
+sentry.b938e8784595516b.js:14 [GatewaySocket] [READY_SUPPLEMENTAL] took 15049ms
+sentry.b938e8784595516b.js:14 [GatewaySocket] Setting connection state to SESSION_ESTABLISHED
+1395663324900753449:1 The resource https://discord.com/assets/189422196a4f8b53.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/ce3b8055f5114434.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/cb2006dbced0e246.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/7a6a566c2e88a35d.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/e52f0cba712e2fb4.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/dd24010f3cf7def7.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+sentry.b938e8784595516b.js:14 [OverlayRenderStore] Retracking 0 games (0 already tracked)
+sentry.b938e8784595516b.js:14 [OverlayRenderStore] Retracked 0 games
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Remote~Require] The "https" module is marked as deprecated. Use BdApi.Net.fetch instead.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+(anonymous) @ betterdiscord.js:92
+eval @ 1XenoLib.plugin.js:2714
+s @ sentry.b938e8784595516b.js:1
+sentry.b938e8784595516b.js:14 [ReadStateStore] Deleting ReadState 1429849890158280814 0 {remote: true, persisted: true, channelMissing: true, isOld: true, validType: false, …}
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Deprecated] Usage of the Buffer global is deprecated. Consider using web standards such as Uint8Array and TextDecoder/TextEncoder.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+get @ betterdiscord.js:92
+(anonymous) @ betterdiscord.js:92
+(anonymous) @ VM4606 C:\Users\Jim\AppData\Roaming\BetterDiscord\data\betterdiscord.asar\preload.js:3
+emit @ VM4505 node:events:531
+endReadableNT @ VM4586 readable:1698
+processTicksAndRejections @ VM4513 task_queues:90
+sentry.b938e8784595516b.js:1 [Violation] 'setTimeout' handler took 64ms
+sentry.b938e8784595516b.js:14 [Spotify] WS Connected
+sentry.b938e8784595516b.js:14  SHC  LOG  No updates found. 
+
+(betterdiscord://plugins/ShowHiddenChannels.plugin.js:1385:19)
+sentry.b938e8784595516b.js:14 Requested message VSgOVg does not have a value in the requested locale en-US nor the default locale en-US
+(anonymous) @ sentry.b938e8784595516b.js:14
+get @ web.d89e6f9ea18541a7.js:1
+(anonymous) @ web.d89e6f9ea18541a7.js:1
+(anonymous) @ web.d89e6f9ea18541a7.js:1
+eval @ 0BDFDB.plugin.js:4618
+eval @ 0BDFDB.plugin.js:4618
+loadLibrary @ 0BDFDB.plugin.js:4618
+parseData @ 0BDFDB.plugin.js:1208
+parseCSS @ 0BDFDB.plugin.js:1169
+requestLibraryData @ 0BDFDB.plugin.js:1213
+eval @ 0BDFDB.plugin.js:1159
+eval @ 0BDFDB.plugin.js:224
+sentry.b938e8784595516b.js:14 Requested message /7xJCA does not have a value in the requested locale en-US nor the default locale en-US
+(anonymous) @ sentry.b938e8784595516b.js:14
+get @ web.d89e6f9ea18541a7.js:1
+(anonymous) @ web.d89e6f9ea18541a7.js:1
+(anonymous) @ web.d89e6f9ea18541a7.js:1
+eval @ 0BDFDB.plugin.js:4618
+eval @ 0BDFDB.plugin.js:4618
+loadLibrary @ 0BDFDB.plugin.js:4618
+parseData @ 0BDFDB.plugin.js:1208
+parseCSS @ 0BDFDB.plugin.js:1169
+requestLibraryData @ 0BDFDB.plugin.js:1213
+eval @ 0BDFDB.plugin.js:1159
+eval @ 0BDFDB.plugin.js:224
+sentry.b938e8784595516b.js:14 [BDFDB] (v4.4.2) Finished loading Library
+sentry.b938e8784595516b.js:14 [BetterFriendList] (v1.6.6) has been started
+sentry.b938e8784595516b.js:14 [CharCounter] (v1.7.1) has been started
+sentry.b938e8784595516b.js:14 [FriendNotifications] (v2.1.4) has been started
+sentry.b938e8784595516b.js:14 [GameActivityToggle] (v1.3.8) has been started
+sentry.b938e8784595516b.js:14 [ImageUtilities] (v5.6.5) has been started
+sentry.b938e8784595516b.js:14 [LastMessageDate] (v1.5.4) has been started
+sentry.b938e8784595516b.js:14 [NotificationSounds] (v4.0.5) has been started
+sentry.b938e8784595516b.js:14 [ServerCounter] (v1.1.1) has been started
+sentry.b938e8784595516b.js:14 [SplitLargeMessages] (v1.8.7) has been started
+sentry.b938e8784595516b.js:14 [StaffTag] (v1.7.0) has been started
+sentry.b938e8784595516b.js:1 [Violation] 'mouseover' handler took 242ms
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Deprecated] Usage of the Buffer global is deprecated. Consider using web standards such as Uint8Array and TextDecoder/TextEncoder.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+get @ betterdiscord.js:92
+(anonymous) @ betterdiscord.js:92
+(anonymous) @ VM4606 C:\Users\Jim\AppData\Roaming\BetterDiscord\data\betterdiscord.asar\preload.js:3
+emit @ VM4505 node:events:531
+endReadableNT @ VM4586 readable:1698
+processTicksAndRejections @ VM4513 task_queues:90
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Deprecated] Usage of the Buffer global is deprecated. Consider using web standards such as Uint8Array and TextDecoder/TextEncoder.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+get @ betterdiscord.js:92
+(anonymous) @ betterdiscord.js:92
+(anonymous) @ VM4606 C:\Users\Jim\AppData\Roaming\BetterDiscord\data\betterdiscord.asar\preload.js:3
+emit @ VM4505 node:events:531
+endReadableNT @ VM4586 readable:1698
+processTicksAndRejections @ VM4513 task_queues:90
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Deprecated] Usage of the Buffer global is deprecated. Consider using web standards such as Uint8Array and TextDecoder/TextEncoder.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+get @ betterdiscord.js:92
+(anonymous) @ betterdiscord.js:92
+(anonymous) @ VM4606 C:\Users\Jim\AppData\Roaming\BetterDiscord\data\betterdiscord.asar\preload.js:3
+emit @ VM4505 node:events:531
+endReadableNT @ VM4586 readable:1698
+processTicksAndRejections @ VM4513 task_queues:90
+sentry.b938e8784595516b.js:14 [BetterDiscord] [Deprecated] Usage of the Buffer global is deprecated. Consider using web standards such as Uint8Array and TextDecoder/TextEncoder.
+(anonymous) @ sentry.b938e8784595516b.js:14
+_log @ betterdiscord.js:6
+warn @ betterdiscord.js:6
+get @ betterdiscord.js:92
+(anonymous) @ betterdiscord.js:92
+(anonymous) @ VM4606 C:\Users\Jim\AppData\Roaming\BetterDiscord\data\betterdiscord.asar\preload.js:3
+emit @ VM4505 node:events:531
+endReadableNT @ VM4586 readable:1698
+processTicksAndRejections @ VM4513 task_queues:90
+sentry.b938e8784595516b.js:14 [Spotify] Devices updated for 22i4siep4znptwjchde4zxlqq: [{…}]
+sentry.b938e8784595516b.js:14 [Spotify] Profile updated for 22i4siep4znptwjchde4zxlqq: isPremium = true
+sentry.b938e8784595516b.js:14 [OverlayKeybindExperimentManager] Experiments initializing...
+sentry.b938e8784595516b.js:14 [OverlayKeybindExperimentManager] Experiments initialized
+web.d89e6f9ea18541a7.js:12 [Violation] 'message' handler took 3775ms
+[Violation] Forced reflow while executing JavaScript took 154ms
+sentry.b938e8784595516b.js:14 [SystemServiceNativeUtils] input-service initialized.
+sentry.b938e8784595516b.js:14 [libdiscore] [Cache] Set cache for key: experiments_snapshot
+sentry.b938e8784595516b.js:14 [MessageActionCreators] Fetching messages for 1036743768772198501 between undefined and undefined. jump=undefined
+sentry.b938e8784595516b.js:1 [Violation] 'setTimeout' handler took 70ms
+web.d89e6f9ea18541a7.js:12 [Violation] 'requestIdleCallback' handler took 92ms
+web.d89e6f9ea18541a7.js:12 [Violation] 'message' handler took 976ms
+[Violation] Forced reflow while executing JavaScript took 46ms
+sentry.b938e8784595516b.js:14 [MessageActionCreators] Fetched 50 messages for 1036743768772198501 isBefore:false isAfter:false
+sentry.b938e8784595516b.js:14 [ChannelMessages] loadComplete: resetting state for channelId=1036743768772198501, sending.length=0
+sentry.b938e8784595516b.js:1  GET https://discord.com/assets/version.stable.json?_=5887197 404 (Not Found)
+(anonymous) @ sentry.b938e8784595516b.js:1
+apply @ sentry.b938e8784595516b.js:17
+C._end @ web.d89e6f9ea18541a7.js:12
+C.end @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+l.then @ web.d89e6f9ea18541a7.js:12
+E @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+S @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ web.d89e6f9ea18541a7.js:12
+(anonymous) @ VM4666 C:\Users\Jim\AppData\Local\Discord\app-1.0.9219\modules\discord_desktop_core-1\discord_desktop_core\core.asar\app\discord_native\renderer\ipc.js:20
+emit @ VM4505 node:events:519
+onMessage @ VM4601 renderer_init:2
+sentry.b938e8784595516b.js:1 [Violation] 'setTimeout' handler took 72ms
+sentry.b938e8784595516b.js:14 [Flux] Slow dispatch on GAMES_DATABASE_UPDATE: 438.10000002384186ms
+web.d89e6f9ea18541a7.js:12 [Violation] 'requestIdleCallback' handler took 90ms
+web.d89e6f9ea18541a7.js:12 [Violation] 'focus' handler took 270ms
+[Violation] Forced reflow while executing JavaScript took 50ms
+sentry.b938e8784595516b.js:14 [libdiscore] [NETWORK] Sending GET request to https://cdn.discordapp.com/bad-domains/current_revision.txt
+sentry.b938e8784595516b.js:14 [libdiscore] [NETWORK] Completed GET request to https://cdn.discordapp.com/bad-domains/current_revision.txt with status: 200
+sentry.b938e8784595516b.js:14 [libdiscore] [BlockedDomainsStore] Fetching delta between revisions 2294 -> 2298
+sentry.b938e8784595516b.js:14 [libdiscore] [NETWORK] Sending GET request to https://discord.com/bad-hash-delta
+sentry.b938e8784595516b.js:14 [libdiscore] [NETWORK] Completed GET request to https://discord.com/bad-hash-delta with status: 200
+sentry.b938e8784595516b.js:14 [libdiscore] [BlockedDomainsStore] Adding 8 hashes, removing 0 hashes
+sentry.b938e8784595516b.js:14 [libdiscore] [Cache] Set cache for key: blocked_domains_state
+sentry.b938e8784595516b.js:14 [libdiscore] [BlockedDomainsStore] Successfully fetched blocked domains
+web.d89e6f9ea18541a7.js:12 [Violation] 'click' handler took 569ms
+[Violation] Forced reflow while executing JavaScript took 31ms
+sentry.b938e8784595516b.js:14 [RTCLatencyTestManager] RTC region latency test completed, ranked regions are:  (5) ['atlanta', 'us-east', 'newark', 'us-south', 'us-central']
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '71371035299028992', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '71371035299028992', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '71371035299028992'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '71371035299028992', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '49336749767266304', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '49336749767266304', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '49336749767266304'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '49336749767266304', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '81412254964125696', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '81412254964125696', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '81412254964125696'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '81412254964125696', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '87401432378011648', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '87401432378011648', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '87401432378011648'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '87401432378011648', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '92074349112070144', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '92074349112070144', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '92074349112070144'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '92074349112070144', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '95899799483609088', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '95899799483609088', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '95899799483609088'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '95899799483609088', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '96750760775135232', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '96750760775135232', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '96750760775135232'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '96750760775135232', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '100107945139765248', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '100107945139765248', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '100107945139765248'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '100107945139765248', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '101380068139356160', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '101380068139356160', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '101380068139356160'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '101380068139356160', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '101853987459842048', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '101853987459842048', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '101853987459842048'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '101853987459842048', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '102181512929083392', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '102181512929083392', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '102181512929083392'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '102181512929083392', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '102602670048567296', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '102602670048567296', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '102602670048567296'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '102602670048567296', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '105865322409500672', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '105865322409500672', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '105865322409500672'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '105865322409500672', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '106974739821543424', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '106974739821543424', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '106974739821543424'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '106974739821543424', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '107861029823725568', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '107861029823725568', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '107861029823725568'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '107861029823725568', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '108151437392912384', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '108151437392912384', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '108151437392912384'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '108151437392912384', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '108444452632137728', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '108444452632137728', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '108444452632137728'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '108444452632137728', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '109898384797622272', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '109898384797622272', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '109898384797622272'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '109898384797622272', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '110028801966104576', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '110028801966104576', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '110028801966104576'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '110028801966104576', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '110384135700246528', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '110384135700246528', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '110384135700246528'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '110384135700246528', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '111238505824342016', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '111238505824342016', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '111238505824342016'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '111238505824342016', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '111487478111678464', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '111487478111678464', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '111487478111678464'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '111487478111678464', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '116751246068678661', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '116751246068678661', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '116751246068678661'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '116751246068678661', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '117429210485751815', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '117429210485751815', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '117429210485751815'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '117429210485751815', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '117904396624461831', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '117904396624461831', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '117904396624461831'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '117904396624461831', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '119308988880781312', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '119308988880781312', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '119308988880781312'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '119308988880781312', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '121156765650780162', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '121156765650780162', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '121156765650780162'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '121156765650780162', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '122124162624913411', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '122124162624913411', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '122124162624913411'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '122124162624913411', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '125107096881594372', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '125107096881594372', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '125107096881594372'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '125107096881594372', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '125658484715945985', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '125658484715945985', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '125658484715945985'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '125658484715945985', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '125830712921292800', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '125830712921292800', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '125830712921292800'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '125830712921292800', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '127058994056527872', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '127058994056527872', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '127058994056527872'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '127058994056527872', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '127433245145956352', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '127433245145956352', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '127433245145956352'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '127433245145956352', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '128478712021647360', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '128478712021647360', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '128478712021647360'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '128478712021647360', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '128548758660186123', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '128548758660186123', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '128548758660186123'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '128548758660186123', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '129275802477920256', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '129275802477920256', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '129275802477920256'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '129275802477920256', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '129820537751994368', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '129820537751994368', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '129820537751994368'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '129820537751994368', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '130748650916806657', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '130748650916806657', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '130748650916806657'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '130748650916806657', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '130833595987132416', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '130833595987132416', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '130833595987132416'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '130833595987132416', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '131575109902139392', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '131575109902139392', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '131575109902139392'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '131575109902139392', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '131606374340624384', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '131606374340624384', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '131606374340624384'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '131606374340624384', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '132256955740848128', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '132256955740848128', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '132256955740848128'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '132256955740848128', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '132262848028999680', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '132262848028999680', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '132262848028999680'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '132262848028999680', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '135750330414661632', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '135750330414661632', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '135750330414661632'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '135750330414661632', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '132985371238727680', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '132985371238727680', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '132985371238727680'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '132985371238727680', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '136184028704407552', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '136184028704407552', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '136184028704407552'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '136184028704407552', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '137789252183261185', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '137789252183261185', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '137789252183261185'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '137789252183261185', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '138086476993789952', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '138086476993789952', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '138086476993789952'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '138086476993789952', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '139541886888181760', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '139541886888181760', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '139541886888181760'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '139541886888181760', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '142472896982417409', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '142472896982417409', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '142472896982417409'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '142472896982417409', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '143032734904877056', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '143032734904877056', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '143032734904877056'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '143032734904877056', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '145346927821717504', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '145346927821717504', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '145346927821717504'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '145346927821717504', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '146719312676257794', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '146719312676257794', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '146719312676257794'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '146719312676257794', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '147221233509859338', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '147221233509859338', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '147221233509859338'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '147221233509859338', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '148723664886562816', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '148723664886562816', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '148723664886562816'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '148723664886562816', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '149225021737402368', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '149225021737402368', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '149225021737402368'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '149225021737402368', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '150788964905648129', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '150788964905648129', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '150788964905648129'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '150788964905648129', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '152183852050284544', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '152183852050284544', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '152183852050284544'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '152183852050284544', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '152603289677070336', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '152603289677070336', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '152603289677070336'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '152603289677070336', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '155134107804762114', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '155134107804762114', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '155134107804762114'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '155134107804762114', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '156583712417382401', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '156583712417382401', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '156583712417382401'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '156583712417382401', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '158591324721774592', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '158591324721774592', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '158591324721774592'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '158591324721774592', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '159516646569017344', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '159516646569017344', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '159516646569017344'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '159516646569017344', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '160560648407744512', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '160560648407744512', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '160560648407744512'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '160560648407744512', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '160776272748871680', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '160776272748871680', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '160776272748871680'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '160776272748871680', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '161575721381265408', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '161575721381265408', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '161575721381265408'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '161575721381265408', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '162350676335132672', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '162350676335132672', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '162350676335132672'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '162350676335132672', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '165523009543602176', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '165523009543602176', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '165523009543602176'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '165523009543602176', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '165875787281465344', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '165875787281465344', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '165875787281465344'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '165875787281465344', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '166378754749366282', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '166378754749366282', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '166378754749366282'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '166378754749366282', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '168316044841189376', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '168316044841189376', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '168316044841189376'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '168316044841189376', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '168370312839168003', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '168370312839168003', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '168370312839168003'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '168370312839168003', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '168775345296637964', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '168775345296637964', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '168775345296637964'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '168775345296637964', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '170260301541933056', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '170260301541933056', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '170260301541933056'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '170260301541933056', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '170919672139481089', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '170919672139481089', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '170919672139481089'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '170919672139481089', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '171013443648880640', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '171013443648880640', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '171013443648880640'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '171013443648880640', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '171445658866155523', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '171445658866155523', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '171445658866155523'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '171445658866155523', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '172529432521736192', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '172529432521736192', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '172529432521736192'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '172529432521736192', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '172743725737312256', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '172743725737312256', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '172743725737312256'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '172743725737312256', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '172778750818254848', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '172778750818254848', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '172778750818254848'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '172778750818254848', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '172779618313437185', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '172779618313437185', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '172779618313437185'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '172779618313437185', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '173229495992582144', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '173229495992582144', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '173229495992582144'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '173229495992582144', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '173303143688306689', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '173303143688306689', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '173303143688306689'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '173303143688306689', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '173929864728936449', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '173929864728936449', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '173929864728936449'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '173929864728936449', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '174043652480303104', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '174043652480303104', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '174043652480303104'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '174043652480303104', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '174379200336101376', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '174379200336101376', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '174379200336101376'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '174379200336101376', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '176505174179840011', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '176505174179840011', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '176505174179840011'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '176505174179840011', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '175749250578120715', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '175749250578120715', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '175749250578120715'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '175749250578120715', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '176906890335223808', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '176906890335223808', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '176906890335223808'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '176906890335223808', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '177606243781705728', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '177606243781705728', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '177606243781705728'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '177606243781705728', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '177627461473796096', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '177627461473796096', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '177627461473796096'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '177627461473796096', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '177914728922873856', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '177914728922873856', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '177914728922873856'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '177914728922873856', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '181317960697249793', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '181317960697249793', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '181317960697249793'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '181317960697249793', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '182246473973497856', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '182246473973497856', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '182246473973497856'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '182246473973497856', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '182297880172822528', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '182297880172822528', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '182297880172822528'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '182297880172822528', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '183053819339341824', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '183053819339341824', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '183053819339341824'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '183053819339341824', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '183587271050526720', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '183587271050526720', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '183587271050526720'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '183587271050526720', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '184163690025713665', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '184163690025713665', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '184163690025713665'}
+ [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '184163690025713665', fallback: null}
+ [UserTags/Sort] getFriendSince: called {userId: '184394359700062208', hasRelationshipStore: true}
+ [UserTags/Sort] getFriendSince: relationship object {userId: '184394359700062208', hasGetRelationship: false, rel: undefined, relKeys: null}
+ [UserTags/Sort] getFriendSince: no relationship object for user {userId: '184394359700062208'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '184394359700062208', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '185201213518774272', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '185201213518774272', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '185201213518774272'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '185201213518774272', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '185202602013622272', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '185202602013622272', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '185202602013622272'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '185202602013622272', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '185519979326603265', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '185519979326603265', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '185519979326603265'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '185519979326603265', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '185837287052017664', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '185837287052017664', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '185837287052017664'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '185837287052017664', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '186369620444184586', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '186369620444184586', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '186369620444184586'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '186369620444184586', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '186635113679945728', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '186635113679945728', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '186635113679945728'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '186635113679945728', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '187361179247575040', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '187361179247575040', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '187361179247575040'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '187361179247575040', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '187441751223566337', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '187441751223566337', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '187441751223566337'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '187441751223566337', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '187709796802232320', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '187709796802232320', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '187709796802232320'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '187709796802232320', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '188189178905886721', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '188189178905886721', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '188189178905886721'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '188189178905886721', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '188189696516423681', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '188189696516423681', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '188189696516423681'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '188189696516423681', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '188804379845853184', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '188804379845853184', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '188804379845853184'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '188804379845853184', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '189916702165696513', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '189916702165696513', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '189916702165696513'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '189916702165696513', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '190273308414050304', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '190273308414050304', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '190273308414050304'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '190273308414050304', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '191804205424443392', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '191804205424443392', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '191804205424443392'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '191804205424443392', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '192035843043622913', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '192035843043622913', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '192035843043622913'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '192035843043622913', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '192449631714541568', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '192449631714541568', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '192449631714541568'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '192449631714541568', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '192673357907361792', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '192673357907361792', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '192673357907361792'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '192673357907361792', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '192714074537197578', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '192714074537197578', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '192714074537197578'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '192714074537197578', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '193674471675133955', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '193674471675133955', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '193674471675133955'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '193674471675133955', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '193685198083325953', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '193685198083325953', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '193685198083325953'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '193685198083325953', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '194623911500054528', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '194623911500054528', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '194623911500054528'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '194623911500054528', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '196315114717184000', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '196315114717184000', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '196315114717184000'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '196315114717184000', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '196758587085815808', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '196758587085815808', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '196758587085815808'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '196758587085815808', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '197007015627718657', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '197007015627718657', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '197007015627718657'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '197007015627718657', fallback: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: called {userId: '197236900430479361', hasRelationshipStore: true}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: relationship object {userId: '197236900430479361', hasGetRelationship: false, rel: undefined, relKeys: null}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: no relationship object for user {userId: '197236900430479361'}
+sentry.b938e8784595516b.js:14 [UserTags/Sort] getFriendSince: fallback to earliest DM timestamp {userId: '197236900430479361', fallback: null}
+web.d89e6f9ea18541a7.js:12 [Violation] 'click' handler took 467ms
+[Violation] Forced reflow while executing JavaScript took 140ms
+1395663324900753449:1 The resource https://discord.com/assets/189422196a4f8b53.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/ce3b8055f5114434.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/cb2006dbced0e246.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/7a6a566c2e88a35d.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/e52f0cba712e2fb4.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/dd24010f3cf7def7.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/189422196a4f8b53.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/ce3b8055f5114434.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/cb2006dbced0e246.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/7a6a566c2e88a35d.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/e52f0cba712e2fb4.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+1395663324900753449:1 The resource https://discord.com/assets/dd24010f3cf7def7.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+web.d89e6f9ea18541a7.js:12 [Violation] 'blur' handler took 187ms
