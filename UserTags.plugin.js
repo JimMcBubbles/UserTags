@@ -229,6 +229,8 @@ function getLastMessagedAt(userId) {
 
 // Column key for the user column (used for width state)
 const USER_COL_KEY = "__USER__";
+const FRIEND_SINCE_COL_KEY = "__FRIEND_SINCE__";
+const LAST_MSG_COL_KEY = "__LAST_MSG__";
 
 class UserTags {
 	constructor() {
@@ -702,15 +704,22 @@ class UserTags {
 				background-color: var(--background-secondary-alt);
 				z-index: 2;
 			}
-			.usertags-cell {
-				justify-content: center;
-				cursor: pointer;
-			}
-			.usertags-cell.has-tag {
-				background-color: var(--status-positive-background);
-				color: var(--status-positive-text);
-				font-weight: 600;
-			}
+                        .usertags-cell {
+                                justify-content: center;
+                                cursor: pointer;
+                        }
+                        .usertags-datecell {
+                                cursor: default;
+                                justify-content: flex-start;
+                                font-variant-numeric: tabular-nums;
+                                color: var(--text-muted);
+                                white-space: nowrap;
+                        }
+                        .usertags-cell.has-tag {
+                                background-color: var(--status-positive-background);
+                                color: var(--status-positive-text);
+                                font-weight: 600;
+                        }
 
 			.usertags-header-cell {
 				display: flex;
@@ -1364,7 +1373,11 @@ class UserTags {
 
 		function Panel() {
 			// Default width for User column so it doesn't start at 0
-			const [colWidths, setColWidths] = React.useState({ [USER_COL_KEY]: 220 });
+                        const [colWidths, setColWidths] = React.useState(() => ({
+                                [USER_COL_KEY]: 220,
+                                [FRIEND_SINCE_COL_KEY]: 140,
+                                [LAST_MSG_COL_KEY]: 140
+                        }));
 			const [version, setVersion] = React.useState(0); // eslint-disable-line no-unused-vars
 			const [filter, setFilter] = React.useState("");
                         const normalizeSortMode = (value) => {
@@ -1755,8 +1768,8 @@ class UserTags {
 				0
 			);
 
-			const friendSinceCache = new Map();
-			const lastMessagedCache = new Map();
+                        const friendSinceCache = new Map();
+                        const lastMessagedCache = new Map();
 
 			const getCachedFriendSince = (id) => {
 				if (friendSinceCache.has(id)) return friendSinceCache.get(id);
@@ -1771,6 +1784,9 @@ class UserTags {
                                 lastMessagedCache.set(id, value);
                                 return value;
                         };
+
+                        const getFriendSinceForUser = (userId) => getCachedFriendSince(userId);
+                        const getLastMessagedForUser = (userId) => getCachedLastMessaged(userId);
 
                         const alphaCompare = (a, b) => {
                                 const aKeys = [a.displayName, a.username, a.userId];
@@ -2009,37 +2025,77 @@ class UserTags {
 			}
 
 			// Build grid template columns based on current widths
-			const columnWidths = [
-				colWidths[USER_COL_KEY] || 220,
-				// default tag width: 40px
-				...sortedTags.map(tag => colWidths[tag] || 40)
-			];
+                        const columnWidths = [
+                                colWidths[USER_COL_KEY] || 220,
+                                colWidths[FRIEND_SINCE_COL_KEY] || 140,
+                                colWidths[LAST_MSG_COL_KEY] || 140,
+                                // default tag width: 40px
+                                ...sortedTags.map(tag => colWidths[tag] || 40)
+                        ];
 			const gridTemplateColumns = columnWidths.map(w => `${w}px`).join(" ");
 
 			const gridChildren = [];
 
 			// Header row: User column
-			gridChildren.push(
-				React.createElement(
-					"div",
-					{
-						key: "header-user",
-						className: "usertags-grid-header usertags-grid-header-user"
-					},
-					React.createElement(
-						"div",
-						{ className: "usertags-header-cell" },
-						React.createElement("span", { className: "usertags-header-label" }, "User"),
-						React.createElement("span", {
-							className: "usertags-col-resizer",
-							onMouseDown: (e) => startResize(e, USER_COL_KEY)
-						})
-					)
-				)
-			);
+                        gridChildren.push(
+                                React.createElement(
+                                        "div",
+                                        {
+                                                key: "header-user",
+                                                className: "usertags-grid-header usertags-grid-header-user"
+                                        },
+                                        React.createElement(
+                                                "div",
+                                                { className: "usertags-header-cell" },
+                                                React.createElement("span", { className: "usertags-header-label" }, "User"),
+                                                React.createElement("span", {
+                                                        className: "usertags-col-resizer",
+                                                        onMouseDown: (e) => startResize(e, USER_COL_KEY)
+                                                })
+                                        )
+                                )
+                        );
 
-			// Header row: Tag columns
-			sortedTags.forEach(tag => {
+                        gridChildren.push(
+                                React.createElement(
+                                        "div",
+                                        {
+                                                key: "header-friendSince",
+                                                className: "usertags-grid-header"
+                                        },
+                                        React.createElement(
+                                                "div",
+                                                { className: "usertags-header-cell" },
+                                                React.createElement("span", { className: "usertags-header-label" }, "Friend since"),
+                                                React.createElement("span", {
+                                                        className: "usertags-col-resizer",
+                                                        onMouseDown: (e) => startResize(e, FRIEND_SINCE_COL_KEY)
+                                                })
+                                        )
+                                )
+                        );
+
+                        gridChildren.push(
+                                React.createElement(
+                                        "div",
+                                        {
+                                                key: "header-lastMessaged",
+                                                className: "usertags-grid-header"
+                                        },
+                                        React.createElement(
+                                                "div",
+                                                { className: "usertags-header-cell" },
+                                                React.createElement("span", { className: "usertags-header-label" }, "Last messaged"),
+                                                React.createElement("span", {
+                                                        className: "usertags-col-resizer",
+                                                        onMouseDown: (e) => startResize(e, LAST_MSG_COL_KEY)
+                                                })
+                                        )
+                                )
+                        );
+
+                        // Header row: Tag columns
+                        sortedTags.forEach(tag => {
 				const headerClass =
 					"usertags-grid-header" +
 					(hoverTag === tag ? " usertags-col-hover-header" : "");
@@ -2111,11 +2167,11 @@ class UserTags {
 				const userCellClass =
 					"usertags-usercell" +
 					(hoverUserId === user.userId ? " usertags-row-hover" : "");
-				gridChildren.push(
-					React.createElement(
-						"div",
-						{
-							key: `row-${user.userId}-user`,
+                                gridChildren.push(
+                                        React.createElement(
+                                                "div",
+                                                {
+                                                        key: `row-${user.userId}-user`,
 							className: userCellClass,
 							onMouseEnter: () => setHoverUserId(user.userId),
 							onMouseLeave: () =>
@@ -2138,14 +2194,51 @@ class UserTags {
 									  src: user.avatarUrl
 								  })
 								: null,
-							React.createElement("span", { className: "usertags-username" }, user.displayName)
-						)
-					)
-				);
+                                                        React.createElement("span", { className: "usertags-username" }, user.displayName)
+                                                )
+                                        )
+                                );
 
-				// Tag cells
-				sortedTags.forEach(tag => {
-					const has = user.tags.includes(tag);
+                                const friendSince = getFriendSinceForUser(user.userId);
+                                const lastMsg = getLastMessagedForUser(user.userId);
+                                const friendSinceText = friendSince ? new Date(friendSince).toLocaleDateString() : "—";
+                                const lastMsgText = lastMsg ? new Date(lastMsg).toLocaleDateString() : "—";
+
+                                gridChildren.push(
+                                        React.createElement(
+                                                "div",
+                                                {
+                                                        key: `row-${user.userId}-friendSince`,
+                                                        className:
+                                                                "usertags-cell usertags-datecell" +
+                                                                (hoverUserId === user.userId ? " usertags-row-hover" : ""),
+                                                        onMouseEnter: () => setHoverUserId(user.userId),
+                                                        onMouseLeave: () =>
+                                                                setHoverUserId(prev => (prev === user.userId ? null : prev))
+                                                },
+                                                friendSinceText
+                                        )
+                                );
+
+                                gridChildren.push(
+                                        React.createElement(
+                                                "div",
+                                                {
+                                                        key: `row-${user.userId}-lastMsg`,
+                                                        className:
+                                                                "usertags-cell usertags-datecell" +
+                                                                (hoverUserId === user.userId ? " usertags-row-hover" : ""),
+                                                        onMouseEnter: () => setHoverUserId(user.userId),
+                                                        onMouseLeave: () =>
+                                                                setHoverUserId(prev => (prev === user.userId ? null : prev))
+                                                },
+                                                lastMsgText
+                                        )
+                                );
+
+                                // Tag cells
+                                sortedTags.forEach(tag => {
+                                        const has = user.tags.includes(tag);
 					let cellClass = has ? "usertags-cell has-tag" : "usertags-cell";
 					if (hoverUserId === user.userId) cellClass += " usertags-row-hover";
 					if (hoverTag === tag) cellClass += " usertags-col-hover";
