@@ -524,47 +524,59 @@ class UserTags {
 	getVersion() { return this._config.info.version; }
 	getDescription() { return this._config.info.description; }
 
-	/**
-	 * Ensures that data[userId] is in the new format:
-	 * {
-	 *   username: string | null,
-	 *   tags: string[]
-	 * }
-	 *
-	 * Also upgrades legacy array format automatically.
-	 */
-	getOrInitUserEntry(data, userId) {
-		let entry = data[userId];
+        /**
+         * Ensures that data[userId] is in the new format:
+         * {
+         *   username: string | null,
+         *   tags: string[],
+         *   friendSinceMs?: number | null,
+         *   lastMessagedMs?: number | null
+         * }
+         *
+         * Also upgrades legacy array format automatically.
+         */
+        getOrInitUserEntry(data, userId) {
+                let entry = data[userId];
 
-		// Legacy format: array of tags
-		if (Array.isArray(entry)) {
-			const user = StoreModules.UserStore.getUser(userId);
-			entry = {
-				username: user ? user.username : null,
-				tags: entry
-			};
-			data[userId] = entry;
-		} else if (!entry || typeof entry !== "object") {
-			// No entry yet or unexpected type
-			const user = StoreModules.UserStore.getUser(userId);
-			entry = {
-				username: user ? user.username : null,
-				tags: []
-			};
-			data[userId] = entry;
-		} else {
-			// New format, but make sure fields are sensible
-			if (!Array.isArray(entry.tags)) {
-				entry.tags = [];
-			}
-			if (!entry.username) {
-				const user = StoreModules.UserStore.getUser(userId);
-				if (user) entry.username = user.username;
-			}
-		}
+                // Legacy format: array of tags
+                if (Array.isArray(entry)) {
+                        const user = StoreModules.UserStore.getUser(userId);
+                        entry = {
+                                username: user ? user.username : null,
+                                tags: entry,
+                                friendSinceMs: null,
+                                lastMessagedMs: null
+                        };
+                        data[userId] = entry;
+                } else if (!entry || typeof entry !== "object") {
+                        // No entry yet or unexpected type
+                        const user = StoreModules.UserStore.getUser(userId);
+                        entry = {
+                                username: user ? user.username : null,
+                                tags: [],
+                                friendSinceMs: null,
+                                lastMessagedMs: null
+                        };
+                        data[userId] = entry;
+                } else {
+                        // New format, but make sure fields are sensible
+                        if (!Array.isArray(entry.tags)) {
+                                entry.tags = [];
+                        }
+                        if (!entry.username) {
+                                const user = StoreModules.UserStore.getUser(userId);
+                                if (user) entry.username = user.username;
+                        }
+                        if (!Object.prototype.hasOwnProperty.call(entry, "friendSinceMs")) {
+                                entry.friendSinceMs = null;
+                        }
+                        if (!Object.prototype.hasOwnProperty.call(entry, "lastMessagedMs")) {
+                                entry.lastMessagedMs = null;
+                        }
+                }
 
-		return entry;
-	}
+                return entry;
+        }
 
 	/**
 	 * Build a tag-indexed map:
@@ -702,10 +714,10 @@ class UserTags {
 	 * Uses TagIndex if present; falls back to scanning UserData.
 	 * Also merges in any GlobalTags created from the overview.
 	 */
-	getAllTags() {
-		const tagIndex = Data.load(this._config.info.name, "TagIndex") || null;
-		const globalTags = Data.load(this._config.info.name, "GlobalTags") || [];
-		const tagsSet = new Set();
+        getAllTags() {
+                const tagIndex = Data.load(this._config.info.name, "TagIndex") || null;
+                const globalTags = Data.load(this._config.info.name, "GlobalTags") || [];
+                const tagsSet = new Set();
 
 		if (tagIndex) {
 			for (const tagName in tagIndex) {
@@ -730,9 +742,73 @@ class UserTags {
 			if (tag && tag.trim()) tagsSet.add(tag);
 		}
 
-		// Base order for tie-breaking is alphabetical
-		return Array.from(tagsSet).sort((a, b) => a.localeCompare(b));
-	}
+                // Base order for tie-breaking is alphabetical
+                return Array.from(tagsSet).sort((a, b) => a.localeCompare(b));
+        }
+
+        handleDateRefreshForUser = async (userId) => {
+                try {
+                        console.log("[UserTags] handleDateRefreshForUser start", userId);
+
+                        try {
+                                if (PrivateChannelActions?.openPrivateChannel) {
+                                        PrivateChannelActions.openPrivateChannel(userId);
+                                } else if (PrivateChannelActions?.openDM) {
+                                        PrivateChannelActions.openDM(userId);
+                                } else if (PrivateChannelActions?.selectPrivateChannel) {
+                                        PrivateChannelActions.selectPrivateChannel(userId);
+                                }
+                        } catch (e) {
+                                console.error("[UserTags] Failed to open DM for date refresh", userId, e);
+                        }
+
+                        await new Promise(r => setTimeout(r, 400));
+
+                        const channelStore = getChannelStore();
+                        const dmChannelId = channelStore?.getDMFromUserId?.(userId);
+                        if (dmChannelId) {
+                                dmTimestampCache.earliest.delete(dmChannelId);
+                                dmTimestampCache.latest.delete(dmChannelId);
+                        }
+
+                        const earliestTimestamp =
+                                getDmTimestamp(userId, "earliest") ?? getFriendSince(userId);
+                        const latestTimestamp =
+                                getDmTimestamp(userId, "latest") ?? getLastMessagedAt(userId);
+
+                        console.log("[UserTags] handleDateRefreshForUser timestamps", {
+                                userId,
+                                earliestTimestamp,
+                                latestTimestamp
+                        });
+
+                        const data = Data.load(this._config.info.name, "UserData") || {};
+                        const entry = this.getOrInitUserEntry(data, userId);
+
+                        entry.friendSinceMs =
+                                earliestTimestamp !== null
+                                        ? earliestTimestamp
+                                        : entry.friendSinceMs ?? null;
+                        entry.lastMessagedMs =
+                                latestTimestamp !== null
+                                        ? latestTimestamp
+                                        : entry.lastMessagedMs ?? null;
+
+                        this.saveUserData(data);
+
+                        console.log("[UserTags] handleDateRefreshForUser persisted", {
+                                userId,
+                                friendSinceMs: entry.friendSinceMs,
+                                lastMessagedMs: entry.lastMessagedMs
+                        });
+
+                        if (typeof this._forceOverviewRefresh === "function") {
+                                this._forceOverviewRefresh();
+                        }
+                } catch (err) {
+                        console.error("[UserTags] handleDateRefreshForUser error", userId, err);
+                }
+        };
 
 	/**
 	 * Attaches a dropdown of existing tags to a tag input.
@@ -999,6 +1075,14 @@ class UserTags {
                                 cursor: pointer;
                                 color: var(--text-link);
                                 text-decoration: underline dotted;
+                        }
+                        .usertags-date-cell-missing {
+                                cursor: pointer;
+                                text-decoration: underline;
+                                opacity: 0.8;
+                        }
+                        .usertags-date-cell-missing:hover {
+                                opacity: 1;
                         }
                         .usertags-cell.has-tag {
                                 background-color: var(--status-positive-background);
@@ -1672,11 +1756,21 @@ class UserTags {
                         const [sortMode, setSortMode] = React.useState(() =>
                                 normalizeSortMode(plugin.settings?.sortMode)
                         );
-			const [includeTags, setIncludeTags] = React.useState([]);
-			const [excludeTags, setExcludeTags] = React.useState([]);
-			const [hoverUserId, setHoverUserId] = React.useState(null);
+                        const [includeTags, setIncludeTags] = React.useState([]);
+                        const [excludeTags, setExcludeTags] = React.useState([]);
+                        const [hoverUserId, setHoverUserId] = React.useState(null);
                         const [hoverTag, setHoverTag] = React.useState(null);
                         const rootRef = React.useRef(null);
+
+                        React.useEffect(() => {
+                                const setVersionWrapper = () => setVersion(v => v + 1);
+                                plugin._forceOverviewRefresh = setVersionWrapper;
+                                return () => {
+                                        if (plugin._forceOverviewRefresh === setVersionWrapper) {
+                                                plugin._forceOverviewRefresh = null;
+                                        }
+                                };
+                        }, []);
 
                         const handleSortModeChange = (value) => {
                                 const normalized = normalizeSortMode(value);
@@ -2056,68 +2150,50 @@ class UserTags {
                         const friendSinceCache = new Map();
                         const lastMessagedCache = new Map();
 
-			const getCachedFriendSince = (id) => {
-				if (friendSinceCache.has(id)) return friendSinceCache.get(id);
-				const value = getFriendSince(id);
-				friendSinceCache.set(id, value);
-				return value;
-			};
+                        const getCachedFriendSince = (id) => {
+                                if (friendSinceCache.has(id)) return friendSinceCache.get(id);
+                                const entry = plugin.getOrInitUserEntry(data, id);
+                                const hasCached = Object.prototype.hasOwnProperty.call(entry, "friendSinceMs");
+                                if (hasCached && entry.friendSinceMs != null) {
+                                        friendSinceCache.set(id, entry.friendSinceMs);
+                                        return entry.friendSinceMs;
+                                }
+                                const value = getFriendSince(id);
+                                friendSinceCache.set(id, value);
+                                return value;
+                        };
 
                         const getCachedLastMessaged = (id) => {
                                 if (lastMessagedCache.has(id)) return lastMessagedCache.get(id);
+                                const entry = plugin.getOrInitUserEntry(data, id);
+                                const hasCached = Object.prototype.hasOwnProperty.call(entry, "lastMessagedMs");
+                                if (hasCached && entry.lastMessagedMs != null) {
+                                        lastMessagedCache.set(id, entry.lastMessagedMs);
+                                        return entry.lastMessagedMs;
+                                }
                                 const value = getLastMessagedAt(id);
                                 lastMessagedCache.set(id, value);
                                 return value;
                         };
 
-                        const getFriendSinceForUser = (userId) => getCachedFriendSince(userId);
-                        const getLastMessagedForUser = (userId) => getCachedLastMessaged(userId);
+                        const getFriendSinceForUser = (userId) => {
+                                const entry = plugin.getOrInitUserEntry(data, userId);
+                                if (entry.friendSinceMs != null) return entry.friendSinceMs;
+                                return getCachedFriendSince(userId);
+                        };
 
-                        const handleDateRefreshForUser = React.useCallback(
-                                (userId) => {
-                                        // Try to open the DM so Discord loads messages into memory
-                                        try {
-                                                if (PrivateChannelActions?.openPrivateChannel) {
-                                                        PrivateChannelActions.openPrivateChannel(userId);
-                                                } else if (PrivateChannelActions?.openDM) {
-                                                        PrivateChannelActions.openDM(userId);
-                                                }
-                                        } catch (e) {
-                                                // Swallow errors; we still try to refresh below
-                                                console.error("UserTags: failed to open DM for user", userId, e);
-                                        }
+                        const getLastMessagedForUser = (userId) => {
+                                const entry = plugin.getOrInitUserEntry(data, userId);
+                                if (entry.lastMessagedMs != null) return entry.lastMessagedMs;
+                                return getCachedLastMessaged(userId);
+                        };
 
-                                        // Clear cached values so subsequent calls actually recompute
-                                        friendSinceCache.delete(userId);
-                                        lastMessagedCache.delete(userId);
-
-                                        // Poll a few times to give Discord a chance to populate messages
-                                        const MAX_ATTEMPTS = 10;
-                                        const INTERVAL_MS = 750;
-                                        let attempts = 0;
-
-                                        const intervalId = setInterval(() => {
-                                                attempts++;
-
-                                                const friendSince = getFriendSince(userId);
-                                                const lastMsg = getLastMessagedAt(userId);
-
-                                                const hasData = friendSince != null || lastMsg != null;
-
-                                                if (hasData || attempts >= MAX_ATTEMPTS) {
-                                                        clearInterval(intervalId);
-
-                                                        // Update caches with what we found (even if still null)
-                                                        friendSinceCache.set(userId, friendSince ?? null);
-                                                        lastMessagedCache.set(userId, lastMsg ?? null);
-
-                                                        // Force a re-render so the table updates
-                                                        setVersion(v => v + 1);
-                                                }
-                                        }, INTERVAL_MS);
-                                },
-                                []
-                        );
+                        const handleDateCellClick = (userId, column) => {
+                                console.log("[UserTags] date cell clicked", { userId, column });
+                                if (typeof plugin.handleDateRefreshForUser === "function") {
+                                        plugin.handleDateRefreshForUser(userId);
+                                }
+                        };
 
                         const alphaCompare = (a, b) => {
                                 const aKeys = [a.displayName, a.username, a.userId];
@@ -2545,26 +2621,42 @@ class UserTags {
 
                                 const friendSince = getFriendSinceForUser(user.userId);
                                 const lastMsg = getLastMessagedForUser(user.userId);
-                                const friendSinceText = friendSince ? new Date(friendSince).toLocaleDateString() : "—";
-                                const lastMsgText = lastMsg ? new Date(lastMsg).toLocaleDateString() : "—";
+
+                                const friendSinceText =
+                                        friendSince != null
+                                                ? new Date(friendSince).toLocaleDateString()
+                                                : "—";
+                                const lastMsgText =
+                                        lastMsg != null ? new Date(lastMsg).toLocaleDateString() : "—";
 
                                 const isFriendSinceMissing = friendSince == null;
                                 const isLastMsgMissing = lastMsg == null;
+
+                                const friendSinceClass =
+                                        "usertags-cell usertags-datecell" +
+                                        (isFriendSinceMissing
+                                                ? " usertags-datecell-clickable usertags-date-cell-missing"
+                                                : "") +
+                                        (hoverUserId === user.userId ? " usertags-row-hover" : "");
+
+                                const lastMsgClass =
+                                        "usertags-cell usertags-datecell" +
+                                        (isLastMsgMissing
+                                                ? " usertags-datecell-clickable usertags-date-cell-missing"
+                                                : "") +
+                                        (hoverUserId === user.userId ? " usertags-row-hover" : "");
 
                                 gridChildren.push(
                                         React.createElement(
                                                 "div",
                                                 {
                                                         key: `row-${user.userId}-friendSince`,
-                                                        className:
-                                                                "usertags-cell usertags-datecell" +
-                                                                (isFriendSinceMissing ? " usertags-datecell-clickable" : "") +
-                                                                (hoverUserId === user.userId ? " usertags-row-hover" : ""),
+                                                        className: friendSinceClass,
                                                         onMouseEnter: () => setHoverUserId(user.userId),
                                                         onMouseLeave: () =>
                                                                 setHoverUserId(prev => (prev === user.userId ? null : prev)),
                                                         onClick: isFriendSinceMissing
-                                                                ? () => handleDateRefreshForUser(user.userId)
+                                                                ? () => handleDateCellClick(user.userId, "friendSince")
                                                                 : undefined
                                                 },
                                                 friendSinceText
@@ -2576,15 +2668,12 @@ class UserTags {
                                                 "div",
                                                 {
                                                         key: `row-${user.userId}-lastMsg`,
-                                                        className:
-                                                                "usertags-cell usertags-datecell" +
-                                                                (isLastMsgMissing ? " usertags-datecell-clickable" : "") +
-                                                                (hoverUserId === user.userId ? " usertags-row-hover" : ""),
+                                                        className: lastMsgClass,
                                                         onMouseEnter: () => setHoverUserId(user.userId),
                                                         onMouseLeave: () =>
                                                                 setHoverUserId(prev => (prev === user.userId ? null : prev)),
                                                         onClick: isLastMsgMissing
-                                                                ? () => handleDateRefreshForUser(user.userId)
+                                                                ? () => handleDateCellClick(user.userId, "lastMessaged")
                                                                 : undefined
                                                 },
                                                 lastMsgText
