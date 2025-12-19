@@ -1367,12 +1367,25 @@ class UserTags {
 			const [colWidths, setColWidths] = React.useState({ [USER_COL_KEY]: 220 });
 			const [version, setVersion] = React.useState(0); // eslint-disable-line no-unused-vars
 			const [filter, setFilter] = React.useState("");
-			const [sortMode, setSortMode] = React.useState("alpha");
+                        const normalizeSortMode = (value) => {
+                                return value === "friendSince" || value === "lastMessaged" ? value : "alpha";
+                        };
+
+                        const [sortMode, setSortMode] = React.useState(() =>
+                                normalizeSortMode(plugin.settings?.sortMode)
+                        );
 			const [includeTags, setIncludeTags] = React.useState([]);
 			const [excludeTags, setExcludeTags] = React.useState([]);
 			const [hoverUserId, setHoverUserId] = React.useState(null);
-			const [hoverTag, setHoverTag] = React.useState(null);
-			const rootRef = React.useRef(null);
+                        const [hoverTag, setHoverTag] = React.useState(null);
+                        const rootRef = React.useRef(null);
+
+                        const handleSortModeChange = (value) => {
+                                const normalized = normalizeSortMode(value);
+                                setSortMode(normalized);
+                                plugin.settings.sortMode = normalized;
+                                Data.save(plugin._config.info.name, "settings", plugin.settings);
+                        };
 
 			React.useEffect(() => {
 				const root = rootRef.current;
@@ -1752,50 +1765,57 @@ class UserTags {
 				return value;
 			};
 
-			const getCachedLastMessaged = (id) => {
-				if (lastMessagedCache.has(id)) return lastMessagedCache.get(id);
-				const value = getLastMessagedAt(id);
-				lastMessagedCache.set(id, value);
-				return value;
-			};
+                        const getCachedLastMessaged = (id) => {
+                                if (lastMessagedCache.has(id)) return lastMessagedCache.get(id);
+                                const value = getLastMessagedAt(id);
+                                lastMessagedCache.set(id, value);
+                                return value;
+                        };
 
-			const sortedUsers = [...visibleUsers];
+                        const alphaCompare = (a, b) => {
+                                const aKeys = [a.displayName, a.username, a.userId];
+                                const bKeys = [b.displayName, b.username, b.userId];
 
-			if (sortMode === "alpha") {
-				sortedUsers.sort((a, b) =>
-					a.displayName.localeCompare(b.displayName)
-				);
-			} else if (sortMode === "friendSince") {
-				sortedUsers.sort((a, b) => {
-					const aSince = getCachedFriendSince(a.user?.id ?? a.userId);
-					const bSince = getCachedFriendSince(b.user?.id ?? b.userId);
+                                for (let i = 0; i < aKeys.length; i++) {
+                                        const aVal = (aKeys[i] || "").toLowerCase();
+                                        const bVal = (bKeys[i] || "").toLowerCase();
+                                        if (aVal !== bVal) return aVal.localeCompare(bVal);
+                                }
 
-					if (aSince == null && bSince == null) {
-						return a.displayName.localeCompare(b.displayName);
-					}
-					if (aSince == null) return 1;
-					if (bSince == null) return -1;
-					if (aSince === bSince) {
-						return a.displayName.localeCompare(b.displayName);
-					}
-					return aSince - bSince;
-				});
-			} else if (sortMode === "lastMessaged") {
-				sortedUsers.sort((a, b) => {
-					const aTs = getCachedLastMessaged(a.user?.id ?? a.userId);
-					const bTs = getCachedLastMessaged(b.user?.id ?? b.userId);
+                                return 0;
+                        };
 
-					if (aTs == null && bTs == null) {
-						return a.displayName.localeCompare(b.displayName);
-					}
-					if (aTs == null) return 1;
-					if (bTs == null) return -1;
-					if (aTs === bTs) {
-						return a.displayName.localeCompare(b.displayName);
-					}
-					return bTs - aTs;
-				});
-			}
+                        const sortedUsers = [...visibleUsers];
+
+                        if (sortMode === "alpha") {
+                                sortedUsers.sort(alphaCompare);
+                        } else if (sortMode === "friendSince") {
+                                sortedUsers.sort((a, b) => {
+                                        const aId = a.user?.id ?? a.userId;
+                                        const bId = b.user?.id ?? b.userId;
+                                        const aSince = getCachedFriendSince(aId);
+                                        const bSince = getCachedFriendSince(bId);
+
+                                        if (aSince == null && bSince == null) return alphaCompare(a, b);
+                                        if (aSince == null) return 1;
+                                        if (bSince == null) return -1;
+                                        if (aSince === bSince) return alphaCompare(a, b);
+                                        return aSince - bSince;
+                                });
+                        } else if (sortMode === "lastMessaged") {
+                                sortedUsers.sort((a, b) => {
+                                        const aId = a.user?.id ?? a.userId;
+                                        const bId = b.user?.id ?? b.userId;
+                                        const aTs = getCachedLastMessaged(aId);
+                                        const bTs = getCachedLastMessaged(bId);
+
+                                        if (aTs == null && bTs == null) return alphaCompare(a, b);
+                                        if (aTs == null) return 1;
+                                        if (bTs == null) return -1;
+                                        if (aTs === bTs) return alphaCompare(a, b);
+                                        return bTs - aTs;
+                                });
+                        }
 
 			const usersToRender = sortedUsers;
 
@@ -1967,12 +1987,12 @@ class UserTags {
 								{ className: "usertags-sort-label" },
 								"Sort by:",
 								React.createElement(
-									"select",
-									{
-										className: "usertags-sort-select",
-										value: sortMode,
-										onChange: (e) => setSortMode(e.target.value)
-									},
+                                                                        "select",
+                                                                        {
+                                                                                className: "usertags-sort-select",
+                                                                                value: sortMode,
+                                                                                onChange: (e) => handleSortModeChange(e.target.value)
+                                                                        },
 									React.createElement("option", { value: "alpha" }, "A–Z (name)"),
 									React.createElement("option", { value: "friendSince" }, "Friends since"),
 									React.createElement("option", { value: "lastMessaged" }, "Last messaged")
@@ -2216,12 +2236,12 @@ class UserTags {
 							{ className: "usertags-sort-label" },
 							"Sort by:",
 							React.createElement(
-								"select",
-								{
-									className: "usertags-sort-select",
-									value: sortMode,
-									onChange: (e) => setSortMode(e.target.value)
-								},
+                                                                "select",
+                                                                {
+                                                                        className: "usertags-sort-select",
+                                                                        value: sortMode,
+                                                                        onChange: (e) => handleSortModeChange(e.target.value)
+                                                                },
 								React.createElement("option", { value: "alpha" }, "A–Z (name)"),
 								React.createElement("option", { value: "friendSince" }, "Friends since"),
 								React.createElement("option", { value: "lastMessaged" }, "Last messaged")
