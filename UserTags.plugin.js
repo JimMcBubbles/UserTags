@@ -176,55 +176,175 @@ function ToolbarComponent({ onClick }) {
 
 let CachedChannelStore = null;
 let CachedMessageStore = null;
+const dmTimestampCache = {
+        latest: new Map(),
+        earliest: new Map()
+};
+
+const normalizeTimestamp = (value) => {
+        if (!value && value !== 0) return null;
+        if (typeof value === "number") return value;
+        const date = new Date(value);
+        const ms = +date;
+        return Number.isNaN(ms) ? null : ms;
+};
+
+const extractTimestampFromMessage = (message) => {
+        if (!message) return null;
+        return (
+                normalizeTimestamp(message.timestamp) ??
+                normalizeTimestamp(message.editedTimestamp) ??
+                normalizeTimestamp(message.timestampUnix) ??
+                null
+        );
+};
+
+const getChannelStore = () => {
+        if (CachedChannelStore) return CachedChannelStore;
+        const store =
+                BdApi?.Webpack?.getByProps?.("getDMFromUserId") ||
+                WebpackModules?.findByProps?.("getDMFromUserId") ||
+                BdApi.Webpack.getModule(m => m?.getDMFromUserId, { searchExports: true });
+        if (store) CachedChannelStore = store;
+        return CachedChannelStore;
+};
+
+const getMessageStore = () => {
+        if (CachedMessageStore) return CachedMessageStore;
+        const store =
+                BdApi?.Webpack?.getByProps?.("getMessages", "getMessage") ||
+                WebpackModules?.findByProps?.("getMessages", "getMessage") ||
+                BdApi.Webpack.getModule(m => m?.getMessages && m?.getMessage, { searchExports: true });
+        if (store) CachedMessageStore = store;
+        return CachedMessageStore;
+};
+
+const coerceMessageFromWrapperEntry = (entry) => {
+        if (!entry) return null;
+        if (Array.isArray(entry)) return entry[1] ?? entry[0] ?? null;
+        return entry;
+};
+
+const collectMessagesFromWrapper = (wrapper) => {
+        if (!wrapper) return [];
+        const arrays = [];
+        try {
+                if (typeof wrapper.toArray === "function") arrays.push(wrapper.toArray());
+        } catch (_) {
+                // ignore
+        }
+        if (Array.isArray(wrapper._array)) arrays.push(wrapper._array);
+        if (Array.isArray(wrapper.__array)) arrays.push(wrapper.__array);
+        if (Array.isArray(wrapper)) arrays.push(wrapper);
+        if (Array.isArray(wrapper.messages)) arrays.push(wrapper.messages);
+        if (typeof wrapper.values === "function") arrays.push(Array.from(wrapper.values()));
+
+        const flat = [];
+        arrays.forEach(arr => {
+                if (!Array.isArray(arr)) return;
+                arr.forEach(item => {
+                        const msg = coerceMessageFromWrapperEntry(item);
+                        if (msg) flat.push(msg);
+                });
+        });
+        return flat;
+};
+
+const pickMessageFromWrapper = (wrapper, mode = "latest") => {
+        if (!wrapper) return null;
+
+        const methodOrderLatest = [
+                "getMostRecentMessage",
+                "getLatestMessage",
+                "getLastMessage"
+        ];
+        const methodOrderEarliest = ["getFirstMessage", "first"];
+
+        const methods = mode === "earliest" ? methodOrderEarliest : methodOrderLatest;
+        for (const key of methods) {
+                const fn = wrapper?.[key];
+                if (typeof fn === "function") {
+                        const msg = coerceMessageFromWrapperEntry(fn.call(wrapper));
+                        if (msg) return msg;
+                }
+        }
+
+        if (mode === "latest" && typeof wrapper.last === "function") {
+                const last = wrapper.last();
+                const msg = coerceMessageFromWrapperEntry(last?.[1] ?? last);
+                if (msg) return msg;
+        }
+
+        const messages = collectMessagesFromWrapper(wrapper);
+        if (!messages.length) return null;
+
+        let picked = null;
+        messages.forEach(msg => {
+                const ts = extractTimestampFromMessage(msg);
+                if (ts == null) return;
+                if (!picked) {
+                        picked = { msg, ts };
+                        return;
+                }
+                if (mode === "latest" ? ts > picked.ts : ts < picked.ts) {
+                        picked = { msg, ts };
+                }
+        });
+
+        return picked?.msg ?? null;
+};
+
+const getDmTimestamp = (userId, mode = "latest") => {
+        const cache = mode === "earliest" ? dmTimestampCache.earliest : dmTimestampCache.latest;
+        const ChannelStore = getChannelStore();
+        const MessageStore = getMessageStore();
+        if (!ChannelStore || !MessageStore) return null;
+
+        const dmChannelId = ChannelStore.getDMFromUserId?.(userId);
+        if (!dmChannelId) return null;
+
+        if (cache.has(dmChannelId)) return cache.get(dmChannelId);
+
+        const messagesWrapper = MessageStore.getMessages?.(dmChannelId);
+        if (!messagesWrapper) {
+                cache.set(dmChannelId, null);
+                return null;
+        }
+
+        const message = pickMessageFromWrapper(messagesWrapper, mode);
+        const ts = extractTimestampFromMessage(message);
+        const normalized = ts ?? null;
+        cache.set(dmChannelId, normalized);
+        return normalized;
+};
 
 function getFriendSince(userId) {
-	const { RelationshipStore } = StoreModules;
-	if (!RelationshipStore || !RelationshipStore.isFriend?.(userId)) return null;
+        const { RelationshipStore } = StoreModules;
+        if (!RelationshipStore || !RelationshipStore.isFriend?.(userId)) return null;
 
-	const rel = RelationshipStore.getRelationship?.(userId);
-	if (!rel) return null;
+        const rel = RelationshipStore.getRelationship?.(userId);
+        // RelationshipStore currently only exposes the relationship type (number) without a
+        // "friend since" timestamp. If a timestamp ever becomes available, parse it; otherwise
+        // fall back to a heuristic using the earliest DM message with the user.
+        if (rel && typeof rel === "object") {
+                const rawSince =
+                        rel.since ??
+                        rel.sinceDate ??
+                        rel.since_at ??
+                        rel.createdAt ??
+                        rel.created_at ??
+                        rel.sinceAt ??
+                        rel.addedAt ??
+                        null;
+                const parsed = normalizeTimestamp(rawSince);
+                if (parsed != null) return parsed;
+        }
 
-	return rel.since ?? rel.sinceDate ?? rel.since_at ?? null;
+        return getDmTimestamp(userId, "earliest");
 }
 
 function getLastMessagedAt(userId) {
-	const ChannelStore =
-		CachedChannelStore ||
-		BdApi.Webpack.getModule(m => m?.getDMFromUserId, { searchExports: true });
-	if (ChannelStore && !CachedChannelStore) CachedChannelStore = ChannelStore;
-
-	const MessageStore =
-		CachedMessageStore ||
-		BdApi.Webpack.getModule(m => m?.getMessages && m?.getMessage, { searchExports: true });
-	if (MessageStore && !CachedMessageStore) CachedMessageStore = MessageStore;
-
-	if (!ChannelStore || !MessageStore) return null;
-
-	const dmChannelId = ChannelStore.getDMFromUserId?.(userId);
-	if (!dmChannelId) return null;
-
-	const messagesWrapper = MessageStore.getMessages?.(dmChannelId);
-	if (!messagesWrapper) return null;
-
-	const lastMessage =
-		typeof messagesWrapper.last === "function"
-			? messagesWrapper.last()?.[1] ?? messagesWrapper.last()
-			: null;
-	const mostRecent =
-		(typeof messagesWrapper.getMostRecentMessage === "function" && messagesWrapper.getMostRecentMessage()) ||
-		(typeof messagesWrapper.getLatestMessage === "function" && messagesWrapper.getLatestMessage()) ||
-		(typeof messagesWrapper.getLastMessage === "function" && messagesWrapper.getLastMessage());
-	const fallbackArray = messagesWrapper._array;
-	const message =
-		lastMessage ||
-		mostRecent ||
-		(Array.isArray(fallbackArray) && fallbackArray.length > 0
-			? fallbackArray[fallbackArray.length - 1]
-			: null);
-	if (!message) return null;
-
-	const ts = message.timestamp ?? message.editedTimestamp ?? null;
-	return ts ? +new Date(ts) : null;
+        return getDmTimestamp(userId, "latest");
 }
 
 // Column key for the user column (used for width state)
