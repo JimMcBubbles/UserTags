@@ -118,6 +118,14 @@ const UserProfileActions = Webpack.getModule(
         { searchExports: true }
 );
 
+const PrivateChannelActions = Webpack.getModule(
+        m =>
+                m &&
+                typeof m.openPrivateChannel === "function" &&
+                (typeof m.selectPrivateChannel === "function" || typeof m.openDM === "function"),
+        { searchExports: true }
+);
+
 const Button = Webpack.getModule(
 	m => m?.Colors && m?.Looks && m?.Sizes,
 	{ searchExports: true }
@@ -986,6 +994,11 @@ class UserTags {
                                 font-variant-numeric: tabular-nums;
                                 color: var(--text-muted);
                                 white-space: nowrap;
+                        }
+                        .usertags-datecell-clickable {
+                                cursor: pointer;
+                                color: var(--text-link);
+                                text-decoration: underline dotted;
                         }
                         .usertags-cell.has-tag {
                                 background-color: var(--status-positive-background);
@@ -2060,6 +2073,52 @@ class UserTags {
                         const getFriendSinceForUser = (userId) => getCachedFriendSince(userId);
                         const getLastMessagedForUser = (userId) => getCachedLastMessaged(userId);
 
+                        const handleDateRefreshForUser = React.useCallback(
+                                (userId) => {
+                                        // Try to open the DM so Discord loads messages into memory
+                                        try {
+                                                if (PrivateChannelActions?.openPrivateChannel) {
+                                                        PrivateChannelActions.openPrivateChannel(userId);
+                                                } else if (PrivateChannelActions?.openDM) {
+                                                        PrivateChannelActions.openDM(userId);
+                                                }
+                                        } catch (e) {
+                                                // Swallow errors; we still try to refresh below
+                                                console.error("UserTags: failed to open DM for user", userId, e);
+                                        }
+
+                                        // Clear cached values so subsequent calls actually recompute
+                                        friendSinceCache.delete(userId);
+                                        lastMessagedCache.delete(userId);
+
+                                        // Poll a few times to give Discord a chance to populate messages
+                                        const MAX_ATTEMPTS = 10;
+                                        const INTERVAL_MS = 750;
+                                        let attempts = 0;
+
+                                        const intervalId = setInterval(() => {
+                                                attempts++;
+
+                                                const friendSince = getFriendSince(userId);
+                                                const lastMsg = getLastMessagedAt(userId);
+
+                                                const hasData = friendSince != null || lastMsg != null;
+
+                                                if (hasData || attempts >= MAX_ATTEMPTS) {
+                                                        clearInterval(intervalId);
+
+                                                        // Update caches with what we found (even if still null)
+                                                        friendSinceCache.set(userId, friendSince ?? null);
+                                                        lastMessagedCache.set(userId, lastMsg ?? null);
+
+                                                        // Force a re-render so the table updates
+                                                        setVersion(v => v + 1);
+                                                }
+                                        }, INTERVAL_MS);
+                                },
+                                []
+                        );
+
                         const alphaCompare = (a, b) => {
                                 const aKeys = [a.displayName, a.username, a.userId];
                                 const bKeys = [b.displayName, b.username, b.userId];
@@ -2489,6 +2548,9 @@ class UserTags {
                                 const friendSinceText = friendSince ? new Date(friendSince).toLocaleDateString() : "—";
                                 const lastMsgText = lastMsg ? new Date(lastMsg).toLocaleDateString() : "—";
 
+                                const isFriendSinceMissing = friendSince == null;
+                                const isLastMsgMissing = lastMsg == null;
+
                                 gridChildren.push(
                                         React.createElement(
                                                 "div",
@@ -2496,10 +2558,14 @@ class UserTags {
                                                         key: `row-${user.userId}-friendSince`,
                                                         className:
                                                                 "usertags-cell usertags-datecell" +
+                                                                (isFriendSinceMissing ? " usertags-datecell-clickable" : "") +
                                                                 (hoverUserId === user.userId ? " usertags-row-hover" : ""),
                                                         onMouseEnter: () => setHoverUserId(user.userId),
                                                         onMouseLeave: () =>
-                                                                setHoverUserId(prev => (prev === user.userId ? null : prev))
+                                                                setHoverUserId(prev => (prev === user.userId ? null : prev)),
+                                                        onClick: isFriendSinceMissing
+                                                                ? () => handleDateRefreshForUser(user.userId)
+                                                                : undefined
                                                 },
                                                 friendSinceText
                                         )
@@ -2512,10 +2578,14 @@ class UserTags {
                                                         key: `row-${user.userId}-lastMsg`,
                                                         className:
                                                                 "usertags-cell usertags-datecell" +
+                                                                (isLastMsgMissing ? " usertags-datecell-clickable" : "") +
                                                                 (hoverUserId === user.userId ? " usertags-row-hover" : ""),
                                                         onMouseEnter: () => setHoverUserId(user.userId),
                                                         onMouseLeave: () =>
-                                                                setHoverUserId(prev => (prev === user.userId ? null : prev))
+                                                                setHoverUserId(prev => (prev === user.userId ? null : prev)),
+                                                        onClick: isLastMsgMissing
+                                                                ? () => handleDateRefreshForUser(user.userId)
+                                                                : undefined
                                                 },
                                                 lastMsgText
                                         )
