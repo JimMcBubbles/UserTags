@@ -106,16 +106,16 @@ if (!WebpackModules.findByProps && Webpack?.getModule) {
 }
 
 const StoreModules = {
-	UserStore: Webpack.getStore("UserStore"),
-	RelationshipStore: Webpack.getStore("RelationshipStore"),
-	GuildStore: Webpack.getStore("GuildStore"),
-	GuildMemberStore: Webpack.getStore("GuildMemberStore")
+        UserStore: Webpack.getStore("UserStore"),
+        RelationshipStore: Webpack.getStore("RelationshipStore"),
+        GuildStore: Webpack.getStore("GuildStore"),
+        GuildMemberStore: Webpack.getStore("GuildMemberStore")
 };
 
 // Module to open the user profile modal from settings grid
 const UserProfileActions = Webpack.getModule(
-	m => m && typeof m.openUserProfileModal === "function",
-	{ searchExports: true }
+        m => m && typeof m.openUserProfileModal === "function",
+        { searchExports: true }
 );
 
 const Button = Webpack.getModule(
@@ -171,7 +171,27 @@ function ToolbarComponent({ onClick }) {
 		);
 	}
 
-	return button;
+        return button;
+}
+
+const DEBUG_SORT_LOGS = true; // set to false to silence these logs later
+let debugSortLogCount = 0;
+const DEBUG_SORT_LOG_LIMIT = 500; // hard cap so we don't spam infinitely
+
+function debugSortLog(...args) {
+        if (!DEBUG_SORT_LOGS) return;
+        if (debugSortLogCount >= DEBUG_SORT_LOG_LIMIT) return;
+        debugSortLogCount++;
+        try {
+                const logger = BdApi?.Logger;
+                if (logger && typeof logger.log === "function") {
+                        logger.log("UserTags/Sort", ...args);
+                } else {
+                        console.log("[UserTags/Sort]", ...args);
+                }
+        } catch (e) {
+                console.log("[UserTags/Sort]", ...args);
+        }
 }
 
 let CachedChannelStore = null;
@@ -320,31 +340,163 @@ const getDmTimestamp = (userId, mode = "latest") => {
 
 function getFriendSince(userId) {
         const { RelationshipStore } = StoreModules;
-        if (!RelationshipStore || !RelationshipStore.isFriend?.(userId)) return null;
+        debugSortLog("getFriendSince: called", { userId, hasRelationshipStore: !!RelationshipStore });
 
-        const rel = RelationshipStore.getRelationship?.(userId);
-        // RelationshipStore currently only exposes the relationship type (number) without a
-        // "friend since" timestamp. If a timestamp ever becomes available, parse it; otherwise
-        // fall back to a heuristic using the earliest DM message with the user.
-        if (rel && typeof rel === "object") {
-                const rawSince =
-                        rel.since ??
-                        rel.sinceDate ??
-                        rel.since_at ??
-                        rel.createdAt ??
-                        rel.created_at ??
-                        rel.sinceAt ??
-                        rel.addedAt ??
-                        null;
-                const parsed = normalizeTimestamp(rawSince);
-                if (parsed != null) return parsed;
+        if (!RelationshipStore) {
+                debugSortLog("getFriendSince: RelationshipStore missing");
+                return null;
         }
 
-        return getDmTimestamp(userId, "earliest");
+        if (!RelationshipStore.isFriend?.(userId)) {
+                debugSortLog("getFriendSince: not a friend or isFriend() missing", {
+                        userId,
+                        isFriendFn: !!RelationshipStore.isFriend
+                });
+                return null;
+        }
+
+        const rel = RelationshipStore.getRelationship?.(userId);
+        debugSortLog("getFriendSince: relationship object", {
+                userId,
+                hasGetRelationship: !!RelationshipStore.getRelationship,
+                rel,
+                relKeys: rel ? Object.keys(rel) : null
+        });
+
+        if (!rel) {
+                debugSortLog("getFriendSince: no relationship object for user", { userId });
+                const fallback = getDmTimestamp(userId, "earliest");
+                debugSortLog("getFriendSince: fallback to earliest DM timestamp", { userId, fallback });
+                return fallback;
+        }
+
+        const raw =
+                rel.since ??
+                rel.sinceDate ??
+                rel.since_at ??
+                rel.createdAt ??
+                rel.created_at ??
+                rel.sinceAt ??
+                rel.addedAt ??
+                null;
+
+        debugSortLog("getFriendSince: raw timestamp candidate", { userId, raw });
+
+        if (!raw) {
+                const fallback = getDmTimestamp(userId, "earliest");
+                debugSortLog("getFriendSince: no raw timestamp, fallback to earliest DM", { userId, fallback });
+                return fallback;
+        }
+
+        const value = +new Date(raw);
+        debugSortLog("getFriendSince: parsed timestamp", { userId, raw, value });
+
+        if (Number.isFinite(value)) return value;
+
+        const fallback = getDmTimestamp(userId, "earliest");
+        debugSortLog("getFriendSince: invalid parsed timestamp, fallback to earliest DM", { userId, raw, fallback });
+        return fallback;
 }
 
 function getLastMessagedAt(userId) {
-        return getDmTimestamp(userId, "latest");
+        debugSortLog("getLastMessagedAt: called", { userId });
+
+        const ChannelStore =
+                CachedChannelStore ||
+                BdApi.Webpack.getModule(m => m?.getDMFromUserId, { searchExports: true });
+        if (ChannelStore && !CachedChannelStore) {
+                CachedChannelStore = ChannelStore;
+                debugSortLog("getLastMessagedAt: CachedChannelStore populated", {
+                        keys: Object.keys(ChannelStore)
+                });
+        }
+
+        const MessageStore =
+                CachedMessageStore ||
+                BdApi.Webpack.getModule(m => m?.getMessages && m?.getMessage, { searchExports: true });
+        if (MessageStore && !CachedMessageStore) {
+                CachedMessageStore = MessageStore;
+                debugSortLog("getLastMessagedAt: CachedMessageStore populated", {
+                        keys: Object.keys(MessageStore)
+                });
+        }
+
+        if (!ChannelStore || !MessageStore) {
+                debugSortLog("getLastMessagedAt: missing stores", {
+                        hasChannelStore: !!ChannelStore,
+                        hasMessageStore: !!MessageStore
+                });
+                return null;
+        }
+
+        const dmChannelId = ChannelStore.getDMFromUserId?.(userId);
+        debugSortLog("getLastMessagedAt: DM channel id", {
+                userId,
+                dmChannelId,
+                hasGetDMFromUserId: !!ChannelStore.getDMFromUserId
+        });
+        if (!dmChannelId) return null;
+
+        const messagesWrapper = MessageStore.getMessages?.(dmChannelId);
+        debugSortLog("getLastMessagedAt: messages wrapper", {
+                userId,
+                dmChannelId,
+                hasGetMessages: !!MessageStore.getMessages,
+                wrapperType: messagesWrapper && messagesWrapper.constructor
+                        ? messagesWrapper.constructor.name
+                        : typeof messagesWrapper,
+                wrapperKeys: messagesWrapper ? Object.keys(messagesWrapper) : null
+        });
+
+        if (!messagesWrapper) return null;
+
+        const lastMessage =
+                typeof messagesWrapper.last === "function"
+                        ? messagesWrapper.last()?.[1] ?? messagesWrapper.last()
+                        : null;
+        const mostRecent =
+                (typeof messagesWrapper.getMostRecentMessage === "function" && messagesWrapper.getMostRecentMessage()) ||
+                (typeof messagesWrapper.getLatestMessage === "function" && messagesWrapper.getLatestMessage()) ||
+                (typeof messagesWrapper.getLastMessage === "function" && messagesWrapper.getLastMessage());
+        const fallbackArray = messagesWrapper._array;
+
+        debugSortLog("getLastMessagedAt: candidate messages", {
+                userId,
+                hasLast: typeof messagesWrapper.last === "function",
+                hasMostRecent: typeof messagesWrapper.getMostRecentMessage === "function",
+                hasLatest: typeof messagesWrapper.getLatestMessage === "function",
+                hasLastMessage: typeof messagesWrapper.getLastMessage === "function",
+                fallbackLength: Array.isArray(fallbackArray) ? fallbackArray.length : null,
+                lastMessage,
+                mostRecent
+        });
+
+        const message =
+                lastMessage ||
+                mostRecent ||
+                (Array.isArray(fallbackArray) && fallbackArray.length > 0
+                        ? fallbackArray[fallbackArray.length - 1]
+                        : null);
+
+        if (!message) {
+                debugSortLog("getLastMessagedAt: no message found after all fallbacks", {
+                        userId,
+                        dmChannelId
+                });
+                return null;
+        }
+
+        const ts = message.timestamp ?? message.editedTimestamp ?? null;
+        const value = ts ? +new Date(ts) : null;
+
+        debugSortLog("getLastMessagedAt: final timestamp", {
+                userId,
+                dmChannelId,
+                ts,
+                value
+        });
+
+        return Number.isFinite(value) ? value : null;
 }
 
 // Column key for the user column (used for width state)
@@ -1953,7 +2105,20 @@ class UserTags {
                                 });
                         }
 
-			const usersToRender = sortedUsers;
+                        debugSortLog("Panel sort snapshot", {
+                                sortMode,
+                                sample: sortedUsers.slice(0, 5).map(u => {
+                                        const id = u.user?.id ?? u.userId;
+                                        return {
+                                                id,
+                                                name: u.displayName,
+                                                friendSince: getCachedFriendSince(id),
+                                                lastMsg: getCachedLastMessaged(id)
+                                        };
+                                })
+                        });
+
+                        const usersToRender = sortedUsers;
 
 			const toggleInclude = (tag) => {
 				setIncludeTags(prev => {
