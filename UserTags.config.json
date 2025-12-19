@@ -8419,5 +8419,8 @@
         "BTM",
         "DTF",
         "LWD"
-    ]
+    ],
+    "settings": {
+        "sortMode": "friendSince"
+    }
 }
