@@ -227,13 +227,28 @@ const extractTimestampFromMessage = (message) => {
         );
 };
 
+const logDmDebug = (...args) => {
+        if (!DEBUG_SORT_LOGS) return;
+        console.log(...args);
+};
+
 const getChannelStore = () => {
         if (CachedChannelStore) return CachedChannelStore;
         const store =
                 BdApi?.Webpack?.getByProps?.("getDMFromUserId") ||
                 WebpackModules?.findByProps?.("getDMFromUserId") ||
                 BdApi.Webpack.getModule(m => m?.getDMFromUserId, { searchExports: true });
-        if (store) CachedChannelStore = store;
+
+        if (store) {
+                CachedChannelStore = store;
+                logDmDebug("[UserTags/DM] ChannelStore resolved", {
+                        keys: Object.keys(store || {}).slice(0, 20)
+                });
+        } else {
+                logDmDebug("[UserTags/DM] ChannelStore missing");
+                return null;
+        }
+
         return CachedChannelStore;
 };
 
@@ -243,7 +258,17 @@ const getMessageStore = () => {
                 BdApi?.Webpack?.getByProps?.("getMessages", "getMessage") ||
                 WebpackModules?.findByProps?.("getMessages", "getMessage") ||
                 BdApi.Webpack.getModule(m => m?.getMessages && m?.getMessage, { searchExports: true });
-        if (store) CachedMessageStore = store;
+
+        if (store) {
+                CachedMessageStore = store;
+                logDmDebug("[UserTags/DM] MessageStore resolved", {
+                        keys: Object.keys(store || {}).slice(0, 20)
+                });
+        } else {
+                logDmDebug("[UserTags/DM] MessageStore missing");
+                return null;
+        }
+
         return CachedMessageStore;
 };
 
@@ -323,25 +348,61 @@ const pickMessageFromWrapper = (wrapper, mode = "latest") => {
 };
 
 const getDmTimestamp = (userId, mode = "latest") => {
+        logDmDebug(`[UserTags/DM] getDmTimestamp start`, { userId, mode });
         const cache = mode === "earliest" ? dmTimestampCache.earliest : dmTimestampCache.latest;
         const ChannelStore = getChannelStore();
         const MessageStore = getMessageStore();
         if (!ChannelStore || !MessageStore) return null;
 
         const dmChannelId = ChannelStore.getDMFromUserId?.(userId);
-        if (!dmChannelId) return null;
+        if (!dmChannelId) {
+                logDmDebug(`[UserTags/DM] no DM channel for user ${userId}`);
+                return null;
+        }
+
+        logDmDebug(`[UserTags/DM] DM channel for user ${userId} is ${dmChannelId}`);
 
         if (cache.has(dmChannelId)) return cache.get(dmChannelId);
 
         const messagesWrapper = MessageStore.getMessages?.(dmChannelId);
         if (!messagesWrapper) {
                 cache.set(dmChannelId, null);
+                logDmDebug(`[UserTags/DM] no messages wrapper for channel ${dmChannelId}`);
                 return null;
         }
 
+        logDmDebug(`[UserTags/DM] messages wrapper type`, {
+                wrapperType: messagesWrapper && messagesWrapper.constructor
+                        ? messagesWrapper.constructor.name
+                        : typeof messagesWrapper,
+                isArray: Array.isArray(messagesWrapper),
+                hasToArray: typeof messagesWrapper.toArray === "function",
+                hasMessages: Array.isArray(messagesWrapper.messages),
+                hasValues: typeof messagesWrapper.values === "function",
+                hasArray: Array.isArray(messagesWrapper._array),
+                hasInternalArray: Array.isArray(messagesWrapper.__array)
+        });
+
+        const collected = collectMessagesFromWrapper(messagesWrapper);
+        logDmDebug(`[UserTags/DM] collected ${collected.length} messages for dmChannelId=${dmChannelId}`);
+
         const message = pickMessageFromWrapper(messagesWrapper, mode);
+        logDmDebug(`[UserTags/DM] picked message for ${mode}`, {
+                id: message?.id,
+                timestamp: message?.timestamp,
+                editedTimestamp: message?.editedTimestamp,
+                timestampUnix: message?.timestampUnix
+        });
+
         const ts = extractTimestampFromMessage(message);
         const normalized = ts ?? null;
+
+        if (normalized != null) {
+                logDmDebug(`[UserTags/DM] ${mode} timestamp for user ${userId} is ${normalized}`);
+        } else {
+                logDmDebug(`[UserTags/DM] no ${mode} timestamp found for user ${userId}`);
+        }
+
         cache.set(dmChannelId, normalized);
         return normalized;
 };
@@ -364,6 +425,10 @@ function getFriendSince(userId) {
         }
 
         const rel = RelationshipStore.getRelationship?.(userId);
+        if (DEBUG_SORT_LOGS) {
+                console.log(`[UserTags/Rel] relationship entry for ${userId}:`, rel);
+        }
+
         debugSortLog("getFriendSince: relationship object", {
                 userId,
                 hasGetRelationship: !!RelationshipStore.getRelationship,
@@ -396,10 +461,10 @@ function getFriendSince(userId) {
                 return fallback;
         }
 
-        const value = +new Date(raw);
-        debugSortLog("getFriendSince: parsed timestamp", { userId, raw, value });
+        const normalized = normalizeTimestamp(raw);
+        debugSortLog("getFriendSince: parsed timestamp", { userId, raw, normalized });
 
-        if (Number.isFinite(value)) return value;
+        if (Number.isFinite(normalized)) return normalized;
 
         const fallback = getDmTimestamp(userId, "earliest");
         debugSortLog("getFriendSince: invalid parsed timestamp, fallback to earliest DM", { userId, raw, fallback });
@@ -409,102 +474,11 @@ function getFriendSince(userId) {
 function getLastMessagedAt(userId) {
         debugSortLog("getLastMessagedAt: called", { userId });
 
-        const ChannelStore =
-                CachedChannelStore ||
-                BdApi.Webpack.getModule(m => m?.getDMFromUserId, { searchExports: true });
-        if (ChannelStore && !CachedChannelStore) {
-                CachedChannelStore = ChannelStore;
-                debugSortLog("getLastMessagedAt: CachedChannelStore populated", {
-                        keys: Object.keys(ChannelStore)
-                });
+        if (DEBUG_SORT_LOGS) {
+                console.log(`[UserTags/Rel] getLastMessagedAt delegating to getDmTimestamp`, { userId });
         }
 
-        const MessageStore =
-                CachedMessageStore ||
-                BdApi.Webpack.getModule(m => m?.getMessages && m?.getMessage, { searchExports: true });
-        if (MessageStore && !CachedMessageStore) {
-                CachedMessageStore = MessageStore;
-                debugSortLog("getLastMessagedAt: CachedMessageStore populated", {
-                        keys: Object.keys(MessageStore)
-                });
-        }
-
-        if (!ChannelStore || !MessageStore) {
-                debugSortLog("getLastMessagedAt: missing stores", {
-                        hasChannelStore: !!ChannelStore,
-                        hasMessageStore: !!MessageStore
-                });
-                return null;
-        }
-
-        const dmChannelId = ChannelStore.getDMFromUserId?.(userId);
-        debugSortLog("getLastMessagedAt: DM channel id", {
-                userId,
-                dmChannelId,
-                hasGetDMFromUserId: !!ChannelStore.getDMFromUserId
-        });
-        if (!dmChannelId) return null;
-
-        const messagesWrapper = MessageStore.getMessages?.(dmChannelId);
-        debugSortLog("getLastMessagedAt: messages wrapper", {
-                userId,
-                dmChannelId,
-                hasGetMessages: !!MessageStore.getMessages,
-                wrapperType: messagesWrapper && messagesWrapper.constructor
-                        ? messagesWrapper.constructor.name
-                        : typeof messagesWrapper,
-                wrapperKeys: messagesWrapper ? Object.keys(messagesWrapper) : null
-        });
-
-        if (!messagesWrapper) return null;
-
-        const lastMessage =
-                typeof messagesWrapper.last === "function"
-                        ? messagesWrapper.last()?.[1] ?? messagesWrapper.last()
-                        : null;
-        const mostRecent =
-                (typeof messagesWrapper.getMostRecentMessage === "function" && messagesWrapper.getMostRecentMessage()) ||
-                (typeof messagesWrapper.getLatestMessage === "function" && messagesWrapper.getLatestMessage()) ||
-                (typeof messagesWrapper.getLastMessage === "function" && messagesWrapper.getLastMessage());
-        const fallbackArray = messagesWrapper._array;
-
-        debugSortLog("getLastMessagedAt: candidate messages", {
-                userId,
-                hasLast: typeof messagesWrapper.last === "function",
-                hasMostRecent: typeof messagesWrapper.getMostRecentMessage === "function",
-                hasLatest: typeof messagesWrapper.getLatestMessage === "function",
-                hasLastMessage: typeof messagesWrapper.getLastMessage === "function",
-                fallbackLength: Array.isArray(fallbackArray) ? fallbackArray.length : null,
-                lastMessage,
-                mostRecent
-        });
-
-        const message =
-                lastMessage ||
-                mostRecent ||
-                (Array.isArray(fallbackArray) && fallbackArray.length > 0
-                        ? fallbackArray[fallbackArray.length - 1]
-                        : null);
-
-        if (!message) {
-                debugSortLog("getLastMessagedAt: no message found after all fallbacks", {
-                        userId,
-                        dmChannelId
-                });
-                return null;
-        }
-
-        const ts = message.timestamp ?? message.editedTimestamp ?? null;
-        const value = ts ? +new Date(ts) : null;
-
-        debugSortLog("getLastMessagedAt: final timestamp", {
-                userId,
-                dmChannelId,
-                ts,
-                value
-        });
-
-        return Number.isFinite(value) ? value : null;
+        return getDmTimestamp(userId, "latest");
 }
 
 // Column key for the user column (used for width state)
@@ -785,22 +759,28 @@ class UserTags {
                         const data = Data.load(this._config.info.name, "UserData") || {};
                         const entry = this.getOrInitUserEntry(data, userId);
 
-                        entry.friendSinceMs =
-                                earliestTimestamp !== null
-                                        ? earliestTimestamp
-                                        : entry.friendSinceMs ?? null;
-                        entry.lastMessagedMs =
-                                latestTimestamp !== null
-                                        ? latestTimestamp
-                                        : entry.lastMessagedMs ?? null;
+                        const hadFriendSince = entry.friendSinceMs;
+                        const hadLastMessaged = entry.lastMessagedMs;
 
-                        this.saveUserData(data);
+                        if (earliestTimestamp !== null) entry.friendSinceMs = earliestTimestamp;
+                        if (latestTimestamp !== null) entry.lastMessagedMs = latestTimestamp;
 
-                        console.log("[UserTags] handleDateRefreshForUser persisted", {
-                                userId,
-                                friendSinceMs: entry.friendSinceMs,
-                                lastMessagedMs: entry.lastMessagedMs
-                        });
+                        if (earliestTimestamp !== null || latestTimestamp !== null) {
+                                this.saveUserData(data);
+
+                                console.log("[UserTags] handleDateRefreshForUser persisted", {
+                                        userId,
+                                        friendSinceMs: entry.friendSinceMs,
+                                        lastMessagedMs: entry.lastMessagedMs
+                                });
+                        } else {
+                                entry.friendSinceMs = hadFriendSince;
+                                entry.lastMessagedMs = hadLastMessaged;
+                                console.warn(
+                                        "[UserTags] handleDateRefreshForUser: still no timestamps after DM load",
+                                        userId
+                                );
+                        }
 
                         if (typeof this._forceOverviewRefresh === "function") {
                                 this._forceOverviewRefresh();
@@ -1065,7 +1045,7 @@ class UserTags {
                                 cursor: pointer;
                         }
                         .usertags-datecell {
-                                cursor: default;
+                                cursor: pointer;
                                 justify-content: flex-start;
                                 font-variant-numeric: tabular-nums;
                                 color: var(--text-muted);
@@ -1075,6 +1055,10 @@ class UserTags {
                                 cursor: pointer;
                                 color: var(--text-link);
                                 text-decoration: underline dotted;
+                        }
+                        .usertags-datecell-clickable:hover {
+                                text-decoration: underline;
+                                color: var(--text-normal);
                         }
                         .usertags-date-cell-missing {
                                 cursor: pointer;
@@ -2150,43 +2134,31 @@ class UserTags {
                         const friendSinceCache = new Map();
                         const lastMessagedCache = new Map();
 
-                        const getCachedFriendSince = (id) => {
-                                if (friendSinceCache.has(id)) return friendSinceCache.get(id);
-                                const entry = plugin.getOrInitUserEntry(data, id);
-                                const hasCached = Object.prototype.hasOwnProperty.call(entry, "friendSinceMs");
-                                if (hasCached && entry.friendSinceMs != null) {
-                                        friendSinceCache.set(id, entry.friendSinceMs);
-                                        return entry.friendSinceMs;
-                                }
-                                const value = getFriendSince(id);
-                                friendSinceCache.set(id, value);
-                                return value;
-                        };
-
-                        const getCachedLastMessaged = (id) => {
-                                if (lastMessagedCache.has(id)) return lastMessagedCache.get(id);
-                                const entry = plugin.getOrInitUserEntry(data, id);
-                                const hasCached = Object.prototype.hasOwnProperty.call(entry, "lastMessagedMs");
-                                if (hasCached && entry.lastMessagedMs != null) {
-                                        lastMessagedCache.set(id, entry.lastMessagedMs);
-                                        return entry.lastMessagedMs;
-                                }
-                                const value = getLastMessagedAt(id);
-                                lastMessagedCache.set(id, value);
-                                return value;
-                        };
-
                         const getFriendSinceForUser = (userId) => {
+                                if (friendSinceCache.has(userId)) return friendSinceCache.get(userId);
                                 const entry = plugin.getOrInitUserEntry(data, userId);
-                                if (entry.friendSinceMs != null) return entry.friendSinceMs;
-                                return getCachedFriendSince(userId);
+                                const value =
+                                        entry.friendSinceMs != null
+                                                ? entry.friendSinceMs
+                                                : getFriendSince(userId);
+                                friendSinceCache.set(userId, value);
+                                return value;
                         };
 
                         const getLastMessagedForUser = (userId) => {
+                                if (lastMessagedCache.has(userId)) return lastMessagedCache.get(userId);
                                 const entry = plugin.getOrInitUserEntry(data, userId);
-                                if (entry.lastMessagedMs != null) return entry.lastMessagedMs;
-                                return getCachedLastMessaged(userId);
+                                const value =
+                                        entry.lastMessagedMs != null
+                                                ? entry.lastMessagedMs
+                                                : getLastMessagedAt(userId);
+                                lastMessagedCache.set(userId, value);
+                                return value;
                         };
+
+                        const getCachedFriendSince = (id) => getFriendSinceForUser(id);
+
+                        const getCachedLastMessaged = (id) => getLastMessagedForUser(id);
 
                         const handleDateCellClick = (userId, column) => {
                                 console.log("[UserTags] date cell clicked", { userId, column });
@@ -2633,17 +2605,13 @@ class UserTags {
                                 const isLastMsgMissing = lastMsg == null;
 
                                 const friendSinceClass =
-                                        "usertags-cell usertags-datecell" +
-                                        (isFriendSinceMissing
-                                                ? " usertags-datecell-clickable usertags-date-cell-missing"
-                                                : "") +
+                                        "usertags-cell usertags-datecell usertags-datecell-clickable" +
+                                        (isFriendSinceMissing ? " usertags-date-cell-missing" : "") +
                                         (hoverUserId === user.userId ? " usertags-row-hover" : "");
 
                                 const lastMsgClass =
-                                        "usertags-cell usertags-datecell" +
-                                        (isLastMsgMissing
-                                                ? " usertags-datecell-clickable usertags-date-cell-missing"
-                                                : "") +
+                                        "usertags-cell usertags-datecell usertags-datecell-clickable" +
+                                        (isLastMsgMissing ? " usertags-date-cell-missing" : "") +
                                         (hoverUserId === user.userId ? " usertags-row-hover" : "");
 
                                 gridChildren.push(
@@ -2655,9 +2623,7 @@ class UserTags {
                                                         onMouseEnter: () => setHoverUserId(user.userId),
                                                         onMouseLeave: () =>
                                                                 setHoverUserId(prev => (prev === user.userId ? null : prev)),
-                                                        onClick: isFriendSinceMissing
-                                                                ? () => handleDateCellClick(user.userId, "friendSince")
-                                                                : undefined
+                                                        onClick: () => handleDateCellClick(user.userId, "friendSince")
                                                 },
                                                 friendSinceText
                                         )
@@ -2672,9 +2638,7 @@ class UserTags {
                                                         onMouseEnter: () => setHoverUserId(user.userId),
                                                         onMouseLeave: () =>
                                                                 setHoverUserId(prev => (prev === user.userId ? null : prev)),
-                                                        onClick: isLastMsgMissing
-                                                                ? () => handleDateCellClick(user.userId, "lastMessaged")
-                                                                : undefined
+                                                        onClick: () => handleDateCellClick(user.userId, "lastMessaged")
                                                 },
                                                 lastMsgText
                                         )
