@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.10.0
+ * @version 1.11.0
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-		version: "1.10.0",
+			version: "1.11.0",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-05",
+			items: [
+				"Rebuilt DM date handling: when viewing a DM, UserTags now logs oldest and newest message timestamps from that DM.",
+				"Removed in-grid Friend since/Last messaged columns and sorting so these dates are no longer persisted in tag data."
+			]
+		},
 		{
 			title: "1.10.0",
 			items: [
@@ -118,14 +125,6 @@ const UserProfileActions = Webpack.getModule(
         { searchExports: true }
 );
 
-const PrivateChannelActions = Webpack.getModule(
-        m =>
-                m &&
-                typeof m.openPrivateChannel === "function" &&
-                (typeof m.selectPrivateChannel === "function" || typeof m.openDM === "function"),
-        { searchExports: true }
-);
-
 const Button = Webpack.getModule(
 	m => m?.Colors && m?.Looks && m?.Sizes,
 	{ searchExports: true }
@@ -182,32 +181,10 @@ function ToolbarComponent({ onClick }) {
         return button;
 }
 
-const DEBUG_SORT_LOGS = true; // set to false to silence these logs later
-let debugSortLogCount = 0;
-const DEBUG_SORT_LOG_LIMIT = 500; // hard cap so we don't spam infinitely
-
-function debugSortLog(...args) {
-        if (!DEBUG_SORT_LOGS) return;
-        if (debugSortLogCount >= DEBUG_SORT_LOG_LIMIT) return;
-        debugSortLogCount++;
-        try {
-                const logger = BdApi?.Logger;
-                if (logger && typeof logger.log === "function") {
-                        logger.log("UserTags/Sort", ...args);
-                } else {
-                        console.log("[UserTags/Sort]", ...args);
-                }
-        } catch (e) {
-                console.log("[UserTags/Sort]", ...args);
-        }
-}
+const DEBUG_DM_LOGS = true;
 
 let CachedChannelStore = null;
 let CachedMessageStore = null;
-const dmTimestampCache = {
-        latest: new Map(),
-        earliest: new Map()
-};
 
 const normalizeTimestamp = (value) => {
         if (!value && value !== 0) return null;
@@ -228,27 +205,18 @@ const extractTimestampFromMessage = (message) => {
 };
 
 const logDmDebug = (...args) => {
-        if (!DEBUG_SORT_LOGS) return;
+        if (!DEBUG_DM_LOGS) return;
         console.log(...args);
 };
 
 const getChannelStore = () => {
         if (CachedChannelStore) return CachedChannelStore;
         const store =
-                BdApi?.Webpack?.getByProps?.("getDMFromUserId") ||
-                WebpackModules?.findByProps?.("getDMFromUserId") ||
-                BdApi.Webpack.getModule(m => m?.getDMFromUserId, { searchExports: true });
+                BdApi?.Webpack?.getByProps?.("getDMFromUserId", "getChannel") ||
+                WebpackModules?.findByProps?.("getDMFromUserId", "getChannel") ||
+                BdApi.Webpack.getModule(m => m?.getDMFromUserId && m?.getChannel, { searchExports: true });
 
-        if (store) {
-                CachedChannelStore = store;
-                logDmDebug("[UserTags/DM] ChannelStore resolved", {
-                        keys: Object.keys(store || {}).slice(0, 20)
-                });
-        } else {
-                logDmDebug("[UserTags/DM] ChannelStore missing");
-                return null;
-        }
-
+        CachedChannelStore = store || null;
         return CachedChannelStore;
 };
 
@@ -259,16 +227,7 @@ const getMessageStore = () => {
                 WebpackModules?.findByProps?.("getMessages", "getMessage") ||
                 BdApi.Webpack.getModule(m => m?.getMessages && m?.getMessage, { searchExports: true });
 
-        if (store) {
-                CachedMessageStore = store;
-                logDmDebug("[UserTags/DM] MessageStore resolved", {
-                        keys: Object.keys(store || {}).slice(0, 20)
-                });
-        } else {
-                logDmDebug("[UserTags/DM] MessageStore missing");
-                return null;
-        }
-
+        CachedMessageStore = store || null;
         return CachedMessageStore;
 };
 
@@ -303,194 +262,40 @@ const collectMessagesFromWrapper = (wrapper) => {
         return flat;
 };
 
-const pickMessageFromWrapper = (wrapper, mode = "latest") => {
-        if (!wrapper) return null;
+const getDmMessageBounds = (channelId) => {
+        const MessageStore = getMessageStore();
+        if (!channelId || !MessageStore) return { oldest: null, newest: null, totalMessages: 0 };
 
-        const methodOrderLatest = [
-                "getMostRecentMessage",
-                "getLatestMessage",
-                "getLastMessage"
-        ];
-        const methodOrderEarliest = ["getFirstMessage", "first"];
-
-        const methods = mode === "earliest" ? methodOrderEarliest : methodOrderLatest;
-        for (const key of methods) {
-                const fn = wrapper?.[key];
-                if (typeof fn === "function") {
-                        const msg = coerceMessageFromWrapperEntry(fn.call(wrapper));
-                        if (msg) return msg;
-                }
-        }
-
-        if (mode === "latest" && typeof wrapper.last === "function") {
-                const last = wrapper.last();
-                const msg = coerceMessageFromWrapperEntry(last?.[1] ?? last);
-                if (msg) return msg;
-        }
+        const wrapper = MessageStore.getMessages?.(channelId);
+        if (!wrapper) return { oldest: null, newest: null, totalMessages: 0 };
 
         const messages = collectMessagesFromWrapper(wrapper);
-        if (!messages.length) return null;
+        let oldest = null;
+        let newest = null;
 
-        let picked = null;
         messages.forEach(msg => {
                 const ts = extractTimestampFromMessage(msg);
                 if (ts == null) return;
-                if (!picked) {
-                        picked = { msg, ts };
-                        return;
-                }
-                if (mode === "latest" ? ts > picked.ts : ts < picked.ts) {
-                        picked = { msg, ts };
-                }
+                if (!oldest || ts < oldest.timestamp) oldest = { id: msg.id, timestamp: ts };
+                if (!newest || ts > newest.timestamp) newest = { id: msg.id, timestamp: ts };
         });
 
-        return picked?.msg ?? null;
+        return {
+                oldest,
+                newest,
+                totalMessages: messages.length
+        };
 };
 
-const getDmTimestamp = (userId, mode = "latest") => {
-        logDmDebug(`[UserTags/DM] getDmTimestamp start`, { userId, mode });
-        const cache = mode === "earliest" ? dmTimestampCache.earliest : dmTimestampCache.latest;
-        const ChannelStore = getChannelStore();
-        const MessageStore = getMessageStore();
-        if (!ChannelStore || !MessageStore) return null;
-
-        const dmChannelId = ChannelStore.getDMFromUserId?.(userId);
-        if (!dmChannelId) {
-                logDmDebug(`[UserTags/DM] no DM channel for user ${userId}`);
-                return null;
-        }
-
-        logDmDebug(`[UserTags/DM] DM channel for user ${userId} is ${dmChannelId}`);
-
-        if (cache.has(dmChannelId)) return cache.get(dmChannelId);
-
-        const messagesWrapper = MessageStore.getMessages?.(dmChannelId);
-        if (!messagesWrapper) {
-                cache.set(dmChannelId, null);
-                logDmDebug(`[UserTags/DM] no messages wrapper for channel ${dmChannelId}`);
-                return null;
-        }
-
-        logDmDebug(`[UserTags/DM] messages wrapper type`, {
-                wrapperType: messagesWrapper && messagesWrapper.constructor
-                        ? messagesWrapper.constructor.name
-                        : typeof messagesWrapper,
-                isArray: Array.isArray(messagesWrapper),
-                hasToArray: typeof messagesWrapper.toArray === "function",
-                hasMessages: Array.isArray(messagesWrapper.messages),
-                hasValues: typeof messagesWrapper.values === "function",
-                hasArray: Array.isArray(messagesWrapper._array),
-                hasInternalArray: Array.isArray(messagesWrapper.__array)
-        });
-
-        const collected = collectMessagesFromWrapper(messagesWrapper);
-        logDmDebug(`[UserTags/DM] collected ${collected.length} messages for dmChannelId=${dmChannelId}`);
-
-        const message = pickMessageFromWrapper(messagesWrapper, mode);
-        logDmDebug(`[UserTags/DM] picked message for ${mode}`, {
-                id: message?.id,
-                timestamp: message?.timestamp,
-                editedTimestamp: message?.editedTimestamp,
-                timestampUnix: message?.timestampUnix
-        });
-
-        const ts = extractTimestampFromMessage(message);
-        const normalized = ts ?? null;
-
-        if (normalized != null) {
-                logDmDebug(`[UserTags/DM] ${mode} timestamp for user ${userId} is ${normalized}`);
-        } else {
-                logDmDebug(`[UserTags/DM] no ${mode} timestamp found for user ${userId}`);
-        }
-
-        cache.set(dmChannelId, normalized);
-        return normalized;
-};
-
-function getFriendSince(userId) {
-        const { RelationshipStore } = StoreModules;
-        debugSortLog("getFriendSince: called", { userId, hasRelationshipStore: !!RelationshipStore });
-
-        if (!RelationshipStore) {
-                debugSortLog("getFriendSince: RelationshipStore missing");
-                return null;
-        }
-
-        if (!RelationshipStore.isFriend?.(userId)) {
-                debugSortLog("getFriendSince: not a friend or isFriend() missing", {
-                        userId,
-                        isFriendFn: !!RelationshipStore.isFriend
-                });
-                return null;
-        }
-
-        const rel = RelationshipStore.getRelationship?.(userId);
-        if (DEBUG_SORT_LOGS) {
-                console.log(`[UserTags/Rel] relationship entry for ${userId}:`, rel);
-        }
-
-        debugSortLog("getFriendSince: relationship object", {
-                userId,
-                hasGetRelationship: !!RelationshipStore.getRelationship,
-                rel,
-                relKeys: rel ? Object.keys(rel) : null
-        });
-
-        if (!rel) {
-                debugSortLog("getFriendSince: no relationship object for user", { userId });
-                const fallback = getDmTimestamp(userId, "earliest");
-                debugSortLog("getFriendSince: fallback to earliest DM timestamp", { userId, fallback });
-                return fallback;
-        }
-
-        const raw =
-                rel.since ??
-                rel.sinceDate ??
-                rel.since_at ??
-                rel.createdAt ??
-                rel.created_at ??
-                rel.sinceAt ??
-                rel.addedAt ??
-                null;
-
-        debugSortLog("getFriendSince: raw timestamp candidate", { userId, raw });
-
-        if (!raw) {
-                const fallback = getDmTimestamp(userId, "earliest");
-                debugSortLog("getFriendSince: no raw timestamp, fallback to earliest DM", { userId, fallback });
-                return fallback;
-        }
-
-        const normalized = normalizeTimestamp(raw);
-        debugSortLog("getFriendSince: parsed timestamp", { userId, raw, normalized });
-
-        if (Number.isFinite(normalized)) return normalized;
-
-        const fallback = getDmTimestamp(userId, "earliest");
-        debugSortLog("getFriendSince: invalid parsed timestamp, fallback to earliest DM", { userId, raw, fallback });
-        return fallback;
-}
-
-function getLastMessagedAt(userId) {
-        debugSortLog("getLastMessagedAt: called", { userId });
-
-        if (DEBUG_SORT_LOGS) {
-                console.log(`[UserTags/Rel] getLastMessagedAt delegating to getDmTimestamp`, { userId });
-        }
-
-        return getDmTimestamp(userId, "latest");
-}
-
-// Column key for the user column (used for width state)
 const USER_COL_KEY = "__USER__";
-const FRIEND_SINCE_COL_KEY = "__FRIEND_SINCE__";
-const LAST_MSG_COL_KEY = "__LAST_MSG__";
 
 class UserTags {
 	constructor() {
 		this._config = config;
 		this.settings = Data.load(this._config.info.name, "settings") || {};
 		this.userPopoutPatched = false;
+		this.dmViewObserverTimer = null;
+		this.lastViewedDmChannelId = null;
 	}
 
 	getName() { return this._config.info.name; }
@@ -499,12 +304,10 @@ class UserTags {
 	getDescription() { return this._config.info.description; }
 
         /**
-         * Ensures that data[userId] is in the new format:
+         * Ensures that data[userId] is in the format:
          * {
          *   username: string | null,
-         *   tags: string[],
-         *   friendSinceMs?: number | null,
-         *   lastMessagedMs?: number | null
+         *   tags: string[]
          * }
          *
          * Also upgrades legacy array format automatically.
@@ -517,9 +320,7 @@ class UserTags {
                         const user = StoreModules.UserStore.getUser(userId);
                         entry = {
                                 username: user ? user.username : null,
-                                tags: entry,
-                                friendSinceMs: null,
-                                lastMessagedMs: null
+                                tags: entry
                         };
                         data[userId] = entry;
                 } else if (!entry || typeof entry !== "object") {
@@ -527,9 +328,7 @@ class UserTags {
                         const user = StoreModules.UserStore.getUser(userId);
                         entry = {
                                 username: user ? user.username : null,
-                                tags: [],
-                                friendSinceMs: null,
-                                lastMessagedMs: null
+                                tags: []
                         };
                         data[userId] = entry;
                 } else {
@@ -540,12 +339,6 @@ class UserTags {
                         if (!entry.username) {
                                 const user = StoreModules.UserStore.getUser(userId);
                                 if (user) entry.username = user.username;
-                        }
-                        if (!Object.prototype.hasOwnProperty.call(entry, "friendSinceMs")) {
-                                entry.friendSinceMs = null;
-                        }
-                        if (!Object.prototype.hasOwnProperty.call(entry, "lastMessagedMs")) {
-                                entry.lastMessagedMs = null;
                         }
                 }
 
@@ -688,7 +481,7 @@ class UserTags {
 	 * Uses TagIndex if present; falls back to scanning UserData.
 	 * Also merges in any GlobalTags created from the overview.
 	 */
-        getAllTags() {
+	getAllTags() {
                 const tagIndex = Data.load(this._config.info.name, "TagIndex") || null;
                 const globalTags = Data.load(this._config.info.name, "GlobalTags") || [];
                 const tagsSet = new Set();
@@ -720,75 +513,58 @@ class UserTags {
                 return Array.from(tagsSet).sort((a, b) => a.localeCompare(b));
         }
 
-        handleDateRefreshForUser = async (userId) => {
-                try {
-                        console.log("[UserTags] handleDateRefreshForUser start", userId);
+        startDmViewObserver() {
+                this.stopDmViewObserver();
 
-                        try {
-                                if (PrivateChannelActions?.openPrivateChannel) {
-                                        PrivateChannelActions.openPrivateChannel(userId);
-                                } else if (PrivateChannelActions?.openDM) {
-                                        PrivateChannelActions.openDM(userId);
-                                } else if (PrivateChannelActions?.selectPrivateChannel) {
-                                        PrivateChannelActions.selectPrivateChannel(userId);
-                                }
-                        } catch (e) {
-                                console.error("[UserTags] Failed to open DM for date refresh", userId, e);
+                const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
+                const ChannelStore = getChannelStore();
+                if (!SelectedChannelStore || !ChannelStore) return;
+
+                const logCurrentDmBounds = () => {
+                        const channelId = SelectedChannelStore.getChannelId?.();
+                        if (!channelId || channelId === this.lastViewedDmChannelId) return;
+
+                        const channel = ChannelStore.getChannel?.(channelId);
+                        const isDm = channel?.isDM?.() || channel?.type === 1;
+                        if (!isDm) {
+                                this.lastViewedDmChannelId = channelId;
+                                return;
                         }
 
-                        await new Promise(r => setTimeout(r, 400));
-
-                        const channelStore = getChannelStore();
-                        const dmChannelId = channelStore?.getDMFromUserId?.(userId);
-                        if (dmChannelId) {
-                                dmTimestampCache.earliest.delete(dmChannelId);
-                                dmTimestampCache.latest.delete(dmChannelId);
-                        }
-
-                        const earliestTimestamp =
-                                getDmTimestamp(userId, "earliest") ?? getFriendSince(userId);
-                        const latestTimestamp =
-                                getDmTimestamp(userId, "latest") ?? getLastMessagedAt(userId);
-
-                        console.log("[UserTags] handleDateRefreshForUser timestamps", {
-                                userId,
-                                earliestTimestamp,
-                                latestTimestamp
+                        this.lastViewedDmChannelId = channelId;
+                        const bounds = getDmMessageBounds(channelId);
+                        logDmDebug("[UserTags/DM] Viewed DM message bounds", {
+                                channelId,
+                                totalMessages: bounds.totalMessages,
+                                oldest: bounds.oldest
+                                        ? {
+                                                  id: bounds.oldest.id,
+                                                  timestamp: bounds.oldest.timestamp,
+                                                  iso: new Date(bounds.oldest.timestamp).toISOString()
+                                          }
+                                        : null,
+                                newest: bounds.newest
+                                        ? {
+                                                  id: bounds.newest.id,
+                                                  timestamp: bounds.newest.timestamp,
+                                                  iso: new Date(bounds.newest.timestamp).toISOString()
+                                          }
+                                        : null
                         });
+                };
 
-                        const data = Data.load(this._config.info.name, "UserData") || {};
-                        const entry = this.getOrInitUserEntry(data, userId);
+                logCurrentDmBounds();
+                this.dmViewObserverTimer = setInterval(logCurrentDmBounds, 1000);
+        }
 
-                        const hadFriendSince = entry.friendSinceMs;
-                        const hadLastMessaged = entry.lastMessagedMs;
-
-                        if (earliestTimestamp !== null) entry.friendSinceMs = earliestTimestamp;
-                        if (latestTimestamp !== null) entry.lastMessagedMs = latestTimestamp;
-
-                        if (earliestTimestamp !== null || latestTimestamp !== null) {
-                                this.saveUserData(data);
-
-                                console.log("[UserTags] handleDateRefreshForUser persisted", {
-                                        userId,
-                                        friendSinceMs: entry.friendSinceMs,
-                                        lastMessagedMs: entry.lastMessagedMs
-                                });
-                        } else {
-                                entry.friendSinceMs = hadFriendSince;
-                                entry.lastMessagedMs = hadLastMessaged;
-                                console.warn(
-                                        "[UserTags] handleDateRefreshForUser: still no timestamps after DM load",
-                                        userId
-                                );
-                        }
-
-                        if (typeof this._forceOverviewRefresh === "function") {
-                                this._forceOverviewRefresh();
-                        }
-                } catch (err) {
-                        console.error("[UserTags] handleDateRefreshForUser error", userId, err);
+        stopDmViewObserver() {
+                if (this.dmViewObserverTimer) {
+                        clearInterval(this.dmViewObserverTimer);
+                        this.dmViewObserverTimer = null;
                 }
-        };
+                this.lastViewedDmChannelId = null;
+        }
+
 
 	/**
 	 * Attaches a dropdown of existing tags to a tag input.
@@ -1214,22 +990,6 @@ class UserTags {
 				align-items: flex-end;
 				gap: 4px;
 			}
-			.usertags-sort-label {
-				font-size: 11px;
-				color: var(--text-muted);
-				display: flex;
-				align-items: center;
-				gap: 4px;
-				white-space: nowrap;
-			}
-			.usertags-sort-select {
-				font-size: 11px;
-				padding: 2px 6px;
-				border-radius: 4px;
-				border: 1px solid var(--background-tertiary);
-				background-color: var(--background-secondary);
-				color: var(--text-normal);
-			}
 
 			.usertags-channel-toolbar-button {
 				margin-left: 6px;
@@ -1284,6 +1044,7 @@ class UserTags {
 		`);
 
 		this.patchChannelHeaderToolbar();
+		this.startDmViewObserver();
 
 		// SMALL USER PROFILE POPOUT
 		const UserProfileModuleSmall = Webpack.getByStrings(
@@ -1423,6 +1184,7 @@ class UserTags {
 		BdApi.Patcher.unpatchAll("userProfileFull");
 		BdApi.Patcher.unpatchAll("QuickSwitcher");
 		BdApi.Patcher.unpatchAll("UserTagsChannelHeaderToolbar");
+		this.stopDmViewObserver();
 		DOM.removeStyle(this._config.info.name);
 	}
 
@@ -1727,19 +1489,10 @@ class UserTags {
 		function Panel() {
 			// Default width for User column so it doesn't start at 0
                         const [colWidths, setColWidths] = React.useState(() => ({
-                                [USER_COL_KEY]: 220,
-                                [FRIEND_SINCE_COL_KEY]: 140,
-                                [LAST_MSG_COL_KEY]: 140
+                                [USER_COL_KEY]: 220
                         }));
 			const [version, setVersion] = React.useState(0); // eslint-disable-line no-unused-vars
 			const [filter, setFilter] = React.useState("");
-                        const normalizeSortMode = (value) => {
-                                return value === "friendSince" || value === "lastMessaged" ? value : "alpha";
-                        };
-
-                        const [sortMode, setSortMode] = React.useState(() =>
-                                normalizeSortMode(plugin.settings?.sortMode)
-                        );
                         const [includeTags, setIncludeTags] = React.useState([]);
                         const [excludeTags, setExcludeTags] = React.useState([]);
                         const [hoverUserId, setHoverUserId] = React.useState(null);
@@ -1755,13 +1508,6 @@ class UserTags {
                                         }
                                 };
                         }, []);
-
-                        const handleSortModeChange = (value) => {
-                                const normalized = normalizeSortMode(value);
-                                setSortMode(normalized);
-                                plugin.settings.sortMode = normalized;
-                                Data.save(plugin._config.info.name, "settings", plugin.settings);
-                        };
 
 			React.useEffect(() => {
 				const root = rootRef.current;
@@ -2131,42 +1877,6 @@ class UserTags {
 				0
 			);
 
-                        const friendSinceCache = new Map();
-                        const lastMessagedCache = new Map();
-
-                        const getFriendSinceForUser = (userId) => {
-                                if (friendSinceCache.has(userId)) return friendSinceCache.get(userId);
-                                const entry = plugin.getOrInitUserEntry(data, userId);
-                                const value =
-                                        entry.friendSinceMs != null
-                                                ? entry.friendSinceMs
-                                                : getFriendSince(userId);
-                                friendSinceCache.set(userId, value);
-                                return value;
-                        };
-
-                        const getLastMessagedForUser = (userId) => {
-                                if (lastMessagedCache.has(userId)) return lastMessagedCache.get(userId);
-                                const entry = plugin.getOrInitUserEntry(data, userId);
-                                const value =
-                                        entry.lastMessagedMs != null
-                                                ? entry.lastMessagedMs
-                                                : getLastMessagedAt(userId);
-                                lastMessagedCache.set(userId, value);
-                                return value;
-                        };
-
-                        const getCachedFriendSince = (id) => getFriendSinceForUser(id);
-
-                        const getCachedLastMessaged = (id) => getLastMessagedForUser(id);
-
-                        const handleDateCellClick = (userId, column) => {
-                                console.log("[UserTags] date cell clicked", { userId, column });
-                                if (typeof plugin.handleDateRefreshForUser === "function") {
-                                        plugin.handleDateRefreshForUser(userId);
-                                }
-                        };
-
                         const alphaCompare = (a, b) => {
                                 const aKeys = [a.displayName, a.username, a.userId];
                                 const bKeys = [b.displayName, b.username, b.userId];
@@ -2181,49 +1891,7 @@ class UserTags {
                         };
 
                         const sortedUsers = [...visibleUsers];
-
-                        if (sortMode === "alpha") {
-                                sortedUsers.sort(alphaCompare);
-                        } else if (sortMode === "friendSince") {
-                                sortedUsers.sort((a, b) => {
-                                        const aId = a.user?.id ?? a.userId;
-                                        const bId = b.user?.id ?? b.userId;
-                                        const aSince = getCachedFriendSince(aId);
-                                        const bSince = getCachedFriendSince(bId);
-
-                                        if (aSince == null && bSince == null) return alphaCompare(a, b);
-                                        if (aSince == null) return 1;
-                                        if (bSince == null) return -1;
-                                        if (aSince === bSince) return alphaCompare(a, b);
-                                        return aSince - bSince;
-                                });
-                        } else if (sortMode === "lastMessaged") {
-                                sortedUsers.sort((a, b) => {
-                                        const aId = a.user?.id ?? a.userId;
-                                        const bId = b.user?.id ?? b.userId;
-                                        const aTs = getCachedLastMessaged(aId);
-                                        const bTs = getCachedLastMessaged(bId);
-
-                                        if (aTs == null && bTs == null) return alphaCompare(a, b);
-                                        if (aTs == null) return 1;
-                                        if (bTs == null) return -1;
-                                        if (aTs === bTs) return alphaCompare(a, b);
-                                        return bTs - aTs;
-                                });
-                        }
-
-                        debugSortLog("Panel sort snapshot", {
-                                sortMode,
-                                sample: sortedUsers.slice(0, 5).map(u => {
-                                        const id = u.user?.id ?? u.userId;
-                                        return {
-                                                id,
-                                                name: u.displayName,
-                                                friendSince: getCachedFriendSince(id),
-                                                lastMsg: getCachedLastMessaged(id)
-                                        };
-                                })
-                        });
+                        sortedUsers.sort(alphaCompare);
 
                         const usersToRender = sortedUsers;
 
@@ -2391,22 +2059,6 @@ class UserTags {
 							"div",
 							{ className: "usertags-toolbar-right" },
 							React.createElement(
-								"label",
-								{ className: "usertags-sort-label" },
-								"Sort by:",
-								React.createElement(
-                                                                        "select",
-                                                                        {
-                                                                                className: "usertags-sort-select",
-                                                                                value: sortMode,
-                                                                                onChange: (e) => handleSortModeChange(e.target.value)
-                                                                        },
-									React.createElement("option", { value: "alpha" }, "A–Z (name)"),
-									React.createElement("option", { value: "friendSince" }, "Friends since"),
-									React.createElement("option", { value: "lastMessaged" }, "Last messaged")
-								)
-							),
-							React.createElement(
 								"button",
 								{ className: "usertags-addtag-btn", onClick: handleAddTagClick },
 								"Add Tag"
@@ -2419,8 +2071,6 @@ class UserTags {
 			// Build grid template columns based on current widths
                         const columnWidths = [
                                 colWidths[USER_COL_KEY] || 220,
-                                colWidths[FRIEND_SINCE_COL_KEY] || 140,
-                                colWidths[LAST_MSG_COL_KEY] || 140,
                                 // default tag width: 40px
                                 ...sortedTags.map(tag => colWidths[tag] || 40)
                         ];
@@ -2443,44 +2093,6 @@ class UserTags {
                                                 React.createElement("span", {
                                                         className: "usertags-col-resizer",
                                                         onMouseDown: (e) => startResize(e, USER_COL_KEY)
-                                                })
-                                        )
-                                )
-                        );
-
-                        gridChildren.push(
-                                React.createElement(
-                                        "div",
-                                        {
-                                                key: "header-friendSince",
-                                                className: "usertags-grid-header"
-                                        },
-                                        React.createElement(
-                                                "div",
-                                                { className: "usertags-header-cell" },
-                                                React.createElement("span", { className: "usertags-header-label" }, "Friend since"),
-                                                React.createElement("span", {
-                                                        className: "usertags-col-resizer",
-                                                        onMouseDown: (e) => startResize(e, FRIEND_SINCE_COL_KEY)
-                                                })
-                                        )
-                                )
-                        );
-
-                        gridChildren.push(
-                                React.createElement(
-                                        "div",
-                                        {
-                                                key: "header-lastMessaged",
-                                                className: "usertags-grid-header"
-                                        },
-                                        React.createElement(
-                                                "div",
-                                                { className: "usertags-header-cell" },
-                                                React.createElement("span", { className: "usertags-header-label" }, "Last messaged"),
-                                                React.createElement("span", {
-                                                        className: "usertags-col-resizer",
-                                                        onMouseDown: (e) => startResize(e, LAST_MSG_COL_KEY)
                                                 })
                                         )
                                 )
@@ -2591,59 +2203,6 @@ class UserTags {
                                         )
                                 );
 
-                                const friendSince = getFriendSinceForUser(user.userId);
-                                const lastMsg = getLastMessagedForUser(user.userId);
-
-                                const friendSinceText =
-                                        friendSince != null
-                                                ? new Date(friendSince).toLocaleDateString()
-                                                : "—";
-                                const lastMsgText =
-                                        lastMsg != null ? new Date(lastMsg).toLocaleDateString() : "—";
-
-                                const isFriendSinceMissing = friendSince == null;
-                                const isLastMsgMissing = lastMsg == null;
-
-                                const friendSinceClass =
-                                        "usertags-cell usertags-datecell usertags-datecell-clickable" +
-                                        (isFriendSinceMissing ? " usertags-date-cell-missing" : "") +
-                                        (hoverUserId === user.userId ? " usertags-row-hover" : "");
-
-                                const lastMsgClass =
-                                        "usertags-cell usertags-datecell usertags-datecell-clickable" +
-                                        (isLastMsgMissing ? " usertags-date-cell-missing" : "") +
-                                        (hoverUserId === user.userId ? " usertags-row-hover" : "");
-
-                                gridChildren.push(
-                                        React.createElement(
-                                                "div",
-                                                {
-                                                        key: `row-${user.userId}-friendSince`,
-                                                        className: friendSinceClass,
-                                                        onMouseEnter: () => setHoverUserId(user.userId),
-                                                        onMouseLeave: () =>
-                                                                setHoverUserId(prev => (prev === user.userId ? null : prev)),
-                                                        onClick: () => handleDateCellClick(user.userId, "friendSince")
-                                                },
-                                                friendSinceText
-                                        )
-                                );
-
-                                gridChildren.push(
-                                        React.createElement(
-                                                "div",
-                                                {
-                                                        key: `row-${user.userId}-lastMsg`,
-                                                        className: lastMsgClass,
-                                                        onMouseEnter: () => setHoverUserId(user.userId),
-                                                        onMouseLeave: () =>
-                                                                setHoverUserId(prev => (prev === user.userId ? null : prev)),
-                                                        onClick: () => handleDateCellClick(user.userId, "lastMessaged")
-                                                },
-                                                lastMsgText
-                                        )
-                                );
-
                                 // Tag cells
                                 sortedTags.forEach(tag => {
                                         const has = user.tags.includes(tag);
@@ -2732,22 +2291,6 @@ class UserTags {
 					React.createElement(
 						"div",
 						{ className: "usertags-toolbar-right" },
-						React.createElement(
-							"label",
-							{ className: "usertags-sort-label" },
-							"Sort by:",
-							React.createElement(
-                                                                "select",
-                                                                {
-                                                                        className: "usertags-sort-select",
-                                                                        value: sortMode,
-                                                                        onChange: (e) => handleSortModeChange(e.target.value)
-                                                                },
-								React.createElement("option", { value: "alpha" }, "A–Z (name)"),
-								React.createElement("option", { value: "friendSince" }, "Friends since"),
-								React.createElement("option", { value: "lastMessaged" }, "Last messaged")
-							)
-						),
 						React.createElement(
 							"button",
 							{ className: "usertags-addtag-btn", onClick: handleAddTagClick },
