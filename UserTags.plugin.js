@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.13
+ * @version 1.12.14
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.13",
+			version: "1.12.14",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06o",
+			items: [
+				"Moved timestamp refresh failure details to console.error with [UserTags][TimestampRefresh] prefix and simplified in-cell error state.",
+				"Added structured step/module diagnostics (QS open/query/select, bounds scrape, route restore) while keeping DM-close disabled."
+			]
+		},
 		{
 			title: "2026-02-06n",
 			items: [
@@ -308,6 +315,12 @@ const logDmDebug = (...args) => {
         console.log(...args);
 };
 
+const createTimestampRefreshError = (message, meta = {}) => {
+        const error = new Error(message);
+        error.timestampRefreshMeta = meta;
+        return error;
+};
+
 const getChannelStore = () => {
         if (CachedChannelStore) return CachedChannelStore;
         const store =
@@ -517,7 +530,9 @@ const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
                         selected: false,
                         openPath,
                         queryPath: null,
-                        reason: `Quick Switcher not confirmed open; aborting query set. Missing modules: ${missing.join(", ") || "none"}`
+                        reason: `Quick Switcher not confirmed open; aborting query set. Missing modules: ${missing.join(", ") || "none"}`,
+                        step: "qs_input_not_found",
+                        missingModules: missing
                 };
         }
 
@@ -900,7 +915,10 @@ class UserTags {
 
         async refreshDmMessageBoundForUser(userId, boundKey, username) {
                 if (!userId || !["oldest", "newest"].includes(boundKey)) {
-                        throw new Error("Missing DM lookup dependencies.");
+                        throw createTimestampRefreshError("Missing DM lookup dependencies.", {
+                                step: "precheck",
+                                missingModules: []
+                        });
                 }
 
                 const router = getRouterModule();
@@ -918,6 +936,7 @@ class UserTags {
                                 const selection = await runQuickSwitcherQueryAndEnter(String(query), userId, username);
                                 if (!selection?.selected) {
                                         lastSelectionReason = selection?.reason || "Quick Switcher selection failed.";
+                                        if (!selection?.step) selection.step = "qs_select_or_enter_failed";
                                         continue;
                                 }
 
@@ -961,7 +980,15 @@ class UserTags {
                                 const details = [lastSelectionReason, missing.length ? `Missing modules: ${missing.join(", ")}` : null, "Fallback path: QuickSwitcher internal query (or key-typing fallback) + Router/back restore"]
                                         .filter(Boolean)
                                         .join(" | ");
-                                throw new Error(details ? `Could not open matching 1:1 DM via Quick Switcher. ${details}` : "Could not open matching 1:1 DM via Quick Switcher.");
+                                throw createTimestampRefreshError(
+                                        details ? `Could not open matching 1:1 DM via Quick Switcher. ${details}` : "Could not open matching 1:1 DM via Quick Switcher.",
+                                        {
+                                                step: "qs_open_or_validate",
+                                                missingModules: missing,
+                                                details,
+                                                lastSelectionReason
+                                        }
+                                );
                         }
 
                         logDmDebug("[UserTags/DM] Scraped bound after Quick Switcher navigation", {
@@ -1007,6 +1034,17 @@ class UserTags {
                                 returnMethod,
                                 missingRouterModule: !router
                         });
+
+                        if (previousChannelId && !returnSuccess) {
+                                console.error("[UserTags][TimestampRefresh]", {
+                                        userId,
+                                        username,
+                                        boundKey,
+                                        step: "restore_route_failed",
+                                        missingModules: [!router ? "Router module(transitionTo/back)" : null].filter(Boolean),
+                                        stack: (new Error("Route restore failed")).stack
+                                });
+                        }
 
                 }
         }
@@ -2156,9 +2194,19 @@ class UserTags {
                                         updateCellState(userId, boundKey, { loading: false, error: null, updatedAt: Date.now() });
                                         setVersion(v => v + 1);
                                 } catch (error) {
+                                        const meta = error?.timestampRefreshMeta || {};
+                                        console.error("[UserTags][TimestampRefresh]", {
+                                                userId,
+                                                username,
+                                                boundKey,
+                                                step: meta.step || "unknown",
+                                                missingModules: meta.missingModules || [],
+                                                message: error?.message || "Refresh failed",
+                                                stack: error?.stack || null
+                                        });
                                         updateCellState(userId, boundKey, {
                                                 loading: false,
-                                                error: error?.message || "Refresh failed"
+                                                error: "Error"
                                         });
                                 } finally {
                                         userRefreshInFlightRef.current.delete(cellKey);
@@ -2771,7 +2819,7 @@ class UserTags {
                                                 {
                                                         key: `row-${user.userId}-oldest-message`,
                                                         className: oldestClass,
-                                                        title: oldestState.error || `${user.username}: refresh oldest message`,
+                                                        title: `${user.username}: refresh oldest message`,
                                                         onClick: (e) => { e.preventDefault(); e.stopPropagation(); handleRefreshMessageCell(user.userId, "oldest", user.username); }
                                                 },
                                                 oldestValue
@@ -2784,7 +2832,7 @@ class UserTags {
                                                 {
                                                         key: `row-${user.userId}-newest-message`,
                                                         className: newestClass,
-                                                        title: newestState.error || `${user.username}: refresh newest message`,
+                                                        title: `${user.username}: refresh newest message`,
                                                         onClick: (e) => { e.preventDefault(); e.stopPropagation(); handleRefreshMessageCell(user.userId, "newest", user.username); }
                                                 },
                                                 newestValue
