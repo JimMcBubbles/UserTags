@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.5
+ * @version 1.12.6
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.5",
+			version: "1.12.6",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06g",
+			items: [
+				"Timestamp cell refresh now uses a Quick Switcher-style open path for existing 1:1 DMs, with strict recipient/type validation and automatic return to the previous channel.",
+				"Added debug logs documenting the exact module/function path used and the no-group/no-create validations; plus best-effort DM close after scrape to avoid lingering open DMs."
+			]
+		},
 		{
 			title: "2026-02-06f",
 			items: [
@@ -225,6 +232,7 @@ const DEBUG_DM_LOGS = true;
 let CachedChannelStore = null;
 let CachedMessageStore = null;
 let CachedChannelNavigation = null;
+let CachedPrivateChannelActions = null;
 
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const normalizeTimestamp = (value) => {
@@ -281,6 +289,17 @@ const getChannelNavigation = () => {
 
         CachedChannelNavigation = nav || null;
         return CachedChannelNavigation;
+};
+
+const getPrivateChannelActions = () => {
+        if (CachedPrivateChannelActions) return CachedPrivateChannelActions;
+        const actions =
+                BdApi?.Webpack?.getByProps?.("openPrivateChannel", "closePrivateChannel") ||
+                WebpackModules?.findByProps?.("openPrivateChannel", "closePrivateChannel") ||
+                BdApi.Webpack.getModule(m => m?.openPrivateChannel && m?.closePrivateChannel, { searchExports: true });
+
+        CachedPrivateChannelActions = actions || null;
+        return CachedPrivateChannelActions;
 };
 
 const coerceMessageFromWrapperEntry = (entry) => {
@@ -343,19 +362,57 @@ const USER_COL_KEY = "__USER__";
 const OLDEST_MESSAGE_COL_KEY = "__OLDEST_MESSAGE__";
 const NEWEST_MESSAGE_COL_KEY = "__NEWEST_MESSAGE__";
 
+const validateDirectDmChannel = (channel, userId) => {
+        const isDm = channel?.isDM?.() || channel?.type === 1;
+        const recipients = Array.isArray(channel?.recipients) ? channel.recipients : [];
+        return !!(isDm && recipients.length === 1 && recipients[0] === userId);
+};
+
 const getExistingDirectDmChannelId = (userId) => {
         const channelStore = getChannelStore();
         if (!userId || !channelStore) return null;
 
-        const channelId = channelStore.getDMFromUserId?.(userId) || null;
-        if (!channelId) return null;
+        const mappedChannelId = channelStore.getDMFromUserId?.(userId) || null;
+        if (mappedChannelId) {
+                const mappedChannel = channelStore.getChannel?.(mappedChannelId);
+                if (validateDirectDmChannel(mappedChannel, userId)) {
+                        logDmDebug("[UserTags/DM] Existing 1:1 DM resolved from getDMFromUserId", {
+                                module: "ChannelStore",
+                                function: "getDMFromUserId",
+                                userId,
+                                channelId: mappedChannelId,
+                                validation: "type=DM && recipients=[targetUser]"
+                        });
+                        return mappedChannelId;
+                }
+        }
 
-        const channel = channelStore.getChannel?.(channelId);
-        const isDm = channel?.isDM?.() || channel?.type === 1;
-        const recipients = Array.isArray(channel?.recipients) ? channel.recipients : [];
-        if (!isDm || recipients.length !== 1 || recipients[0] !== userId) return null;
+        const rawPrivate =
+                channelStore.getMutablePrivateChannels?.() ||
+                channelStore.getPrivateChannels?.() ||
+                channelStore.getSortedPrivateChannels?.() ||
+                null;
 
-        return channelId;
+        const channels = Array.isArray(rawPrivate)
+                ? rawPrivate
+                : rawPrivate && typeof rawPrivate === "object"
+                        ? Object.values(rawPrivate)
+                        : [];
+
+        for (const channel of channels) {
+                if (validateDirectDmChannel(channel, userId)) {
+                        logDmDebug("[UserTags/DM] Existing 1:1 DM resolved from private channel index", {
+                                module: "ChannelStore",
+                                function: "getMutablePrivateChannels|getPrivateChannels|getSortedPrivateChannels",
+                                userId,
+                                channelId: channel.id,
+                                validation: "type=DM && recipients=[targetUser]"
+                        });
+                        return channel.id;
+                }
+        }
+
+        return null;
 };
 
 const pollDmMessageBound = async (channelId, boundKey, attempts = 12, delayMs = 250) => {
@@ -676,6 +733,11 @@ class UserTags {
 
                 const channelId = getExistingDirectDmChannelId(userId);
                 if (!channelId) {
+                        logDmDebug("[UserTags/DM] Aborting refresh: no existing direct DM channel", {
+                                userId,
+                                boundKey,
+                                validation: "No call to ensure/create helpers; existing 1:1 DM required"
+                        });
                         throw new Error("No existing DM; can't fetch.");
                 }
 
@@ -684,23 +746,57 @@ class UserTags {
 
                 if (!targetValue?.timestamp) {
                         const channelNavigation = getChannelNavigation();
+                        const privateChannelActions = getPrivateChannelActions();
                         const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
+                        const channelStore = getChannelStore();
                         const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
 
-                        if (!channelNavigation?.transitionToChannel) {
+                        if (!channelNavigation?.transitionToChannel && !privateChannelActions?.openPrivateChannel) {
                                 throw new Error(`Could not read ${boundKey} message timestamp.`);
                         }
 
                         const shouldNavigate = previousChannelId !== channelId;
+                        const navigationPath = privateChannelActions?.openPrivateChannel
+                                ? "PrivateChannelActions.openPrivateChannel(channelId)"
+                                : "ChannelNavigation.transitionToChannel(channelId)";
+
+                        logDmDebug("[UserTags/DM] Refresh fallback using Quick Switcher-style open path", {
+                                userId,
+                                boundKey,
+                                channelId,
+                                modulePath: navigationPath,
+                                validation: "existing channel + type=DM + single recipient target user + no ensure/create helpers"
+                        });
+
                         try {
                                 if (shouldNavigate) {
-                                        channelNavigation.transitionToChannel(channelId);
+                                        if (privateChannelActions?.openPrivateChannel) {
+                                                privateChannelActions.openPrivateChannel(channelId);
+                                        } else {
+                                                channelNavigation.transitionToChannel(channelId);
+                                        }
                                 }
+
+                                await wait(200);
+                                const navigatedChannel = channelStore?.getChannel?.(channelId);
+                                if (!validateDirectDmChannel(navigatedChannel, userId)) {
+                                        throw new Error("No existing DM; can't fetch.");
+                                }
+
                                 bounds = await pollDmMessageBound(channelId, boundKey);
                                 targetValue = bounds?.[boundKey] || null;
                         } finally {
                                 if (shouldNavigate && previousChannelId && channelNavigation?.transitionToChannel) {
                                         channelNavigation.transitionToChannel(previousChannelId);
+                                }
+
+                                if (shouldNavigate && privateChannelActions?.closePrivateChannel) {
+                                        privateChannelActions.closePrivateChannel(channelId);
+                                        logDmDebug("[UserTags/DM] Best-effort close after refresh", {
+                                                modulePath: "PrivateChannelActions.closePrivateChannel(channelId)",
+                                                channelId,
+                                                note: "Helps avoid leaving reopened DM visible in list"
+                                        });
                                 }
                         }
                 }
@@ -1857,9 +1953,9 @@ class UserTags {
                                 const now = Date.now();
                                 const cooldownUntil = cellCooldownRef.current.get(cellKey) || 0;
                                 if (now < cooldownUntil) return;
-                                if (userRefreshInFlightRef.current.has(userId)) return;
+                                if (userRefreshInFlightRef.current.has(cellKey)) return;
 
-                                userRefreshInFlightRef.current.add(userId);
+                                userRefreshInFlightRef.current.add(cellKey);
                                 cellCooldownRef.current.set(cellKey, now + 1200);
                                 updateCellState(userId, boundKey, { loading: true, error: null });
 
@@ -1873,7 +1969,7 @@ class UserTags {
                                                 error: error?.message || "Refresh failed"
                                         });
                                 } finally {
-                                        userRefreshInFlightRef.current.delete(userId);
+                                        userRefreshInFlightRef.current.delete(cellKey);
                                 }
                         };
 
