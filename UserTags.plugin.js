@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.7
+ * @version 1.12.8
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.7",
+			version: "1.12.8",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06i",
+			items: [
+				"Timestamp-cell refresh now always drives a Quick Switcher-style open/query/enter flow before scraping, then returns to the previous channel in finally.",
+				"Added explicit in-cell error text and click event suppression on date cells to prevent accidental grid action bubbling."
+			]
+		},
 		{
 			title: "2026-02-06h",
 			items: [
@@ -388,24 +395,9 @@ const validateDirectDmChannel = (channel, userId) => {
         return !!(isDm && recipients.length === 1 && recipients[0] === userId);
 };
 
-const getExistingDirectDmChannelId = (userId) => {
+const getKnownPrivateChannelIds = () => {
         const channelStore = getChannelStore();
-        if (!userId || !channelStore) return null;
-
-        const mappedChannelId = channelStore.getDMFromUserId?.(userId) || null;
-        if (mappedChannelId) {
-                const mappedChannel = channelStore.getChannel?.(mappedChannelId);
-                if (validateDirectDmChannel(mappedChannel, userId)) {
-                        logDmDebug("[UserTags/DM] Existing 1:1 DM resolved from getDMFromUserId", {
-                                module: "ChannelStore",
-                                function: "getDMFromUserId",
-                                userId,
-                                channelId: mappedChannelId,
-                                validation: "type=DM && recipients=[targetUser]"
-                        });
-                        return mappedChannelId;
-                }
-        }
+        if (!channelStore) return new Set();
 
         const rawPrivate =
                 channelStore.getMutablePrivateChannels?.() ||
@@ -419,20 +411,7 @@ const getExistingDirectDmChannelId = (userId) => {
                         ? Object.values(rawPrivate)
                         : [];
 
-        for (const channel of channels) {
-                if (validateDirectDmChannel(channel, userId)) {
-                        logDmDebug("[UserTags/DM] Existing 1:1 DM resolved from private channel index", {
-                                module: "ChannelStore",
-                                function: "getMutablePrivateChannels|getPrivateChannels|getSortedPrivateChannels",
-                                userId,
-                                channelId: channel.id,
-                                validation: "type=DM && recipients=[targetUser]"
-                        });
-                        return channel.id;
-                }
-        }
-
-        return null;
+        return new Set(channels.map(ch => ch?.id).filter(Boolean));
 };
 
 const getQuickSwitcherInput = () =>
@@ -812,24 +791,16 @@ class UserTags {
                 const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
                 const channelStore = getChannelStore();
                 const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
+                const knownPrivateChannelIds = getKnownPrivateChannelIds();
 
                 if (!channelNavigation?.transitionToChannel) {
                         throw new Error("Missing navigation dependencies.");
                 }
 
-                const expectedChannelId = getExistingDirectDmChannelId(userId);
-                if (!expectedChannelId) {
-                        logDmDebug("[UserTags/DM] Aborting refresh: no existing direct DM channel", {
-                                userId,
-                                boundKey,
-                                validation: "Quick Switcher flow requires existing 1:1 DM; no create/ensure allowed"
-                        });
-                        throw new Error("No existing DM; can't fetch.");
-                }
-
                 const quickSwitcherQueries = [userId, username].filter(Boolean);
                 let openedChannelId = null;
-                let validated = false;
+                let bounds = null;
+                let targetValue = null;
 
                 try {
                         for (const query of quickSwitcherQueries) {
@@ -838,43 +809,48 @@ class UserTags {
 
                                 openedChannelId = SelectedChannelStore?.getChannelId?.() || null;
                                 const openedChannel = openedChannelId ? channelStore?.getChannel?.(openedChannelId) : null;
-                                const isValid = validateDirectDmChannel(openedChannel, userId) && openedChannelId === expectedChannelId;
+                                const isValidDirectDm = validateDirectDmChannel(openedChannel, userId);
+                                bounds = openedChannelId ? await pollDmMessageBound(openedChannelId, boundKey, 6, 180) : null;
+                                targetValue = bounds?.[boundKey] || null;
+                                const hasAnyMessages = !!(bounds?.oldest?.timestamp || bounds?.newest?.timestamp || (bounds?.totalMessages || 0) > 0);
+                                const existedBeforeQuery = openedChannelId ? knownPrivateChannelIds.has(openedChannelId) : false;
+                                const isValid = isValidDirectDm && hasAnyMessages;
+
                                 logDmDebug("[UserTags/DM] Quick Switcher navigation validation", {
                                         query,
                                         openedChannelId,
-                                        expectedChannelId,
-                                        validationResult: isValid
+                                        validationResult: isValid,
+                                        details: {
+                                                isValidDirectDm,
+                                                hasAnyMessages,
+                                                existedBeforeQuery
+                                        }
                                 });
 
-                                if (isValid) {
-                                        validated = true;
-                                        break;
-                                }
+                                if (isValid) break;
 
                                 if (openedChannelId && privateChannelActions?.closePrivateChannel) {
                                         privateChannelActions.closePrivateChannel(openedChannelId);
                                 }
+
+                                openedChannelId = null;
+                                bounds = null;
+                                targetValue = null;
 
                                 if (previousChannelId && channelNavigation?.transitionToChannel) {
                                         channelNavigation.transitionToChannel(previousChannelId);
                                 }
                         }
 
-                        if (!validated) {
+                        if (!openedChannelId || !bounds || !targetValue?.timestamp) {
                                 throw new Error("No existing DM; can't fetch.");
                         }
 
-                        const bounds = await pollDmMessageBound(expectedChannelId, boundKey);
-                        const targetValue = bounds?.[boundKey] || null;
                         logDmDebug("[UserTags/DM] Scraped bound after Quick Switcher navigation", {
                                 boundKey,
-                                channelId: expectedChannelId,
-                                value: targetValue?.timestamp || null
+                                channelId: openedChannelId,
+                                value: targetValue.timestamp
                         });
-
-                        if (!targetValue?.timestamp) {
-                                throw new Error(`Could not read ${boundKey} message timestamp.`);
-                        }
 
                         const existing = Data.load(this._config.info.name, "DmMessageBoundsByUser") || {};
                         const previous = existing[userId] || {};
@@ -898,7 +874,7 @@ class UserTags {
                                 });
                         }
 
-                        if (openedChannelId && openedChannelId === expectedChannelId && privateChannelActions?.closePrivateChannel) {
+                        if (openedChannelId && privateChannelActions?.closePrivateChannel) {
                                 privateChannelActions.closePrivateChannel(openedChannelId);
                         }
                 }
@@ -2652,8 +2628,8 @@ class UserTags {
                                 const oldestState = cellRefreshState[`${user.userId}:oldest`] || {};
                                 const newestState = cellRefreshState[`${user.userId}:newest`] || {};
 
-                                const oldestValue = oldestState.loading ? "…" : oldestLabel;
-                                const newestValue = newestState.loading ? "…" : newestLabel;
+                                const oldestValue = oldestState.loading ? "…" : (oldestState.error ? "Error" : oldestLabel);
+                                const newestValue = newestState.loading ? "…" : (newestState.error ? "Error" : newestLabel);
 
                                 const oldestClass = `usertags-cell usertags-datecell${oldestState.loading ? " usertags-datecell-loading" : ""}${oldestState.error ? " usertags-datecell-error" : ""}`;
                                 const newestClass = `usertags-cell usertags-datecell${newestState.loading ? " usertags-datecell-loading" : ""}${newestState.error ? " usertags-datecell-error" : ""}`;
@@ -2665,7 +2641,7 @@ class UserTags {
                                                         key: `row-${user.userId}-oldest-message`,
                                                         className: oldestClass,
                                                         title: oldestState.error || `${user.username}: refresh oldest message`,
-                                                        onClick: () => handleRefreshMessageCell(user.userId, "oldest", user.username)
+                                                        onClick: (e) => { e.preventDefault(); e.stopPropagation(); handleRefreshMessageCell(user.userId, "oldest", user.username); }
                                                 },
                                                 oldestValue
                                         )
@@ -2678,7 +2654,7 @@ class UserTags {
                                                         key: `row-${user.userId}-newest-message`,
                                                         className: newestClass,
                                                         title: newestState.error || `${user.username}: refresh newest message`,
-                                                        onClick: () => handleRefreshMessageCell(user.userId, "newest", user.username)
+                                                        onClick: (e) => { e.preventDefault(); e.stopPropagation(); handleRefreshMessageCell(user.userId, "newest", user.username); }
                                                 },
                                                 newestValue
                                         )
