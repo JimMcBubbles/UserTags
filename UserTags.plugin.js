@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.2
+ * @version 1.12.3
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.2",
+			version: "1.12.3",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06d",
+			items: [
+				"Split the combined Oldest/Newest Message column into separate Oldest Message and Newest Message columns.",
+				"Made oldest/newest cells clickable to refresh that one user/one cell with in-cell loading, error feedback, and click-throttle protection."
+			]
+		},
 		{
 			title: "2026-02-06c",
 			items: [
@@ -204,6 +211,10 @@ const DEBUG_DM_LOGS = true;
 
 let CachedChannelStore = null;
 let CachedMessageStore = null;
+let CachedPrivateChannelActions = null;
+let CachedChannelNavigation = null;
+
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const normalizeTimestamp = (value) => {
         if (!value && value !== 0) return null;
@@ -248,6 +259,28 @@ const getMessageStore = () => {
 
         CachedMessageStore = store || null;
         return CachedMessageStore;
+};
+
+const getPrivateChannelActions = () => {
+        if (CachedPrivateChannelActions) return CachedPrivateChannelActions;
+        const actions =
+                BdApi?.Webpack?.getByProps?.("ensurePrivateChannel", "openPrivateChannel") ||
+                WebpackModules?.findByProps?.("ensurePrivateChannel", "openPrivateChannel") ||
+                BdApi.Webpack.getModule(m => m?.ensurePrivateChannel && m?.openPrivateChannel, { searchExports: true });
+
+        CachedPrivateChannelActions = actions || null;
+        return CachedPrivateChannelActions;
+};
+
+const getChannelNavigation = () => {
+        if (CachedChannelNavigation) return CachedChannelNavigation;
+        const nav =
+                BdApi?.Webpack?.getByProps?.("transitionToChannel") ||
+                WebpackModules?.findByProps?.("transitionToChannel") ||
+                BdApi.Webpack.getModule(m => m?.transitionToChannel, { searchExports: true });
+
+        CachedChannelNavigation = nav || null;
+        return CachedChannelNavigation;
 };
 
 const coerceMessageFromWrapperEntry = (entry) => {
@@ -307,7 +340,8 @@ const getDmMessageBounds = (channelId) => {
 };
 
 const USER_COL_KEY = "__USER__";
-const MESSAGE_BOUNDS_COL_KEY = "__MESSAGE_BOUNDS__";
+const OLDEST_MESSAGE_COL_KEY = "__OLDEST_MESSAGE__";
+const NEWEST_MESSAGE_COL_KEY = "__NEWEST_MESSAGE__";
 
 const formatTimestampForGrid = (timestamp) => {
 	if (!timestamp) return "—";
@@ -609,6 +643,52 @@ class UserTags {
                 this.lastViewedDmChannelId = null;
         }
 
+        async refreshDmMessageBoundForUser(userId, boundKey) {
+                const channelStore = getChannelStore();
+                if (!userId || !channelStore || !["oldest", "newest"].includes(boundKey)) {
+                        throw new Error("Missing DM lookup dependencies.");
+                }
+
+                const privateChannelActions = getPrivateChannelActions();
+                const channelNavigation = getChannelNavigation();
+
+                let channelId = channelStore.getDMFromUserId?.(userId) || null;
+
+                if (!channelId && privateChannelActions?.ensurePrivateChannel) {
+                        await privateChannelActions.ensurePrivateChannel(userId);
+                        channelId = channelStore.getDMFromUserId?.(userId) || null;
+                }
+
+                if (!channelId) throw new Error("Unable to open DM channel.");
+
+                if (privateChannelActions?.openPrivateChannel) {
+                        privateChannelActions.openPrivateChannel(channelId);
+                } else if (channelNavigation?.transitionToChannel) {
+                        channelNavigation.transitionToChannel(channelId);
+                }
+
+                await wait(350);
+                const bounds = getDmMessageBounds(channelId);
+                const targetValue = bounds?.[boundKey] || null;
+                if (!targetValue?.timestamp) {
+                        throw new Error(`Could not read ${boundKey} message timestamp.`);
+                }
+
+                const existing = Data.load(this._config.info.name, "DmMessageBoundsByUser") || {};
+                const previous = existing[userId] || {};
+                existing[userId] = {
+                        ...previous,
+                        oldest: boundKey === "oldest" ? bounds.oldest : (previous.oldest || null),
+                        newest: boundKey === "newest" ? bounds.newest : (previous.newest || null),
+                        totalMessages: bounds.totalMessages || previous.totalMessages || 0,
+                        updatedAt: Date.now()
+                };
+                Data.save(this._config.info.name, "DmMessageBoundsByUser", existing);
+                this._forceOverviewRefresh?.();
+
+                return targetValue;
+        }
+
 
 	/**
 	 * Attaches a dropdown of existing tags to a tag input.
@@ -870,23 +950,17 @@ class UserTags {
                                 font-variant-numeric: tabular-nums;
                                 color: var(--text-muted);
                                 white-space: nowrap;
+                                transition: opacity 120ms ease;
                         }
-                        .usertags-datecell-clickable {
-                                cursor: pointer;
-                                color: var(--text-link);
-                                text-decoration: underline dotted;
-                        }
-                        .usertags-datecell-clickable:hover {
-                                text-decoration: underline;
+                        .usertags-datecell:hover {
                                 color: var(--text-normal);
-                        }
-                        .usertags-date-cell-missing {
-                                cursor: pointer;
                                 text-decoration: underline;
-                                opacity: 0.8;
                         }
-                        .usertags-date-cell-missing:hover {
-                                opacity: 1;
+                        .usertags-datecell-loading {
+                                opacity: 0.7;
+                        }
+                        .usertags-datecell-error {
+                                color: var(--text-danger);
                         }
                         .usertags-cell.has-tag {
                                 background-color: var(--status-positive-background);
@@ -1553,6 +1627,9 @@ class UserTags {
                         const [hoverUserId, setHoverUserId] = React.useState(null);
                         const [hoverTag, setHoverTag] = React.useState(null);
                         const [sortMode, setSortMode] = React.useState("name_asc");
+                        const [cellRefreshState, setCellRefreshState] = React.useState({});
+                        const userRefreshInFlightRef = React.useRef(new Set());
+                        const cellCooldownRef = React.useRef(new Map());
                         const rootRef = React.useRef(null);
 
                         React.useEffect(() => {
@@ -1728,6 +1805,42 @@ class UserTags {
 			const allTags = plugin.getAllTags();
 
 			const dmBoundsByUserId = Data.load(plugin._config.info.name, "DmMessageBoundsByUser") || {};
+
+                        const updateCellState = (userId, boundKey, patch) => {
+                                const cellKey = `${userId}:${boundKey}`;
+                                setCellRefreshState(prev => ({
+                                        ...prev,
+                                        [cellKey]: {
+                                                ...(prev[cellKey] || {}),
+                                                ...patch
+                                        }
+                                }));
+                        };
+
+                        const handleRefreshMessageCell = async (userId, boundKey) => {
+                                const cellKey = `${userId}:${boundKey}`;
+                                const now = Date.now();
+                                const cooldownUntil = cellCooldownRef.current.get(cellKey) || 0;
+                                if (now < cooldownUntil) return;
+                                if (userRefreshInFlightRef.current.has(userId)) return;
+
+                                userRefreshInFlightRef.current.add(userId);
+                                cellCooldownRef.current.set(cellKey, now + 1200);
+                                updateCellState(userId, boundKey, { loading: true, error: null });
+
+                                try {
+                                        await plugin.refreshDmMessageBoundForUser(userId, boundKey);
+                                        updateCellState(userId, boundKey, { loading: false, error: null, updatedAt: Date.now() });
+                                        setVersion(v => v + 1);
+                                } catch (error) {
+                                        updateCellState(userId, boundKey, {
+                                                loading: false,
+                                                error: error?.message || "Refresh failed"
+                                        });
+                                } finally {
+                                        userRefreshInFlightRef.current.delete(userId);
+                                }
+                        };
 
 			const handleToggle = (userId, tagKey) => {
 				const data = Data.load(plugin._config.info.name, "UserData") || {};
@@ -2145,7 +2258,8 @@ class UserTags {
 			// Build grid template columns based on current widths
                         const columnWidths = [
                                 colWidths[USER_COL_KEY] || 220,
-                                colWidths[MESSAGE_BOUNDS_COL_KEY] || 210,
+                                colWidths[OLDEST_MESSAGE_COL_KEY] || 180,
+                                colWidths[NEWEST_MESSAGE_COL_KEY] || 180,
                                 // default tag width: 40px
                                 ...sortedTags.map(tag => colWidths[tag] || 40)
                         ];
@@ -2177,16 +2291,35 @@ class UserTags {
                                 React.createElement(
                                         "div",
                                         {
-                                                key: "header-message-bounds",
+                                                key: "header-oldest-message",
                                                 className: "usertags-grid-header"
                                         },
                                         React.createElement(
                                                 "div",
                                                 { className: "usertags-header-cell" },
-                                                React.createElement("span", { className: "usertags-header-label" }, "Oldest/Newest Message"),
+                                                React.createElement("span", { className: "usertags-header-label" }, "Oldest Message"),
                                                 React.createElement("span", {
                                                         className: "usertags-col-resizer",
-                                                        onMouseDown: (e) => startResize(e, MESSAGE_BOUNDS_COL_KEY)
+                                                        onMouseDown: (e) => startResize(e, OLDEST_MESSAGE_COL_KEY)
+                                                })
+                                        )
+                                )
+                        );
+
+                        gridChildren.push(
+                                React.createElement(
+                                        "div",
+                                        {
+                                                key: "header-newest-message",
+                                                className: "usertags-grid-header"
+                                        },
+                                        React.createElement(
+                                                "div",
+                                                { className: "usertags-header-cell" },
+                                                React.createElement("span", { className: "usertags-header-label" }, "Newest Message"),
+                                                React.createElement("span", {
+                                                        className: "usertags-col-resizer",
+                                                        onMouseDown: (e) => startResize(e, NEWEST_MESSAGE_COL_KEY)
                                                 })
                                         )
                                 )
@@ -2300,15 +2433,38 @@ class UserTags {
                                 const messageBounds = dmBoundsByUserId[user.userId] || {};
                                 const oldestLabel = formatTimestampForGrid(messageBounds.oldest?.timestamp);
                                 const newestLabel = formatTimestampForGrid(messageBounds.newest?.timestamp);
+                                const oldestState = cellRefreshState[`${user.userId}:oldest`] || {};
+                                const newestState = cellRefreshState[`${user.userId}:newest`] || {};
+
+                                const oldestValue = oldestState.loading ? "…" : oldestLabel;
+                                const newestValue = newestState.loading ? "…" : newestLabel;
+
+                                const oldestClass = `usertags-cell usertags-datecell${oldestState.loading ? " usertags-datecell-loading" : ""}${oldestState.error ? " usertags-datecell-error" : ""}`;
+                                const newestClass = `usertags-cell usertags-datecell${newestState.loading ? " usertags-datecell-loading" : ""}${newestState.error ? " usertags-datecell-error" : ""}`;
+
                                 gridChildren.push(
                                         React.createElement(
                                                 "div",
                                                 {
-                                                        key: `row-${user.userId}-message-bounds`,
-                                                        className: "usertags-cell usertags-datecell",
-                                                        title: `${user.username}: oldest ${oldestLabel}, newest ${newestLabel}`
+                                                        key: `row-${user.userId}-oldest-message`,
+                                                        className: oldestClass,
+                                                        title: oldestState.error || `${user.username}: refresh oldest message`,
+                                                        onClick: () => handleRefreshMessageCell(user.userId, "oldest")
                                                 },
-                                                `${oldestLabel} / ${newestLabel}`
+                                                oldestValue
+                                        )
+                                );
+
+                                gridChildren.push(
+                                        React.createElement(
+                                                "div",
+                                                {
+                                                        key: `row-${user.userId}-newest-message`,
+                                                        className: newestClass,
+                                                        title: newestState.error || `${user.username}: refresh newest message`,
+                                                        onClick: () => handleRefreshMessageCell(user.userId, "newest")
+                                                },
+                                                newestValue
                                         )
                                 );
 
