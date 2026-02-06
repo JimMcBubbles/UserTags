@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.1
+ * @version 1.12.2
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,18 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.1",
+			version: "1.12.2",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06c",
+			items: [
+				"Stabilized toolbar-opened settings modal sizing by targeting the mounted modal root and reapplying full-size constraints after mount."
+			]
+		},
 		{
 			title: "2026-02-06b",
 			items: [
@@ -317,6 +323,9 @@ class UserTags {
 		this.userPopoutPatched = false;
 		this.dmViewObserverTimer = null;
 		this.lastViewedDmChannelId = null;
+		this.modalSizingFrameId = null;
+		this.modalSizingTimeoutId = null;
+		this.modalSizingDeadline = 0;
 	}
 
 	getName() { return this._config.info.name; }
@@ -1052,40 +1061,39 @@ class UserTags {
 				color: var(--interactive-hover);
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal {
-				width: min(90vw, 1200px);
-				max-width: 95vw;
-				max-height: 90vh;
+			.bd-modal-root.usertags-settings-modal {
+				width: min(90vw, 1200px) !important;
+				max-width: 90vw !important;
+				height: 90vh !important;
+				max-height: 90vh !important;
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal .bd-modal-inner {
-				max-height: 90vh;
+			.bd-modal-root.usertags-settings-modal .bd-modal-inner {
+				max-width: none !important;
+				width: 100% !important;
+				height: 100% !important;
+				max-height: 100% !important;
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal .bd-modal-body {
-				max-height: calc(90vh - 120px);
-				display: flex;
-				overflow: hidden; /* keep scrolling inside .usertags-grid */
+			.bd-modal-root.usertags-settings-modal .bd-modal-body {
+				height: calc(100% - 120px) !important;
+				max-height: calc(100% - 120px) !important;
+				display: flex !important;
+				flex-direction: column !important;
+				min-height: 0 !important;
+				overflow: auto !important;
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal .bd-modal-body > .usertags-settings {
+			.bd-modal-root.usertags-settings-modal .bd-modal-body > .usertags-settings {
 				flex: 1 1 auto;
 				min-height: 0;
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal.usertags-toolbar-modal {
-				width: min(95vw, 1400px);
-				max-width: 95vw;
-				max-height: 95vh;
-			}
-
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal.usertags-toolbar-modal .bd-modal-inner {
-				max-height: 95vh;
-			}
-
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal.usertags-toolbar-modal .bd-modal-body {
-				max-height: calc(95vh - 120px);
-				overflow: hidden; /* keep scrolling inside .usertags-grid */
+			.bd-modal-root.usertags-settings-modal.usertags-toolbar-modal {
+				width: min(95vw, 1400px) !important;
+				max-width: 95vw !important;
+				height: 95vh !important;
+				max-height: 95vh !important;
 			}
 		`);
 
@@ -1231,6 +1239,7 @@ class UserTags {
 		BdApi.Patcher.unpatchAll("QuickSwitcher");
 		BdApi.Patcher.unpatchAll("UserTagsChannelHeaderToolbar");
 		this.stopDmViewObserver();
+		this.stopModalSizingRetry();
 		DOM.removeStyle(this._config.info.name);
 	}
 
@@ -2433,19 +2442,108 @@ class UserTags {
 	}
 
 	openOverviewModal() {
-		this.showSettingsModal("UserTags Overview");
+		this.showSettingsModal("UserTags Overview", { isToolbarModal: false });
 	}
 
 	openSettingsFromToolbar() {
-		this.showSettingsModal("UserTags Settings", { className: "usertags-toolbar-modal" });
+		this.showSettingsModal("UserTags Settings", { className: "usertags-toolbar-modal", isToolbarModal: true });
 	}
 
 	openSettingsModalFromToolbar() {
 		this.openSettingsFromToolbar();
 	}
 
+	stopModalSizingRetry() {
+		if (this.modalSizingFrameId) {
+			cancelAnimationFrame(this.modalSizingFrameId);
+			this.modalSizingFrameId = null;
+		}
+		if (this.modalSizingTimeoutId) {
+			clearTimeout(this.modalSizingTimeoutId);
+			this.modalSizingTimeoutId = null;
+		}
+		this.modalSizingDeadline = 0;
+	}
+
+	findMountedSettingsModalRoot() {
+		const modalRoots = Array.from(document.querySelectorAll(".bd-modal-root"));
+		for (let i = modalRoots.length - 1; i >= 0; i--) {
+			const root = modalRoots[i];
+			if (root?.querySelector?.(".usertags-settings")) return root;
+		}
+		return null;
+	}
+
+	applySettingsModalSizing({ isToolbarModal = false } = {}) {
+		const modalRoot = this.findMountedSettingsModalRoot();
+		if (!modalRoot) return false;
+
+		modalRoot.classList.remove("bd-modal-small", "bd-modal-medium");
+		modalRoot.classList.add("usertags-settings-modal");
+		modalRoot.classList.toggle("usertags-toolbar-modal", Boolean(isToolbarModal));
+
+		const modalInner = modalRoot.querySelector(".bd-modal-inner");
+		const modalBody = modalRoot.querySelector(".bd-modal-body");
+
+		const viewportWidth = isToolbarModal ? "95vw" : "90vw";
+		const maxWidth = isToolbarModal ? "1400px" : "1200px";
+		const viewportHeight = isToolbarModal ? "95vh" : "90vh";
+
+		modalRoot.style.setProperty("width", `min(${viewportWidth}, ${maxWidth})`, "important");
+		modalRoot.style.setProperty("max-width", viewportWidth, "important");
+		modalRoot.style.setProperty("height", viewportHeight, "important");
+		modalRoot.style.setProperty("max-height", viewportHeight, "important");
+
+		if (modalInner) {
+			modalInner.style.setProperty("max-width", "none", "important");
+			modalInner.style.setProperty("width", "100%", "important");
+			modalInner.style.setProperty("height", "100%", "important");
+			modalInner.style.setProperty("max-height", "100%", "important");
+		}
+
+		if (modalBody) {
+			modalBody.style.setProperty("display", "flex", "important");
+			modalBody.style.setProperty("flex-direction", "column", "important");
+			modalBody.style.setProperty("min-height", "0", "important");
+			modalBody.style.setProperty("height", "calc(100% - 120px)", "important");
+			modalBody.style.setProperty("max-height", "calc(100% - 120px)", "important");
+			modalBody.style.setProperty("overflow", "auto", "important");
+		}
+
+		const settingsContainer = modalBody?.querySelector?.(":scope > .usertags-settings");
+		if (settingsContainer) {
+			settingsContainer.style.setProperty("flex", "1 1 auto", "important");
+			settingsContainer.style.setProperty("min-height", "0", "important");
+		}
+
+		return true;
+	}
+
+	scheduleSettingsModalSizing({ isToolbarModal = false } = {}) {
+		this.stopModalSizingRetry();
+		this.modalSizingDeadline = Date.now() + 1200;
+
+		const runSizingPass = () => {
+			this.modalSizingFrameId = null;
+			this.modalSizingTimeoutId = null;
+
+			this.applySettingsModalSizing({ isToolbarModal });
+			if (Date.now() >= this.modalSizingDeadline) {
+				this.stopModalSizingRetry();
+				return;
+			}
+
+			this.modalSizingFrameId = requestAnimationFrame(() => {
+				this.modalSizingTimeoutId = setTimeout(runSizingPass, 60);
+			});
+		};
+
+		runSizingPass();
+	}
+
 	showSettingsModal(title = "UserTags Settings", modalOptions = {}) {
-		const className = ["usertags-settings-modal", modalOptions.className].filter(Boolean).join(" ");
+		const { isToolbarModal = false, ...restOptions } = modalOptions;
+		const className = ["usertags-settings-modal", restOptions.className].filter(Boolean).join(" ");
 
 		UI.showConfirmationModal(
 			title,
@@ -2453,10 +2551,12 @@ class UserTags {
 			{
 				confirmText: "Close",
 				cancelText: null,
-				...modalOptions,
+				...restOptions,
 				className
 			}
 		);
+
+		this.scheduleSettingsModalSizing({ isToolbarModal });
 	}
 
 	patchChannelHeaderToolbar() {
