@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.11
+ * @version 1.12.12
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.11",
+			version: "1.12.12",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06m",
+			items: [
+				"Removed remaining no-existing-DM failure messaging; timestamp refresh now always attempts Quick Switcher open/query/enter first.",
+				"Added key-event typing fallback for Quick Switcher query when internal query modules are unavailable, with detailed module/fallback diagnostics."
+			]
+		},
 		{
 			title: "2026-02-06l",
 			items: [
@@ -476,6 +483,22 @@ const closeQuickSwitcher = () => {
         document.dispatchEvent(new KeyboardEvent("keyup", { key: "Escape", code: "Escape", bubbles: true }));
 };
 
+const typeIntoQuickSwitcherInput = async (input, query) => {
+        input.focus();
+        const text = String(query || "");
+        for (const ch of text) {
+                input.dispatchEvent(new KeyboardEvent("keydown", { key: ch, bubbles: true }));
+                input.dispatchEvent(new KeyboardEvent("keypress", { key: ch, bubbles: true }));
+                input.dispatchEvent(new KeyboardEvent("keyup", { key: ch, bubbles: true }));
+        }
+
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+        if (setter) setter.call(input, text);
+        else input.value = text;
+        input.dispatchEvent(new InputEvent("input", { bubbles: true, data: text, inputType: "insertText" }));
+        await wait(120);
+};
+
 const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
         const quickSwitcher = getQuickSwitcherModule();
         const queryModule = getQuickSwitcherQueryModule();
@@ -511,16 +534,9 @@ const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
         } else if (queryModule?.search) {
                 queryModule.search(String(query));
                 queryPath = "QuickSwitcherQuery.search(query)";
-        }
-
-        if (!queryPath) {
-                const missing = ["QuickSwitcher query setter"];
-                return {
-                        selected: false,
-                        openPath,
-                        queryPath: null,
-                        reason: `Could not set Quick Switcher query internally. Missing modules: ${missing.join(", ")}`
-                };
+        } else {
+                await typeIntoQuickSwitcherInput(input, query);
+                queryPath = "Keyboard typing fallback on Quick Switcher input";
         }
 
         logDmDebug("[UserTags/DM] Quick Switcher query", { query, openPath, queryPath });
@@ -947,10 +963,10 @@ class UserTags {
                                 const missing = [];
                                 if (!getQuickSwitcherModule()) missing.push("QuickSwitcher module(show/toggleQuickSwitcher)");
                                 if (!router?.transitionTo && !router?.back && typeof window?.history?.back !== "function") missing.push("Router module(transitionTo/back)");
-                                const details = [lastSelectionReason, missing.length ? `Missing modules: ${missing.join(", ")}` : null, "Fallback path: QuickSwitcher internal query + Router/back restore"]
+                                const details = [lastSelectionReason, missing.length ? `Missing modules: ${missing.join(", ")}` : null, "Fallback path: QuickSwitcher internal query (or key-typing fallback) + Router/back restore"]
                                         .filter(Boolean)
                                         .join(" | ");
-                                throw new Error(details ? `No existing DM; can't fetch. ${details}` : "No existing DM; can't fetch.");
+                                throw new Error(details ? `Could not open matching 1:1 DM via Quick Switcher. ${details}` : "Could not open matching 1:1 DM via Quick Switcher.");
                         }
 
                         logDmDebug("[UserTags/DM] Scraped bound after Quick Switcher navigation", {
