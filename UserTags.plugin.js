@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.3
+ * @version 1.12.4
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,18 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.3",
+			version: "1.12.4",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06e",
+			items: [
+				"Fixed per-cell message refresh to never create/open/navigate DMs; it now only uses existing DM channels and shows an in-cell error when no DM exists."
+			]
+		},
 		{
 			title: "2026-02-06d",
 			items: [
@@ -211,11 +217,6 @@ const DEBUG_DM_LOGS = true;
 
 let CachedChannelStore = null;
 let CachedMessageStore = null;
-let CachedPrivateChannelActions = null;
-let CachedChannelNavigation = null;
-
-const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 const normalizeTimestamp = (value) => {
         if (!value && value !== 0) return null;
         if (typeof value === "number") return value;
@@ -259,28 +260,6 @@ const getMessageStore = () => {
 
         CachedMessageStore = store || null;
         return CachedMessageStore;
-};
-
-const getPrivateChannelActions = () => {
-        if (CachedPrivateChannelActions) return CachedPrivateChannelActions;
-        const actions =
-                BdApi?.Webpack?.getByProps?.("ensurePrivateChannel", "openPrivateChannel") ||
-                WebpackModules?.findByProps?.("ensurePrivateChannel", "openPrivateChannel") ||
-                BdApi.Webpack.getModule(m => m?.ensurePrivateChannel && m?.openPrivateChannel, { searchExports: true });
-
-        CachedPrivateChannelActions = actions || null;
-        return CachedPrivateChannelActions;
-};
-
-const getChannelNavigation = () => {
-        if (CachedChannelNavigation) return CachedChannelNavigation;
-        const nav =
-                BdApi?.Webpack?.getByProps?.("transitionToChannel") ||
-                WebpackModules?.findByProps?.("transitionToChannel") ||
-                BdApi.Webpack.getModule(m => m?.transitionToChannel, { searchExports: true });
-
-        CachedChannelNavigation = nav || null;
-        return CachedChannelNavigation;
 };
 
 const coerceMessageFromWrapperEntry = (entry) => {
@@ -649,25 +628,11 @@ class UserTags {
                         throw new Error("Missing DM lookup dependencies.");
                 }
 
-                const privateChannelActions = getPrivateChannelActions();
-                const channelNavigation = getChannelNavigation();
-
-                let channelId = channelStore.getDMFromUserId?.(userId) || null;
-
-                if (!channelId && privateChannelActions?.ensurePrivateChannel) {
-                        await privateChannelActions.ensurePrivateChannel(userId);
-                        channelId = channelStore.getDMFromUserId?.(userId) || null;
+                const channelId = channelStore.getDMFromUserId?.(userId) || null;
+                if (!channelId) {
+                        throw new Error("Open DM to collect message bounds.");
                 }
 
-                if (!channelId) throw new Error("Unable to open DM channel.");
-
-                if (privateChannelActions?.openPrivateChannel) {
-                        privateChannelActions.openPrivateChannel(channelId);
-                } else if (channelNavigation?.transitionToChannel) {
-                        channelNavigation.transitionToChannel(channelId);
-                }
-
-                await wait(350);
                 const bounds = getDmMessageBounds(channelId);
                 const targetValue = bounds?.[boundKey] || null;
                 if (!targetValue?.timestamp) {
