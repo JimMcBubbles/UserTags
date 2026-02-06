@@ -1,6 +1,6 @@
 {
     "currentVersionInfo": {
-        "version": "1.11.0",
+        "version": "1.12.2",
         "hasShownChangelog": true
     },
     "UserData": {
@@ -3963,7 +3963,8 @@
         "486640910898298881": {
             "username": "skye1219",
             "tags": [
-                "zALT"
+                "zALT",
+                "SFW"
             ],
             "friendSinceMs": null,
             "lastMessagedMs": null
@@ -5291,7 +5292,8 @@
         "849870019717627934": {
             "username": "darkesper7",
             "tags": [
-                "IDK"
+                "IDK",
+                "zALT"
             ],
             "friendSinceMs": null,
             "lastMessagedMs": null
@@ -9742,6 +9744,10 @@
                 "username": "daffodilly"
             },
             {
+                "userId": "486640910898298881",
+                "username": "skye1219"
+            },
+            {
                 "userId": "670326053553700866",
                 "username": "_silvermoon_"
             }
@@ -9778,6 +9784,10 @@
             {
                 "userId": "725074907754397787",
                 "username": "integrumentalofficial8342"
+            },
+            {
+                "userId": "849870019717627934",
+                "username": "darkesper7"
             },
             {
                 "userId": "903947951502655508",
@@ -9872,5 +9882,13 @@
     ],
     "settings": {
         "sortMode": "friendSince"
+    },
+    "DmMessageBoundsByUser": {
+        "328529063482228736": {
+            "oldest": null,
+            "newest": null,
+            "totalMessages": 0,
+            "updatedAt": 1770349175707
+        }
     }
 }
