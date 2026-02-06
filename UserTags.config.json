@@ -12,7 +12,9 @@
                 "TOP",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "111238505824342016": {
             "username": "14anthony7095",
@@ -21,57 +23,75 @@
                 "100",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": 1769524373928,
+            "lastMessagedMs": 1769717950984
         },
         "49336749767266304": {
             "username": "jackiealexender",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "71371035299028992": {
             "username": "ladylumi",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "81412254964125696": {
             "username": "fuzzyhead12",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "87401432378011648": {
             "username": "purplespacepaws",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "92074349112070144": {
             "username": "hean",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "95899799483609088": {
             "username": "couch.",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "96750760775135232": {
             "username": "brookesickle",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "100107945139765248": {
             "username": "gaogamon",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "101380068139356160": {
             "username": "nao_the_witch",
@@ -79,20 +99,26 @@
                 "DTF",
                 "DNI",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "101853987459842048": {
             "username": "charzard150",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "102181512929083392": {
             "username": "larsviking.",
             "tags": [
                 "DTF",
                 "TRY"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "102602670048567296": {
             "username": "ramseyrakahyotahk",
@@ -102,30 +128,40 @@
                 "100",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "105865322409500672": {
             "username": "mirishikiari",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "106974739821543424": {
             "username": "taco.gov",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "107861029823725568": {
             "username": "tanoshi",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "108151437392912384": {
             "username": "thatcatwh0",
             "tags": [
                 "AQU",
                 "IDC"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "108444452632137728": {
             "username": "cassiecollision",
@@ -135,7 +171,9 @@
                 "HTG",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "109898384797622272": {
             "username": "baron_bear",
@@ -143,41 +181,55 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "110028801966104576": {
             "username": "ploppyy",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "110384135700246528": {
             "username": "komoto",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "111487478111678464": {
             "username": "toadstooliv",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "116751246068678661": {
             "username": "organizedfen",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "117429210485751815": {
             "username": "neshusky",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "117904396624461831": {
             "username": "r0us",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "119308988880781312": {
             "username": "zaihex",
@@ -185,7 +237,9 @@
                 "DTF",
                 "IRL",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "121156765650780162": {
             "username": "longshotllama",
@@ -194,25 +248,33 @@
                 "HTG",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "122124162624913411": {
             "username": "louwie",
             "tags": [
                 "HTG",
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "125107096881594372": {
             "username": "cripplingdepression",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "125658484715945985": {
             "username": "shadypear",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "125830712921292800": {
             "username": "breadrol1z",
@@ -221,42 +283,56 @@
                 "HTG",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "127058994056527872": {
             "username": "lightyheart",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "127433245145956352": {
             "username": "rydianz",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "128478712021647360": {
             "username": "vulpestus",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "128548758660186123": {
             "username": "hostilelogout",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "129275802477920256": {
             "username": "eclairdonut",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "129820537751994368": {
             "username": "bickzel",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "130748650916806657": {
             "username": "meowmeth",
@@ -264,13 +340,17 @@
                 "DTF",
                 "TRY",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "130833595987132416": {
             "username": "highkagedizzy",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "131575109902139392": {
             "username": "elvydafox",
@@ -278,33 +358,43 @@
                 "DNI",
                 "OLD",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "131606374340624384": {
             "username": "kyriss_",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "132256955740848128": {
             "username": "rantis",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "132262848028999680": {
             "username": "fuzzypompoms",
             "tags": [
                 "OLD",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "132985371238727680": {
             "username": "klinck",
             "tags": [
                 "IRL",
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "135750330414661632": {
             "username": "dygalusiun",
@@ -313,24 +403,32 @@
                 "100",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "136184028704407552": {
             "username": "notfraust",
             "tags": [
                 "DTF",
                 "IDC"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "137789252183261185": {
             "username": "lunathebunny0",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "138086476993789952": {
             "username": "sircullingham",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "139541886888181760": {
             "username": "chippygirl",
@@ -338,52 +436,70 @@
                 "DNI",
                 "OLD",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "142472896982417409": {
             "username": "diamondmaker",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "143032734904877056": {
             "username": "sirdeke",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "145346927821717504": {
             "username": "kuz",
             "tags": [
                 "DTF",
                 "TRY"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "146719312676257794": {
             "username": "locustlab",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "147221233509859338": {
             "username": "caramel_motte",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "148723664886562816": {
             "username": "saluxa",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "149225021737402368": {
             "username": "spookynuki",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "150788964905648129": {
             "username": "kuromarubc08",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "152183852050284544": {
             "username": "firebolt117",
@@ -393,63 +509,83 @@
                 "BTM",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "152603289677070336": {
             "username": "dutchie5062",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "155134107804762114": {
             "username": "piranhapit",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "156583712417382401": {
             "username": "sageflamewalker",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "158591324721774592": {
             "username": "ruzakos",
             "tags": [
                 "IRL",
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "159516646569017344": {
             "username": "nicholas7474",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "160560648407744512": {
             "username": "banjosandman",
             "tags": [
                 "IRL",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "160776272748871680": {
             "username": "kairen",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "161575721381265408": {
             "username": "pawstink.",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "162350676335132672": {
             "username": "snowfire.",
             "tags": [
                 "HTG",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "165523009543602176": {
             "username": "teskie",
@@ -457,7 +593,9 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "165875787281465344": {
             "username": "570rm",
@@ -466,19 +604,25 @@
                 "HTG",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "166378754749366282": {
             "username": "kyusowhitescale",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "168316044841189376": {
             "username": "speedfreek16",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "168370312839168003": {
             "username": "joeyrock51",
@@ -487,13 +631,17 @@
                 "OLD",
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "168775345296637964": {
             "username": "jamescreeper",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "170260301541933056": {
             "username": "thatonejazzy",
@@ -502,20 +650,26 @@
                 "TRY",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "170919672139481089": {
             "username": "esblue",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "171013443648880640": {
             "username": "fluffyrainbowtank",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "171445658866155523": {
             "username": "fathermedic",
@@ -523,19 +677,25 @@
                 "DNI",
                 "OLD",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "172529432521736192": {
             "username": "ceruleanchisal",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "172743725737312256": {
             "username": "castaliablood",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "172778750818254848": {
             "username": "gwennyworm",
@@ -543,98 +703,132 @@
                 "IRL",
                 "100",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "172779618313437185": {
             "username": "jamiijuice",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "173229495992582144": {
             "username": "plasmorasdartak",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "173303143688306689": {
             "username": "toastymyroasty",
             "tags": [
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "173929864728936449": {
             "username": "skrewyluie",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "174043652480303104": {
             "username": "midnadot",
             "tags": [
                 "HMM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "174379200336101376": {
             "username": "ikarosgrim",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "175749250578120715": {
             "username": "tejler",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "176906890335223808": {
             "username": "newconthekittenkat",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "177606243781705728": {
             "username": "dj_azurekat",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "177627461473796096": {
             "username": "budd1576",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "177914728922873856": {
             "username": "gomibun",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "181317960697249793": {
             "username": "koplerio",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "182246473973497856": {
             "username": "crazykid1199",
             "tags": [
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "182297880172822528": {
             "username": "assbutt1704",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "183053819339341824": {
             "username": "kitty_kisses",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "183587271050526720": {
             "username": "cosmicfire",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "184163690025713665": {
             "username": "lilmack96",
@@ -642,84 +836,112 @@
                 "OLD",
                 "DNI",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "184394359700062208": {
             "username": "dogstealer",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "185201213518774272": {
             "username": "doctorpups",
             "tags": [
                 "IDC"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "185202602013622272": {
             "username": "chriskwolf",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "185519979326603265": {
             "username": "saighdiuirglas",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "185837287052017664": {
             "username": "strikerv3",
             "tags": [
                 "IDC"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "186369620444184586": {
             "username": "darthm0ul2",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "186635113679945728": {
             "username": "adamantunicorn",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "187361179247575040": {
             "username": "witte_konijn",
             "tags": [
                 "DNI",
                 "SFW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "187441751223566337": {
             "username": "hiroko1026",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "187709796802232320": {
             "username": "obscure_cryptid",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "188189178905886721": {
             "username": "mangaraang",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "188189696516423681": {
             "username": "funkknight",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "188804379845853184": {
             "username": "zargorth",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "189916702165696513": {
             "username": "seriousnugz",
@@ -728,45 +950,59 @@
                 "BTM",
                 "LWD",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "190273308414050304": {
             "username": "heartofdarkness",
             "tags": [
                 "OLD",
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "191804205424443392": {
             "username": "isafemboy",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "192035843043622913": {
             "username": "jayray0930",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "192449631714541568": {
             "username": "robin66",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "192673357907361792": {
             "username": "quasar300",
             "tags": [
                 "DTF",
                 "TRY"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "192714074537197578": {
             "username": "omylettuce",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "193674471675133955": {
             "username": "spluffy",
@@ -774,122 +1010,162 @@
                 "DTF",
                 "LWD",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "193685198083325953": {
             "username": "narthos",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "194623911500054528": {
             "username": "aachris",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "196315114717184000": {
             "username": "kawnner",
             "tags": [
                 "zALT",
                 "TOP"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "196758587085815808": {
             "username": "dazzle",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "197007015627718657": {
             "username": "thegamingcamper",
             "tags": [
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "197236900430479361": {
             "username": "4a42",
             "tags": [
                 "DNI",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "197359736407064577": {
             "username": "nambo",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "197492629364146176": {
             "username": "sacro91",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "197554257497554944": {
             "username": "epic6g",
             "tags": [
                 "OLD",
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "198142486210805771": {
             "username": "skipperdedoo",
             "tags": [
                 "DTF",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "198193603183509514": {
             "username": "tr0uty",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "198493838363328512": {
             "username": "callmegoats",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "198877609831038986": {
             "username": "iceybreath",
             "tags": [
                 "AQU",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "199966798106329088": {
             "username": "dawnarob",
             "tags": [
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "200033468413902849": {
             "username": "barkbeast",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "200033898413948929": {
             "username": "kpanachild",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "200034000268558336": {
             "username": "themackfather",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "200719931958886400": {
             "username": "quietbluecat",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "203044920389402624": {
             "username": "eevonn",
             "tags": [
                 "OLD",
                 "HMM"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "203168011270619136": {
             "username": "crafters4000",
@@ -897,11 +1173,15 @@
                 "DNI",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "203258004072693761": {
             "username": "sarkplug",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "203264229048844289": {
             "username": "ussr_icbm",
@@ -909,49 +1189,65 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "204775361920106496": {
             "username": "mrjiggles",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "204972794004373504": {
             "username": "grammatonn",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "205050672746463232": {
             "username": "hero1624",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "205148929417805824": {
             "username": "littletea7344",
             "tags": [
                 "AQU",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "205707757175832576": {
             "username": "spiritotter",
             "tags": [
                 "OLD",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "205800996981571584": {
             "username": "krowave",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "206997500584787968": {
             "username": ".mamarose",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "207011744168673281": {
             "username": "faas.zip",
@@ -960,72 +1256,94 @@
                 "DNI",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "207341803291017217": {
             "username": "atomicbeaver",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "210072231143931914": {
             "username": "bogdan.blazkowiz",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "210099777956872194": {
             "username": "softpaw01",
             "tags": [
                 "IRL",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "210612327802863617": {
             "username": "poachy",
             "tags": [
                 "DNI",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "211186017644969986": {
             "username": "lifesize98",
             "tags": [
                 "OLD",
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "214193494472785920": {
             "username": "adequacy",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "214309030665912320": {
             "username": "velocitysalt",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "214844732738764800": {
             "username": "startheft",
             "tags": [
                 "AQU",
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "215361894372868097": {
             "username": "imanixxy",
             "tags": [
                 "OLD",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "215593812175749122": {
             "username": "spookyerthanyou",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "217034511056240640": {
             "username": "elybs",
@@ -1033,61 +1351,81 @@
                 "HTG",
                 "NEW",
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "217057343534399488": {
             "username": "katlee",
             "tags": [
                 "IDC"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "217061804759580674": {
             "username": "devnaut",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "217074823648641024": {
             "username": "airbolt2",
             "tags": [
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "217079905848918017": {
             "username": "0x00ff00",
             "tags": [
                 "NEW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "218148514142617601": {
             "username": "velocityvr",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "219691686484377600": {
             "username": "jessejames420",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "219949424686792705": {
             "username": "drach2552",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "221209837994901504": {
             "username": "nickolasdaily",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "221627147507335169": {
             "username": "f3nek",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "221670191149481984": {
             "username": "darklight720",
@@ -1096,54 +1434,72 @@
                 "IDR",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "222602168404934666": {
             "username": "mr.shinigami42",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "222854666071834626": {
             "username": "zadala",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "222894309421219840": {
             "username": "roxiefox0437",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "223050639708520449": {
             "username": "primus350",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "223845993907486730": {
             "username": "fracas",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "224271412578222081": {
             "username": "dstayton",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "224316706980364289": {
             "username": "_slippy",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "225355815811284993": {
             "username": "dantethefolf",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "225707264487456769": {
             "username": "nerobrain99",
@@ -1151,38 +1507,50 @@
                 "DTF",
                 "DNI",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "226194747834892288": {
             "username": "mrherninator",
             "tags": [
                 "IDC"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "227621494396682240": {
             "username": "feeelinblu",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "229446868357087235": {
             "username": ".kyy.",
             "tags": [
                 "DTF",
                 "TRY"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "230478464640090114": {
             "username": "digletttheallpowerfulbeing",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "230555493188370433": {
             "username": "_sagi",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "231012517101568000": {
             "username": "danson",
@@ -1192,13 +1560,17 @@
                 "HTG",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "231885842866503681": {
             "username": "jestsquishy",
             "tags": [
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "232176886606856192": {
             "username": "blunderbuns",
@@ -1207,104 +1579,138 @@
                 "IRL",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "232356654547468302": {
             "username": "kalibur054",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "232686272768901122": {
             "username": "minusmii",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "234248179170672640": {
             "username": "neshyee",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "235564843665588224": {
             "username": "cocoa83",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "235930637628997633": {
             "username": "calmlycurious",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "236347274635116554": {
             "username": "aon101junky",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "236689938245091329": {
             "username": "auroraz.exe",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "238469593520275456": {
             "username": ".harpon",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "240639858991824896": {
             "username": "reinok",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "242431130203193352": {
             "username": "popefrancisco",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "242510303655493634": {
             "username": "_discombobulate",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "244363305970434058": {
             "username": "lunetheowl",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "244634208172113920": {
             "username": "frostmoon_morwenna",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "244802364316450824": {
             "username": "jaythelonelydemon",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "245359047950204934": {
             "username": "geniusface1234",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "245676666402111488": {
             "username": "alberteinstien",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "246855092320337930": {
             "username": "missmuffins033",
@@ -1313,31 +1719,41 @@
                 "TRY",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "248231230972100609": {
             "username": "bigtiddygothbf",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "249297419815092227": {
             "username": "cartephelus",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "249401408363823105": {
             "username": "umar6279",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "249709469817241602": {
             "username": "ardentology",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "250784053387591683": {
             "username": "nexus_codex",
@@ -1345,7 +1761,9 @@
                 "HTG",
                 "LWD",
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "250887561478799360": {
             "username": "jacoph",
@@ -1354,37 +1772,49 @@
                 "TRY",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "251346834759352320": {
             "username": "wizzhd",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "251796147528663040": {
             "username": "grimhaunting",
             "tags": [
                 "AQU",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "251899027686162432": {
             "username": "crimsonpanther",
             "tags": [
                 "OLD",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "252523523656908801": {
             "username": "sarahsera",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "252692269952532481": {
             "username": "omnicat",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "253722184319631360": {
             "username": "smoiler",
@@ -1393,57 +1823,77 @@
                 "HTG",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "253979084000985088": {
             "username": "biohazardjackson63",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "254847267939418113": {
             "username": "primordialgay",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "255101940579434496": {
             "username": "squeakysoap",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "255541316375543809": {
             "username": "vatablous",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "256204597733883904": {
             "username": "arcanajustice",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "257242248435990528": {
             "username": "lyssa120",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "257360688681451524": {
             "username": "yukosn",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "257531470430601217": {
             "username": "flamingwaffels",
             "tags": [
                 "HMM"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "258260622645395457": {
             "username": "shirsha",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "259108353228275716": {
             "username": "bugs_ks",
@@ -1452,53 +1902,71 @@
                 "100",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "260605878678323200": {
             "username": "amesuki",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "260807635077562368": {
             "username": "jellymie",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "261049458916196353": {
             "username": "gliderthedragon",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "261204550063489025": {
             "username": "ironmeerkat",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "261925139245957120": {
             "username": "insunix",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "263099331945431051": {
             "username": "operator505",
             "tags": [
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "263519433677340672": {
             "username": "spryvr",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "263783977586786304": {
             "username": "conduit_keeper",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "264862702621425664": {
             "username": "morbidoboe",
@@ -1507,13 +1975,17 @@
                 "SFW",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "265531316597030913": {
             "username": "cosmicvrs",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "266369993879322624": {
             "username": "neppinep",
@@ -1522,13 +1994,17 @@
                 "TRY",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "266490042787037184": {
             "username": "kachinddragon",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "266709440248545280": {
             "username": "firekomodow",
@@ -1539,35 +2015,47 @@
                 "TRY",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "267581201944936448": {
             "username": "deadmockingbird",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "268760259202514946": {
             "username": "sordidpeach666",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "268964759993319424": {
             "username": "redball205",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "269283403365482497": {
             "username": "bishieboi",
             "tags": [
                 "zALT"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "270292857732988929": {
             "username": "nolrinela",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "270672316587835392": {
             "username": "blackjackpgn",
@@ -1576,95 +2064,125 @@
                 "TRY",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "271031793199742999": {
             "username": "snoogles",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "272109755391148032": {
             "username": "_kreig",
             "tags": [
                 "100",
                 "SFW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "272277341277782017": {
             "username": "rooster3alpha",
             "tags": [
                 "OLD",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "272430793177956352": {
             "username": "statuscrow",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "272833763577430017": {
             "username": "c4lic0d3v1l",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "273528495479586816": {
             "username": "alabud",
             "tags": [
                 "DTF",
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "275018659284385794": {
             "username": "thevocamon",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "275811937558855681": {
             "username": "is_dimo",
             "tags": [
                 "HMM"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "277535259615297547": {
             "username": "sarana",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "277859785775251456": {
             "username": "wolfsaber",
             "tags": [
                 "IRL",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "279499001970032645": {
             "username": "x2v7i",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "282702480385507329": {
             "username": "inazeraa",
             "tags": [
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "283003864683249665": {
             "username": "tronmax6",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "283395899839873036": {
             "username": "chicken0140",
             "tags": [
                 "IRL",
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "286011668683816960": {
             "username": "itsbiffy",
@@ -1672,11 +2190,15 @@
                 "DTF",
                 "HTG",
                 "TRY"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "286019403739561986": {
             "username": "sholron",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "286811169388232704": {
             "username": "sanistra",
@@ -1684,13 +2206,17 @@
                 "DTF",
                 "MRK",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "290020568244158464": {
             "username": "banditpunk",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "290299054636924931": {
             "username": "argitoth",
@@ -1699,39 +2225,51 @@
                 "IRL",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "290492780994887680": {
             "username": "withthetwisted",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "290522112270270465": {
             "username": ".suwu",
             "tags": [
                 "DNI",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "292069774647754752": {
             "username": "jpurplewo1f",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "292163427764273154": {
             "username": "thebozzguy",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "292668510960746497": {
             "username": "camshafty",
             "tags": [
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "292709070421622784": {
             "username": "yomono_maplekitty",
@@ -1739,7 +2277,9 @@
                 "DTF",
                 "HTG",
                 "TOP"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "292800514008023040": {
             "username": "loxachi",
@@ -1748,13 +2288,17 @@
                 "IRL",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "293587934093901824": {
             "username": "lovepuffin45",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "293807550694948866": {
             "username": "arsenicu",
@@ -1765,19 +2309,25 @@
                 "100",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "294248377212731403": {
             "username": "aquila_fortuna",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "295269013536112641": {
             "username": ".cynical_optimist",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "295993933744570369": {
             "username": "james566",
@@ -1785,31 +2335,41 @@
                 "DTF",
                 "TRY",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "297189472183779329": {
             "username": "mooshimon",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "299406072530075650": {
             "username": "alittleglitchy",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "299560125134536715": {
             "username": "palmtopsebby",
             "tags": [
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "299858581132410891": {
             "username": "bobross2919",
             "tags": [
                 "IDC"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "300854441840607234": {
             "username": "soundcrunch",
@@ -1817,101 +2377,135 @@
                 "DTF",
                 "LWD",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "301103507526647809": {
             "username": "diamond007",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "302207837352755203": {
             "username": "stery66",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "302723050783113216": {
             "username": "pascale_2432_2",
             "tags": [
                 "DTF",
                 "TRY"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "303729969601970176": {
             "username": "rushofadderal",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "304067386087309312": {
             "username": "lilqwag",
             "tags": [
                 "OLD",
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "305605064674902017": {
             "username": "mutzbunny",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "307209297819992075": {
             "username": "baconator_creator",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "307665019540340736": {
             "username": "parasive",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "309561193687678986": {
             "username": "fortisfortemlucem",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "310245216789594113": {
             "username": "drakonphoenix",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "310261945720766464": {
             "username": "lovemesomejojokes",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "311191964353822721": {
             "username": "robims",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "311235231883722756": {
             "username": "sahaij",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "312739639079206913": {
             "username": "6xxcolemanxx9",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "313044635230535690": {
             "username": "protypegamer",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "313121738089168896": {
             "username": "sexy_pandemonium",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "313367547028176898": {
             "username": "kyunoxic",
@@ -1919,7 +2513,9 @@
                 "IRL",
                 "100",
                 "SFW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "313416874245357588": {
             "username": "bluey6",
@@ -1927,17 +2523,23 @@
                 "DTF",
                 "TRY",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "313515344431939584": {
             "username": "marge_simpson",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "314102528738328578": {
             "username": "sassy.cat",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "315978182828228618": {
             "username": "atomic_potato",
@@ -1946,137 +2548,183 @@
                 "IRL",
                 "HTG",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "317091312354590721": {
             "username": "zaffoti",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "317573438741020674": {
             "username": "pvpz",
             "tags": [
                 "DTF",
                 "TRY"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "317798171625390080": {
             "username": "vyzible",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "317821463287824384": {
             "username": "justjaybean",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "318837532814999553": {
             "username": "_vizra_",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "319264716923076629": {
             "username": "rosenreii",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "319313954021179392": {
             "username": "iron_samson",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "319848058957594625": {
             "username": "rook_a.c.s",
             "tags": [
                 "DTF",
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "320063267202531329": {
             "username": "flamegasher",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "321089854739841025": {
             "username": "girlwithasword",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "321097395142393856": {
             "username": "s.a.d_robot",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "321353257651798016": {
             "username": "lord_reaper7218",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "322191410868650004": {
             "username": "mysticthewolf",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "323134653949280268": {
             "username": "just_phoenix",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "323561820596207616": {
             "username": "sachito",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "324415483132772352": {
             "username": "_zanot_",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "324612636451012619": {
             "username": "jajosh2427",
             "tags": [
                 "DNI",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "324654564584325121": {
             "username": "shijikori",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "325155383133995010": {
             "username": "spadyr",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "325171828114980865": {
             "username": "juruki1",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "325796553895706624": {
             "username": "wpkiku",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "326747703625383976": {
             "username": "karpy3",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "326893594503938059": {
             "username": "endergamer4",
@@ -2084,7 +2732,9 @@
                 "AQU",
                 "LWD",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "328529063482228736": {
             "username": "bobbylinaa",
@@ -2093,7 +2743,9 @@
                 "100",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "329737739358437376": {
             "username": "yetiwag",
@@ -2102,31 +2754,41 @@
                 "HTG",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "329788515921690624": {
             "username": "packtrouble",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "330714612922187776": {
             "username": "pepperme",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "330794219042111490": {
             "username": "slogan9453",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "333889627456798722": {
             "username": "x1xriptide",
             "tags": [
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "334466250564698112": {
             "username": "zeuskrazy",
@@ -2134,7 +2796,9 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "336744825934184448": {
             "username": "kojosucks",
@@ -2143,19 +2807,25 @@
                 "HMM",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "337008898034892813": {
             "username": "celasin",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "337684308208910348": {
             "username": "sdwaggy",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "337699138466742272": {
             "username": "edward_boss",
@@ -2163,42 +2833,56 @@
                 "DNI",
                 "LWD",
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "339531964656779274": {
             "username": "sh4d0wdr4g0n",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "341270650326876191": {
             "username": "cluelessfawkes",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "343017280331841557": {
             "username": "felaern",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "343753281803386885": {
             "username": "goldensnow",
             "tags": [
                 "DTF",
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "343956098023292928": {
             "username": "xzania_umbros",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "345015589363777549": {
             "username": "bigmike72",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "345622128718118912": {
             "username": "meowfm",
@@ -2207,44 +2891,58 @@
                 "TRY",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "345676202817880064": {
             "username": "witchcoveness",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "345904715617271808": {
             "username": "skylar1423",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "347173060677337098": {
             "username": "orbitalicarus.",
             "tags": [
                 "100",
                 "zALT"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "347961416118173696": {
             "username": "moron4364",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "349639985227366400": {
             "username": "velbelle",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "349996933340725249": {
             "username": "korietramonto",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "352427162030047252": {
             "username": "mr.extinct",
@@ -2254,26 +2952,34 @@
                 "HTG",
                 "100",
                 "TOP"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "352609200544940033": {
             "username": "firestar0979",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "352829107110674463": {
             "username": "feritai",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "353836183350149120": {
             "username": "crazydrdave",
             "tags": [
                 "IRL",
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "357790715276951552": {
             "username": ".alphawolf42",
@@ -2281,45 +2987,61 @@
                 "DNI",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "360870177081917441": {
             "username": "fursyndicate",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "361248360058978304": {
             "username": "luxthelyoof",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "361307959470456863": {
             "username": "skythecryptid",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "361355641211584513": {
             "username": "festiv3_",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "361574467438116864": {
             "username": "stylizedintermission",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "361599257561530368": {
             "username": "antix1718",
             "tags": [
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "363738483795296257": {
             "username": "queenjjuwu",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "363914541718831115": {
             "username": "fantasypone",
@@ -2329,13 +3051,17 @@
                 "100",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "364195417522569228": {
             "username": "freakingzack",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "364560502568910858": {
             "username": "krimshauq",
@@ -2345,7 +3071,9 @@
                 "BTM",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "366057247278628866": {
             "username": "neontempzzz",
@@ -2353,47 +3081,63 @@
                 "OLD",
                 "AQU",
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "367663895546036224": {
             "username": "aspin5851",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "368310887242661888": {
             "username": "cubicalcream",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "368532788552400896": {
             "username": "theo_yaman",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "369825188487102464": {
             "username": "toxlemon",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "370330787993616384": {
             "username": "mamajackie_",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "370971421351870494": {
             "username": "684someguy",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "371106758061588481": {
             "username": "poisongoth",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "371664596051820554": {
             "username": "gabegames",
@@ -2404,38 +3148,50 @@
                 "BTM",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "371850859606179843": {
             "username": "aidens_design",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "373562422960848907": {
             "username": "derpy_vr",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "374035177846079488": {
             "username": "itsnebs",
             "tags": [
                 "OLD",
                 "zALT"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "376340558357987329": {
             "username": "cmb1011",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "376376377739313163": {
             "username": "hayzel",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "378396800354091015": {
             "username": "kodyody",
@@ -2444,47 +3200,63 @@
                 "100",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "379784557450362881": {
             "username": "alexgr8t1",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "379909902392360960": {
             "username": "corsolider",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "381999020395986977": {
             "username": "irwin_irl5769",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "382206024683094028": {
             "username": "ninashark_",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "382765965076856833": {
             "username": "roadkill_hermes",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "383700055065886720": {
             "username": "yos2461",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "383992115731890177": {
             "username": "mishigamaa",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "384208122073448448": {
             "username": ".bananafish",
@@ -2493,17 +3265,23 @@
                 "HTG",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "385990845855301650": {
             "username": "ambulare",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "388437662882856974": {
             "username": "rosezenronin",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "389471392115982338": {
             "username": "canadianblue",
@@ -2512,19 +3290,25 @@
                 "AQU",
                 "OLD",
                 "SFW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "391925318723698699": {
             "username": "floofdoggo",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "393627519716425730": {
             "username": "awkwardnanuk",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "395729868979175465": {
             "username": "moddedrebel",
@@ -2533,61 +3317,81 @@
                 "100",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "397137474373025792": {
             "username": "angut97",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "397945659027619840": {
             "username": "vengefuldragon98",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "398015363238985728": {
             "username": "w01fs",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "398444380593192960": {
             "username": "raystheotterfox",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "399383408733716481": {
             "username": ".lex.5",
             "tags": [
                 "DTF",
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "399784777630220298": {
             "username": "arbiter105",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "400146192673013762": {
             "username": "stevemcsteve",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "401247564118228992": {
             "username": "reasor",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "403512559631728641": {
             "username": "frosty7273",
             "tags": [
                 "AQU",
                 "SFW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "404233323066556416": {
             "username": "innocentchibi",
@@ -2595,56 +3399,74 @@
                 "IRL",
                 "100",
                 "SFW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "406112495917465601": {
             "username": "travelingtodamoon",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "406121102570684416": {
             "username": "lmmzr",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "407355281081630731": {
             "username": "lirebrin",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "409533080986976269": {
             "username": "atari123",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "409816970377166850": {
             "username": "fishebrain",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "412765435998633985": {
             "username": "howlstar.",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "413543125953282051": {
             "username": "puffpastry1923",
             "tags": [
                 "HMM"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "415205144528158722": {
             "username": "weed_nose420",
             "tags": [
                 "100",
                 "SFW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "415359530281467906": {
             "username": "devilishdean",
@@ -2654,19 +3476,25 @@
                 "HTG",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "416042464713900032": {
             "username": "camolotcreator",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "416381863549206529": {
             "username": "slimbread",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "418174641799036940": {
             "username": "derpface370",
@@ -2675,37 +3503,49 @@
                 "TRY",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "422362976725630997": {
             "username": "exouls",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "423209424249946113": {
             "username": "keeftokn",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "425496351049121819": {
             "username": "shamwater",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "426218115396009991": {
             "username": "creed037",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "426918481401872385": {
             "username": "wargodz",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "427002425484771339": {
             "username": "thedevilskush",
@@ -2713,7 +3553,9 @@
                 "DTF",
                 "IRL",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "427288169197600778": {
             "username": "muterabbit",
@@ -2722,45 +3564,59 @@
                 "TRY",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "427442965011628032": {
             "username": "lina.03",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "428633167780642816": {
             "username": "fudoragon",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "429210930962890752": {
             "username": "speedandpower8699",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "430189763845292052": {
             "username": "hiddenegg",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "430447966176804864": {
             "username": "balienyellie",
             "tags": [
                 "DTF",
                 "NEW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "431273835661361154": {
             "username": ".lightningchaser",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "431962481964089346": {
             "username": "bamie",
@@ -2769,113 +3625,151 @@
                 "HTG",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "432570138437484574": {
             "username": "drtyphon",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "432689817231556609": {
             "username": "poptartcatiskool",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "432973305432113153": {
             "username": "pucekhan",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "433790246891814933": {
             "username": "hellchildren",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "436617512537292811": {
             "username": "dilan",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "437391574100606978": {
             "username": "faye_usagi",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "437392900624744448": {
             "username": "chippygurl",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "438532593462542336": {
             "username": "thundersmashx",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "438827010291400717": {
             "username": "thewolferic",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "439260553282846720": {
             "username": "zod0058",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "442486636207407116": {
             "username": "v3xgames",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "442544757185708036": {
             "username": "zerosplague",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "444235840311394315": {
             "username": "coralynn_sh",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "446301719366729728": {
             "username": "mercury3128",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "447950575930179594": {
             "username": "spaced_out_22",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "448578295429201923": {
             "username": "steelbow",
             "tags": [
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "451950209497563166": {
             "username": "dakota2944",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "452216332067536897": {
             "username": "sheeeth9757",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "453404598145777674": {
             "username": "cosmetickat",
@@ -2883,23 +3777,31 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "454467934140628992": {
             "username": "table_owo",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "455716140660949024": {
             "username": "puppyhousewife",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "462021710124679171": {
             "username": "akara4222",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "465066351158099969": {
             "username": "remormoxi",
@@ -2907,62 +3809,82 @@
                 "IRL",
                 "DTF",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "467528145688330260": {
             "username": "llanowhoitis",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "469369928173223936": {
             "username": "itzjuscamm",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "470049629585539072": {
             "username": ".toostar",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "470764495711633409": {
             "username": "thewizqrd",
             "tags": [
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "471844497723228160": {
             "username": "chunkymnky",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "474366423611998219": {
             "username": "axeltheradboi",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "474771035195965451": {
             "username": "daffodilly",
             "tags": [
                 "HTG",
                 "SFW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "476510340452974592": {
             "username": "corsbin",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "476770709906128896": {
             "username": "officialcharles",
             "tags": [
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "478042275633561600": {
             "username": "frosoda",
@@ -2972,17 +3894,23 @@
                 "HTG",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "478043989254078488": {
             "username": "ryanreaper",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "479743352045174790": {
             "username": "iron1201",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "481948256444874764": {
             "username": "taboxii",
@@ -2990,48 +3918,64 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "482723740614918150": {
             "username": "bottomdog",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "483340083773046814": {
             "username": "toasty36302",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "483540325265178625": {
             "username": "edgygamergal",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "484902132126842880": {
             "username": "the_stellaella",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "485425834555867147": {
             "username": "phoebyx",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "486640910898298881": {
             "username": "skye1219",
             "tags": [
                 "zALT"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "487043035805253633": {
             "username": "spartanqueenem",
             "tags": [
                 "IRL",
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "490004469271101440": {
             "username": "cakeykitteh",
@@ -3040,35 +3984,47 @@
                 "TOP",
                 "TRY",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "491012459084120064": {
             "username": "m00neydelta",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "491743489285947402": {
             "username": "shadychaos",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "493568176529997835": {
             "username": "ppchro",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "494570458847510539": {
             "username": "madmadz.",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "495478986772840459": {
             "username": "sylvyy",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "495534439733133323": {
             "username": "thushares",
@@ -3076,62 +4032,82 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "496782928957800468": {
             "username": "mhfrisk",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "498279159517282304": {
             "username": "aric0",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "498917118214144000": {
             "username": "thdion",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "500375508370849820": {
             "username": "1tsjustdwagon",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "501781321811755048": {
             "username": "izzynoc",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "502145472983465994": {
             "username": "mattboxall",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "502145476221730816": {
             "username": "xilor._",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "502496798825250817": {
             "username": "notyos6505",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "502601991739146267": {
             "username": "wamen",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "502608847324839965": {
             "username": "cortex_plays",
@@ -3140,75 +4116,101 @@
                 "100",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "503639361321959426": {
             "username": "lovinglyspirit",
             "tags": [
                 "DTF",
                 "NEW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "504019431714979850": {
             "username": "impliqued",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "505576635794325534": {
             "username": "klon42",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "506200331131158548": {
             "username": "justnana1",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "507780559918071808": {
             "username": "domomyles",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "508148104382644236": {
             "username": "drug077187",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "508469764390387715": {
             "username": "xrhinoryanx",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "509188119678025728": {
             "username": "allie.floral",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "509395095708237855": {
             "username": "sithlord8448",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "509853807895773239": {
             "username": "hjochs",
             "tags": [
                 "IRL",
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "510228220935667713": {
             "username": "risenvermillion",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "510693294808760321": {
             "username": "rubyquartyz",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "515321939166887936": {
             "username": "specteravali",
@@ -3216,60 +4218,80 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "517578595703717919": {
             "username": "griffon551",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "517895086411874305": {
             "username": "zoriniscool",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "518224829594206208": {
             "username": "zersu",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "518801537053622272": {
             "username": "oldacc3603",
             "tags": [
                 "zALT"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "522626002074075137": {
             "username": "rizevr",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "528008649533292544": {
             "username": "clarkpls",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "528083706238205962": {
             "username": "enixshadill",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "528658159557148692": {
             "username": "hypie_",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "530945663509331968": {
             "username": "dragonsaltaccount_",
             "tags": [
                 "zALT",
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "531902037554626562": {
             "username": "bostin9167",
@@ -3279,172 +4301,232 @@
                 "100",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "534936644407787535": {
             "username": "angel__dead.",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "536056713447473158": {
             "username": "auxximoto",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "536384203814862849": {
             "username": "taze7",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "536770292366704681": {
             "username": "lyvian",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "537777779329204236": {
             "username": "azi2600",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "540261861631721493": {
             "username": "theparttimedevil",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "549113514854187008": {
             "username": "tianamacaroni",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "550718941010460674": {
             "username": "scrawrlet",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "550840231343947797": {
             "username": "draikomorax",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "555484519675985920": {
             "username": "jennalove80612",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "555566630256508930": {
             "username": "scottishxripper",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "559472234029121537": {
             "username": "space_fish26",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "560311234554101760": {
             "username": "relkasi",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "560575084826198037": {
             "username": "shadowcloudr01",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "561350759577288704": {
             "username": "superspambot",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "563117834604118036": {
             "username": "sen2042",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "564851918803959859": {
             "username": "grumpuschan",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "575821722888962089": {
             "username": "sorathelegend",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "576082051422355477": {
             "username": "demonicnightfox210370",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "581164691481427998": {
             "username": "smoothsterop",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "581646843700838410": {
             "username": "nerdmo22",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "585600504453791812": {
             "username": "marieroseden",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "585600535944757269": {
             "username": "tiffany1978",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "589837720843714560": {
             "username": "novahxeno",
             "tags": [
                 "LWD",
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "590473220365352963": {
             "username": "beast_slayer999",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "592593588798488587": {
             "username": "katt_ie",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "593233731720839169": {
             "username": "sarah7167526",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "593509445821005824": {
             "username": "mlan42799660",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "595068851587383297": {
             "username": "ximmer",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "595303003620376586": {
             "username": "_aeon8",
@@ -3453,95 +4535,127 @@
                 "HTG",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "596090824157036555": {
             "username": "teengxre",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "598231007094767704": {
             "username": "slyute",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "598316010256334887": {
             "username": "col2726",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "599367946627973121": {
             "username": "softmeow",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "600092274407243790": {
             "username": "zoomsca",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "601955330934571018": {
             "username": "daikenkais",
             "tags": [
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "605236805880643614": {
             "username": "angellicbean",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "605874591411470377": {
             "username": "serenitysnynx1",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "605973601627144207": {
             "username": "lammyboi",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "606341659436908561": {
             "username": "domacaz",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "607258375700348937": {
             "username": "maxxietheimp",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "608260483471900672": {
             "username": "syrono",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "613664227617669130": {
             "username": "hazzy_vr",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "616669054639538187": {
             "username": "kenkaro",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "616691719869563244": {
             "username": "natgg33",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "617187384077058068": {
             "username": "_octave",
@@ -3550,57 +4664,77 @@
                 "100",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "617750131919421445": {
             "username": "stszer.veniceares",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "617823471510093824": {
             "username": "rexyduck",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "620060345175638018": {
             "username": "j1sper",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "623003340489621527": {
             "username": "unspeakablefaith",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "623364684539494411": {
             "username": "vanilla_loves_you",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "624309720508923934": {
             "username": "gotcarrots",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "626973428242710545": {
             "username": "reminga",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "628754141996515358": {
             "username": "forevermatt",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "629063120303947777": {
             "username": "grannysardine",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "629667643913273367": {
             "username": "countdraco",
@@ -3608,25 +4742,33 @@
                 "DTF",
                 "TRY",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "630876278224060477": {
             "username": "koyoinu",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "632607486154899474": {
             "username": "lucausagi",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "636122512945577995": {
             "username": "shotorohazbin",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "636479527014367232": {
             "username": "arclightleopard777",
@@ -3635,32 +4777,42 @@
                 "DNI",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "639833635238838313": {
             "username": "disabledcobaltaccount",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "644088960926351370": {
             "username": "winderbeast",
             "tags": [
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "647334036318060545": {
             "username": "projectzombie1773",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "650595259272658957": {
             "username": "crimsonberry3896",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "651540318155440188": {
             "username": "noodledraws",
@@ -3668,203 +4820,271 @@
                 "DTF",
                 "TRY",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "660591668252377101": {
             "username": ".selbbub",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "661027005025746962": {
             "username": "thedarkvortex9011",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "662836645258592291": {
             "username": "ghost__spirit",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "663932759294869532": {
             "username": "byers_2",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "664844019083509800": {
             "username": "nauctustheavali",
             "tags": [
                 "NEW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "669279261512695830": {
             "username": "_roofthedilo_",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "670040513134723073": {
             "username": "ivy_spearmint",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "670326053553700866": {
             "username": "_silvermoon_",
             "tags": [
                 "AQU",
                 "SFW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "671907823264727071": {
             "username": "supertaters50",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "671945976562319360": {
             "username": "protonr4",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "672526896054927372": {
             "username": "popcornlavatits",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "674079819222482944": {
             "username": "kukiomi",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "675499208895234071": {
             "username": "atem4327",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "681195533175619627": {
             "username": "snepking",
             "tags": [
                 "NEW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "685316604673916952": {
             "username": "deatherway",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "691790548410957915": {
             "username": "barbatos1772385",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "694290072123605102": {
             "username": "micheller9044",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "697993923741876363": {
             "username": "acethefox6591",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "700434461900406786": {
             "username": "shadowfang8971",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "701174536741060618": {
             "username": "broganders",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "716777584687579317": {
             "username": "d.r.n",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "717908468949843990": {
             "username": "corkv2",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "725074907754397787": {
             "username": "integrumentalofficial8342",
             "tags": [
                 "zALT"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "725620151143104572": {
             "username": "hush9425",
             "tags": [
                 "AQU",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "726576292064919645": {
             "username": "ilonia",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "731290704344514660": {
             "username": "thatssoreagan1312",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "734807936508887060": {
             "username": "m1kk33y",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "741848032085147709": {
             "username": "veirran",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "742147553772175410": {
             "username": "toasty36987",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "746812961120845836": {
             "username": "flyntgoat",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "749779160808947735": {
             "username": "ish_snowy_birb",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "753007791601483787": {
             "username": "redfireluna",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "756262969750585445": {
             "username": "kiri2219",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "758941646300774440": {
             "username": "ethusiastic",
@@ -3874,7 +5094,9 @@
                 "BTM",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "759575110578601994": {
             "username": "littlej1450",
@@ -3884,19 +5106,25 @@
                 "BTM",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "764326680114102293": {
             "username": "cookiemonster4558",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "765667268071391282": {
             "username": "juvian.",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "765781316187717642": {
             "username": "kindleclaw",
@@ -3905,7 +5133,9 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "766731132002631710": {
             "username": "snip06",
@@ -3914,26 +5144,34 @@
                 "BTM",
                 "LWD",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "782757603348316160": {
             "username": "_godisdead",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "784084378140803142": {
             "username": "negative_ghost_rider",
             "tags": [
                 "IRL",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "788043091008946196": {
             "username": "brynleighdefendan2858",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "791532292413325362": {
             "username": "serah64",
@@ -3943,70 +5181,94 @@
                 "CIR",
                 "HTG",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "792620096462782475": {
             "username": "itsnebs5700",
             "tags": [
                 "OLD",
                 "100"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "796612140059590668": {
             "username": "nilsaiyanz",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "800066543827943454": {
             "username": "sheva1901",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "800924730638073897": {
             "username": "dollface421",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "809266912142950400": {
             "username": "altsodags",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "813530463264178217": {
             "username": "nattovt",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "815399004534734900": {
             "username": "athenacilver",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "822261958689816627": {
             "username": "saviichan",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "822691682159689788": {
             "username": "angeldusty.",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "837490294626189322": {
             "username": "toy06",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "838251568800989204": {
             "username": "marshcxrpse",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "839429681580343296": {
             "username": "linaona",
@@ -4014,47 +5276,63 @@
                 "DTF",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "841745750576726057": {
             "username": ".gold",
             "tags": [
                 "NEW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "849870019717627934": {
             "username": "darkesper7",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "851291032397676564": {
             "username": "punishedbun",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "851740580244881408": {
             "username": "free_hugs_",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "854021298850365440": {
             "username": "rumscurvy",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "859205447843053598": {
             "username": "tardis76",
             "tags": [
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "860017512053735424": {
             "username": "itsnebs4339",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "882046987619401789": {
             "username": "jinxspecter88",
@@ -4062,62 +5340,82 @@
                 "DTF",
                 "TRY",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "888758845227286538": {
             "username": "2tata",
             "tags": [
                 "NEW"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "889125767643013180": {
             "username": "jace_the_congrukee",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "889481713774907393": {
             "username": "pest.w.",
             "tags": [
                 "DTF",
                 "TRY"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "890686625330376705": {
             "username": "justasmolfen",
             "tags": [
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "891268473529987092": {
             "username": "yosh06",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "894250187315380224": {
             "username": "achair",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "895877330126405633": {
             "username": "liminalarlo",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "900897652588294155": {
             "username": "thesouthender",
             "tags": [
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "903947951502655508": {
             "username": "bubblesmcjim6067",
             "tags": [
                 "zALT"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "907046044267872367": {
             "username": "maplevariant",
@@ -4127,51 +5425,67 @@
                 "TOP",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "908048983916691487": {
             "username": "dutchiegalaxy",
             "tags": [
                 "DNI",
                 "OLD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "912807322189971526": {
             "username": "tips_.y",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "916767464493314129": {
             "username": "nightfox21",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "925915185032617994": {
             "username": "xochimi",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "930363892985659413": {
             "username": "sylvannocturnus",
             "tags": [
                 "DNI",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "933534707298234448": {
             "username": "identity2.79",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "936670628621213846": {
             "username": "pupperazzi",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "939496632955846696": {
             "username": "orbitalicarus",
@@ -4180,50 +5494,68 @@
                 "100",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "942139149316653087": {
             "username": "bishiebun7394",
             "tags": [
                 "DTF",
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "959050003354124318": {
             "username": "fuzzysmore",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "959601882832203857": {
             "username": "verycoolruby",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "973241205158711416": {
             "username": "maidenlesswolf",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "983690508935233556": {
             "username": "lolpoimloy",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "989119527398821940": {
             "username": "ivyleah",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1001928463759982654": {
             "username": "strandedodin780",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1027696040683520020": {
             "username": "luciferraven",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1029136923735892080": {
             "username": "kawnnerlol1802",
@@ -4232,19 +5564,25 @@
                 "TRY",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1038486997196624003": {
             "username": "lamimi0246",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1050258167885471784": {
             "username": "bolar_nazyalensky",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1057013415824085093": {
             "username": "kangarookisser69",
@@ -4253,25 +5591,33 @@
                 "TRY",
                 "TOP",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1084542046439755856": {
             "username": ".unknown_scientist",
             "tags": [
                 "HTG"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1094731045619896370": {
             "username": "la.jackie1202",
             "tags": [
                 "IDR"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1112154035844304907": {
             "username": "eepypuppy",
             "tags": [
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1134932225163534346": {
             "username": "eckoaurum",
@@ -4281,32 +5627,42 @@
                 "HTG",
                 "BTM",
                 "LWD"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1138125282767814701": {
             "username": "bountyhunterwolf.",
             "tags": [
                 "IRL",
                 "DNI"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1162524100812615811": {
             "username": "shadowsknown",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1165113617012752480": {
             "username": "n_voltra",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1191181855064588299": {
             "username": "miles12_11",
             "tags": [
                 "IRL"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1194344791798992959": {
             "username": "desertavali",
@@ -4316,37 +5672,49 @@
                 "TOP",
                 "LWD",
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1196596600261316679": {
             "username": "whoopvr",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1232819387577143320": {
             "username": "crimsonecho0",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1233134869324894320": {
             "username": "grimmagmacomet",
             "tags": [
                 "IDK"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1343509393655992330": {
             "username": "hopperbnuy",
             "tags": [
                 "HMM"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "176505174179840011": {
             "username": "yaybread",
             "tags": [
                 "AQU"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "391354925210271744": {
             "username": "klula",
@@ -4354,17 +5722,77 @@
                 "NEW",
                 "LWD",
                 "DTF"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "381157302369255424": {
             "username": "jimmcbubbles",
             "tags": [
                 "zALT"
-            ]
+            ],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         },
         "1440901090743685140": {
             "username": "miamelina09",
-            "tags": []
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
+        },
+        "260145524081033217": {
+            "username": "smokeydarkblade",
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
+        },
+        "392799175072284684": {
+            "username": "theshortstuff",
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
+        },
+        "197186879093735424": {
+            "username": "wendigo0001",
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
+        },
+        "285348268982927360": {
+            "username": "cynthia_royal",
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
+        },
+        "465246987038621707": {
+            "username": "flinch05",
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
+        },
+        "1409986983786315941": {
+            "username": "sanpona",
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
+        },
+        "382631515743322113": {
+            "username": "tronis2.0",
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
+        },
+        "792554541664305193": {
+            "username": "birb_6911",
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
+        },
+        "1320262926552268915": {
+            "username": "fernplantswag",
+            "tags": [],
+            "friendSinceMs": null,
+            "lastMessagedMs": null
         }
     },
     "TagIndex": {
