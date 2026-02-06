@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.10
+ * @version 1.12.11
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.10",
+			version: "1.12.11",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06l",
+			items: [
+				"Timestamp refresh now sets Quick Switcher query through internal module methods instead of writing into focused DOM inputs.",
+				"Replaced transitionToChannel dependency with router-style transition/back handling and richer error details for missing module lookups and selected fallback paths."
+			]
+		},
 		{
 			title: "2026-02-06k",
 			items: [
@@ -259,9 +266,10 @@ const DEBUG_DM_LOGS = true;
 
 let CachedChannelStore = null;
 let CachedMessageStore = null;
-let CachedChannelNavigation = null;
+let CachedRouterModule = null;
 let CachedPrivateChannelActions = null;
 let CachedQuickSwitcherModule = null;
+let CachedQuickSwitcherQueryModule = null;
 
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const normalizeTimestamp = (value) => {
@@ -309,15 +317,15 @@ const getMessageStore = () => {
         return CachedMessageStore;
 };
 
-const getChannelNavigation = () => {
-        if (CachedChannelNavigation) return CachedChannelNavigation;
-        const nav =
-                BdApi?.Webpack?.getByProps?.("transitionToChannel") ||
-                WebpackModules?.findByProps?.("transitionToChannel") ||
-                BdApi.Webpack.getModule(m => m?.transitionToChannel, { searchExports: true });
+const getRouterModule = () => {
+        if (CachedRouterModule) return CachedRouterModule;
+        const router =
+                BdApi?.Webpack?.getByProps?.("transitionTo", "replaceWith", "back") ||
+                WebpackModules?.findByProps?.("transitionTo", "replaceWith", "back") ||
+                BdApi.Webpack.getModule(m => m?.transitionTo && (m?.back || m?.replaceWith), { searchExports: true });
 
-        CachedChannelNavigation = nav || null;
-        return CachedChannelNavigation;
+        CachedRouterModule = router || null;
+        return CachedRouterModule;
 };
 
 const getPrivateChannelActions = () => {
@@ -329,6 +337,27 @@ const getPrivateChannelActions = () => {
 
         CachedPrivateChannelActions = actions || null;
         return CachedPrivateChannelActions;
+};
+
+
+const getQuickSwitcherQueryModule = () => {
+        if (CachedQuickSwitcherQueryModule) return CachedQuickSwitcherQueryModule;
+        const mod =
+                BdApi?.Webpack?.getByProps?.("setQuery") ||
+                WebpackModules?.findByProps?.("setQuery") ||
+                BdApi?.Webpack?.getByProps?.("search", "setSearchQuery") ||
+                WebpackModules?.findByProps?.("search", "setSearchQuery") ||
+                BdApi.Webpack.getModule(
+                        m => m && (
+                                typeof m.setQuery === "function" ||
+                                typeof m.setSearchQuery === "function" ||
+                                typeof m.search === "function"
+                        ),
+                        { searchExports: true }
+                );
+
+        CachedQuickSwitcherQueryModule = mod || null;
+        return CachedQuickSwitcherQueryModule;
 };
 
 const getQuickSwitcherModule = () => {
@@ -449,23 +478,53 @@ const closeQuickSwitcher = () => {
 
 const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
         const quickSwitcher = getQuickSwitcherModule();
-        const openViaModule = !!(quickSwitcher?.show || quickSwitcher?.toggleQuickSwitcher);
+        const queryModule = getQuickSwitcherQueryModule();
+        const openPath = quickSwitcher?.show
+                ? "QuickSwitcher.show"
+                : quickSwitcher?.toggleQuickSwitcher
+                        ? "QuickSwitcher.toggleQuickSwitcher"
+                        : "KeyboardEvent Ctrl+K fallback";
 
         const input = await openQuickSwitcher();
         if (!input) {
-                const reason = [
-                        "Quick Switcher input not found after open attempt.",
-                        openViaModule ? null : "QuickSwitcher module (show/toggleQuickSwitcher) not found.",
-                        "Tried Ctrl+K keyboard fallback."
-                ].filter(Boolean).join(" ");
-                return { selected: false, reason };
+                const missing = [];
+                if (!quickSwitcher) missing.push("QuickSwitcher module(show/hide or toggleQuickSwitcher)");
+                if (!queryModule && !quickSwitcher?.show) missing.push("QuickSwitcher query module(setQuery/setSearchQuery/search)");
+                return {
+                        selected: false,
+                        openPath,
+                        queryPath: null,
+                        reason: `Quick Switcher input not found after open attempt. Missing modules: ${missing.join(", ") || "none"}`
+                };
         }
 
-        input.focus();
-        input.value = query;
-        input.dispatchEvent(new Event("input", { bubbles: true }));
-        logDmDebug("[UserTags/DM] Quick Switcher query", { query });
-        await wait(220);
+        let queryPath = null;
+        if (quickSwitcher?.show) {
+                quickSwitcher.show(String(query));
+                queryPath = "QuickSwitcher.show(query)";
+        } else if (queryModule?.setQuery) {
+                queryModule.setQuery(String(query));
+                queryPath = "QuickSwitcherQuery.setQuery(query)";
+        } else if (queryModule?.setSearchQuery) {
+                queryModule.setSearchQuery(String(query));
+                queryPath = "QuickSwitcherQuery.setSearchQuery(query)";
+        } else if (queryModule?.search) {
+                queryModule.search(String(query));
+                queryPath = "QuickSwitcherQuery.search(query)";
+        }
+
+        if (!queryPath) {
+                const missing = ["QuickSwitcher query setter"];
+                return {
+                        selected: false,
+                        openPath,
+                        queryPath: null,
+                        reason: `Could not set Quick Switcher query internally. Missing modules: ${missing.join(", ")}`
+                };
+        }
+
+        logDmDebug("[UserTags/DM] Quick Switcher query", { query, openPath, queryPath });
+        await wait(240);
 
         const dialog = input.closest("div[role='dialog']") || document;
         const candidates = Array.from(dialog.querySelectorAll(
@@ -476,14 +535,15 @@ const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
                 if (text.includes("group dm")) return false;
                 if (String(userId) && text.includes(String(userId).toLowerCase())) return true;
                 if (username && text.includes(String(username).toLowerCase())) return true;
-                if (query && text.includes(String(query).toLowerCase())) return true;
                 return false;
         });
 
         const selectedEntry = candidates[0] || null;
+        let selectPath = "Keyboard Enter";
         if (selectedEntry) {
                 selectedEntry.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
                 selectedEntry.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+                selectPath = "QuickSwitcherResult.click + Enter";
                 logDmDebug("[UserTags/DM] Quick Switcher selected result element", {
                         query,
                         userId,
@@ -494,7 +554,7 @@ const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
 
         input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", code: "Enter", bubbles: true }));
         input.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter", code: "Enter", bubbles: true }));
-        logDmDebug("[UserTags/DM] Quick Switcher selected result via Enter", { query, hadElementMatch: !!selectedEntry });
+        logDmDebug("[UserTags/DM] Quick Switcher selected result via Enter", { query, hadElementMatch: !!selectedEntry, selectPath });
         await wait(260);
         closeQuickSwitcher();
 
@@ -502,6 +562,9 @@ const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
                 selected: true,
                 hadElementMatch: !!selectedEntry,
                 selectedText: selectedEntry ? (selectedEntry.textContent || "").trim().slice(0, 140) : null,
+                openPath,
+                queryPath,
+                selectPath,
                 reason: null
         };
 };
@@ -824,7 +887,7 @@ class UserTags {
                         throw new Error("Missing DM lookup dependencies.");
                 }
 
-                const channelNavigation = getChannelNavigation();
+                const router = getRouterModule();
                 const privateChannelActions = getPrivateChannelActions();
                 const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
                 const channelStore = getChannelStore();
@@ -873,16 +936,18 @@ class UserTags {
                                 bounds = null;
                                 targetValue = null;
 
-                                if (previousChannelId && channelNavigation?.transitionToChannel) {
-                                        channelNavigation.transitionToChannel(previousChannelId);
+                                if (previousChannelId && router?.transitionTo) {
+                                        router.transitionTo(`/channels/@me/${previousChannelId}`);
+                                } else if (typeof window?.history?.back === "function") {
+                                        window.history.back();
                                 }
                         }
 
                         if (!openedChannelId || !bounds || !targetValue?.timestamp) {
                                 const missing = [];
                                 if (!getQuickSwitcherModule()) missing.push("QuickSwitcher module(show/toggleQuickSwitcher)");
-                                if (!channelNavigation?.transitionToChannel) missing.push("ChannelNavigation.transitionToChannel");
-                                const details = [lastSelectionReason, missing.length ? `Missing modules: ${missing.join(", ")}` : null]
+                                if (!router?.transitionTo && !router?.back && typeof window?.history?.back !== "function") missing.push("Router module(transitionTo/back)");
+                                const details = [lastSelectionReason, missing.length ? `Missing modules: ${missing.join(", ")}` : null, "Fallback path: QuickSwitcher internal query + Router/back restore"]
                                         .filter(Boolean)
                                         .join(" | ");
                                 throw new Error(details ? `No existing DM; can't fetch. ${details}` : "No existing DM; can't fetch.");
@@ -911,9 +976,13 @@ class UserTags {
                         let returnMethod = null;
                         let returnSuccess = false;
 
-                        if (previousChannelId && channelNavigation?.transitionToChannel) {
-                                channelNavigation.transitionToChannel(previousChannelId);
-                                returnMethod = "ChannelNavigation.transitionToChannel";
+                        if (previousChannelId && router?.transitionTo) {
+                                router.transitionTo(`/channels/@me/${previousChannelId}`);
+                                returnMethod = "Router.transitionTo('/channels/@me/:channelId')";
+                                returnSuccess = true;
+                        } else if (router?.back) {
+                                router.back();
+                                returnMethod = "Router.back()";
                                 returnSuccess = true;
                         } else if (previousChannelId && typeof window?.history?.back === "function") {
                                 window.history.back();
@@ -925,7 +994,7 @@ class UserTags {
                                 previousChannelId,
                                 success: returnSuccess,
                                 returnMethod,
-                                missingTransitionModule: !channelNavigation?.transitionToChannel
+                                missingRouterModule: !router
                         });
 
                         if (openedChannelId && privateChannelActions?.closePrivateChannel) {
