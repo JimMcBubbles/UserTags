@@ -1,6 +1,6 @@
 {
     "currentVersionInfo": {
-        "version": "1.12.2",
+        "version": "1.12.10",
         "hasShownChangelog": true
     },
     "UserData": {
@@ -1271,7 +1271,8 @@
         "210072231143931914": {
             "username": "bogdan.blazkowiz",
             "tags": [
-                "IDK"
+                "IDK",
+                "DTF"
             ],
             "friendSinceMs": null,
             "lastMessagedMs": null
@@ -3483,7 +3484,10 @@
         "416042464713900032": {
             "username": "camolotcreator",
             "tags": [
-                "IDK"
+                "IDK",
+                "DTF",
+                "LWD",
+                "IRL"
             ],
             "friendSinceMs": null,
             "lastMessagedMs": null
@@ -3963,8 +3967,7 @@
         "486640910898298881": {
             "username": "skye1219",
             "tags": [
-                "zALT",
-                "SFW"
+                "zALT"
             ],
             "friendSinceMs": null,
             "lastMessagedMs": null
@@ -5292,8 +5295,7 @@
         "849870019717627934": {
             "username": "darkesper7",
             "tags": [
-                "IDK",
-                "zALT"
+                "IDK"
             ],
             "friendSinceMs": null,
             "lastMessagedMs": null
@@ -6080,6 +6082,10 @@
                 "username": "ussr_icbm"
             },
             {
+                "userId": "210072231143931914",
+                "username": "bogdan.blazkowiz"
+            },
+            {
                 "userId": "217034511056240640",
                 "username": "elybs"
             },
@@ -6282,6 +6288,10 @@
             {
                 "userId": "415359530281467906",
                 "username": "devilishdean"
+            },
+            {
+                "userId": "416042464713900032",
+                "username": "camolotcreator"
             },
             {
                 "userId": "418174641799036940",
@@ -7104,6 +7114,10 @@
             {
                 "userId": "415359530281467906",
                 "username": "devilishdean"
+            },
+            {
+                "userId": "416042464713900032",
+                "username": "camolotcreator"
             },
             {
                 "userId": "418174641799036940",
@@ -9250,6 +9264,10 @@
                 "username": "devilishdean"
             },
             {
+                "userId": "416042464713900032",
+                "username": "camolotcreator"
+            },
+            {
                 "userId": "427002425484771339",
                 "username": "thedevilskush"
             },
@@ -9744,10 +9762,6 @@
                 "username": "daffodilly"
             },
             {
-                "userId": "486640910898298881",
-                "username": "skye1219"
-            },
-            {
                 "userId": "670326053553700866",
                 "username": "_silvermoon_"
             }
@@ -9784,10 +9798,6 @@
             {
                 "userId": "725074907754397787",
                 "username": "integrumentalofficial8342"
-            },
-            {
-                "userId": "849870019717627934",
-                "username": "darkesper7"
             },
             {
                 "userId": "903947951502655508",
@@ -9885,10 +9895,214 @@
     },
     "DmMessageBoundsByUser": {
         "328529063482228736": {
+            "oldest": {
+                "id": "1453734962942574592",
+                "timestamp": 1766667824255
+            },
+            "newest": {
+                "id": "1469178740109213728",
+                "timestamp": 1770349907663
+            },
+            "totalMessages": 100,
+            "updatedAt": 1770364824098
+        },
+        "530687975529644046": {
+            "oldest": {
+                "id": "1469121497896456308",
+                "timestamp": 1770336260056
+            },
+            "newest": {
+                "id": "1469197497363861647",
+                "timestamp": 1770354379741
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770364822280
+        },
+        "406121102570684416": {
+            "oldest": {
+                "id": "1462885110750646457",
+                "timestamp": 1768849389494
+            },
+            "newest": {
+                "id": "1468746832577298585",
+                "timestamp": 1770246932883
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770364856447
+        },
+        "669279261512695830": {
+            "oldest": {
+                "id": "823890804153778226",
+                "timestamp": 1616501274861
+            },
+            "newest": {
+                "id": "823896381101572156",
+                "timestamp": 1616502604509
+            },
+            "totalMessages": 28,
+            "updatedAt": 1770364716386
+        },
+        "430447966176804864": {
+            "oldest": {
+                "id": "1456152310685237290",
+                "timestamp": 1767244164869
+            },
+            "newest": {
+                "id": "1469136713556430919",
+                "timestamp": 1770339887752
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770364826354
+        },
+        "670326053553700866": {
+            "oldest": {
+                "id": "1271918441326186618",
+                "timestamp": 1723319387514
+            },
+            "newest": {
+                "id": "1274552224571330631",
+                "timestamp": 1723947330373
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770364736142
+        },
+        "173303143688306689": {
+            "oldest": {
+                "id": "1415841351697956914",
+                "timestamp": 1757633283305
+            },
+            "newest": {
+                "id": "1469251557408374784",
+                "timestamp": 1770367268660
+            },
+            "totalMessages": 100,
+            "updatedAt": 1770367276857
+        },
+        "275018659284385794": {
+            "oldest": {
+                "id": "1467153143166144724",
+                "timestamp": 1769866967718
+            },
+            "newest": {
+                "id": "1469238732392497223",
+                "timestamp": 1770364210938
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770365020891
+        },
+        "111238505824342016": {
+            "oldest": {
+                "id": "1468669682113581165",
+                "timestamp": 1770228538779
+            },
+            "newest": {
+                "id": "1469116198351278123",
+                "timestamp": 1770334996546
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770364850321
+        },
+        "378396800354091015": {
+            "oldest": {
+                "id": "1465147900399976705",
+                "timestamp": 1769388880587
+            },
+            "newest": {
+                "id": "1469080217317281843",
+                "timestamp": 1770326417999
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770364851660
+        },
+        "301103507526647809": {
+            "oldest": {
+                "id": "1360016775634358432",
+                "timestamp": 1744323667201
+            },
+            "newest": {
+                "id": "1469067634757599295",
+                "timestamp": 1770323418083
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770364853403
+        },
+        "1320262926552268915": {
+            "oldest": {
+                "id": "1468733505214087281",
+                "timestamp": 1770243755392
+            },
+            "newest": {
+                "id": "1468999304675987681",
+                "timestamp": 1770307126922
+            },
+            "totalMessages": 12,
+            "updatedAt": 1770364855098
+        },
+        "285348268982927360": {
+            "oldest": {
+                "id": "1456396952181673994",
+                "timestamp": 1767302491947
+            },
+            "newest": {
+                "id": "1468732380620652544",
+                "timestamp": 1770243487268
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770364858114
+        },
+        "399383408733716481": {
+            "oldest": {
+                "id": "1466945735172952318",
+                "timestamp": 1769817517799
+            },
+            "newest": {
+                "id": "1468707759313915935",
+                "timestamp": 1770237617091
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770364859351
+        },
+        "391354925210271744": {
+            "oldest": {
+                "id": "1459717827173945580",
+                "timestamp": 1768094250244
+            },
+            "newest": {
+                "id": "1468697344307630202",
+                "timestamp": 1770235133960
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770365078516
+        },
+        "399784777630220298": {
             "oldest": null,
             "newest": null,
             "totalMessages": 0,
-            "updatedAt": 1770349175707
+            "updatedAt": 1770365630184
+        },
+        "205148929417805824": {
+            "oldest": {
+                "id": "1081822939206406224",
+                "timestamp": 1677997088005
+            },
+            "newest": {
+                "id": "1107425018415153213",
+                "timestamp": 1684101099352
+            },
+            "totalMessages": 60,
+            "updatedAt": 1770366002396
+        },
+        "630876278224060477": {
+            "oldest": null,
+            "newest": null,
+            "totalMessages": 0,
+            "updatedAt": 1770366051247
+        },
+        "560575084826198037": {
+            "oldest": null,
+            "newest": null,
+            "totalMessages": 0,
+            "updatedAt": 1770366261063
         }
     }
 }

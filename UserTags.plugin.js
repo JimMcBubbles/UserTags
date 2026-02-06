@@ -1,6 +1,7 @@
 /**
  * @name UserTags
- * @version 1.12.2
+ * @version 1.12.10
+ * @versionDate 2026-02-06m - Log timestamp-refresh cell errors to console and show generic in-cell error tooltip.
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +24,105 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.2",
+			version: "1.12.10",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+				{
+			title: "2026-02-06r",
+			items: [
+				"Removed Oldest/Newest Message cell click handlers (no click-to-refresh or Ctrl+Click DM open). Errors still log to console."
+			]
+		},
+		{
+			title: "2026-02-06q",
+			items: [
+				"Added Ctrl+Click on Oldest/Newest Message cells to open an existing DM (navigate to /channels/@me/<channelId>) without creating DMs.",
+				"Logs OpenDM failures to console with structured context when no existing DM channel is available."
+			]
+		},
+		{
+			title: "2026-02-06p",
+			items: [
+				"Timestamp refresh: use ChannelStore.getDMFromUserId as authoritative existing-DM resolution and navigate directly by channelId (removed legacy helper fallbacks)."
+			]
+		},
+		{
+			title: "2026-02-06o",
+			items: [
+				"Fixed DM timestamp refresh crash by restoring plugin instance method getExistingDirectDmChannelId (wrapper over store lookup)."
+			]
+		},
+
+		{
+			title: "2026-02-06n",
+			items: [
+				"Timestamp refresh failures now log a timestamped console.error payload; in-grid tooltips show only 'Error (see console)'."
+			]
+		},
+
+		{
+			title: "2026-02-06m",
+			items: [
+				"Moved timestamp-cell error details from hover tooltip into console.error so errors are copyable; tooltip now shows a generic error hint."
+			]
+		},
+		{
+			title: "2026-02-06l",
+			items: [
+				"Fixed plugin load/META detection and cleaned version/changelog formatting; timestamp refresh errors now log to console (no tooltip-only errors)."
+			]
+		},
+		{
+		  title: "2026-02-06j",
+		  items: [
+		    "Fixed BetterDiscord META header detection by ensuring the metadata block is the first content in the file.",
+		  ]
+		},
+		{
+			title: "2026-02-06i",
+			items: [
+				"Removed all DM close calls from timestamp refresh; navigation now uses Quick Switcher + history.back() only (never explicitly closes DMs).",
+				"Removed hard dependency on ChannelNavigation.transitionToChannel; missing navigation modules now log to console and fail gracefully.",
+				"Moved timestamp-refresh failure details to console.error (tooltip no longer required for copying errors)."
+			]
+		},
+		{
+			title: "2026-02-06h",
+			items: [
+				"Reworked timestamp-cell refresh to drive an explicit Quick Switcher flow (open, query, enter, validate DM, scrape, return) with detailed debug logging.",
+				"Added strict post-navigation validation and safety cleanup so non-matching/group results abort and restore the previous route without touching storage."
+			]
+		},
+		{
+			title: "2026-02-06g",
+			items: [
+				"Timestamp cell refresh now uses a Quick Switcher-style open path for existing 1:1 DMs, with strict recipient/type validation and automatic return to the previous channel.",
+				"Added debug logs documenting the exact module/function path used and the no-group/no-create validations; plus best-effort DM close after scrape to avoid lingering open DMs."
+			]
+		},
+		{
+			title: "2026-02-06f",
+			items: [
+				"Timestamp cell refresh now uses background reads first, then temporary navigation only to an existing 1:1 DM and automatically returns to the previous channel.",
+				"Blocked any refresh path that could create a DM/group by requiring an existing direct DM channel before attempting fetch."
+			]
+		},
+		{
+			title: "2026-02-06e",
+			items: [
+				"Fixed per-cell message refresh to never create/open/navigate DMs; it now only uses existing DM channels and shows an in-cell error when no DM exists."
+			]
+		},
+		{
+			title: "2026-02-06d",
+			items: [
+				"Split the combined Oldest/Newest Message column into separate Oldest Message and Newest Message columns.",
+				"Made oldest/newest cells clickable to refresh that one user/one cell with in-cell loading, error feedback, and click-throttle protection."
+			]
+		},
 		{
 			title: "2026-02-06c",
 			items: [
@@ -102,7 +196,7 @@ const config = {
 				"In the grid, show avatar + display name; on hover show username (userId); on click open the user profile.",
 				"Switch settings view to CSS grid so the User column can be resized smaller than the longest name (names are truncated with ellipsis).",
 				"Make column headers use a solid background so they’re no longer transparent when scrolling.",
-				"Add an \"Add Tag\" button in the overview to create new global tags.",
+				"Add an 'Add Tag' button in the overview to create new global tags.",
 				"Add a regex filter field to the overview to filter visible users.",
 				"Add right-click context menus to tag headers for rename, filter, duplicate and delete.",
 				"Allow regex filter to search mutual server names.",
@@ -204,7 +298,11 @@ const DEBUG_DM_LOGS = true;
 
 let CachedChannelStore = null;
 let CachedMessageStore = null;
+let CachedChannelNavigation = null;
+let CachedPrivateChannelActions = null;
+let CachedQuickSwitcherModule = null;
 
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const normalizeTimestamp = (value) => {
         if (!value && value !== 0) return null;
         if (typeof value === "number") return value;
@@ -248,6 +346,40 @@ const getMessageStore = () => {
 
         CachedMessageStore = store || null;
         return CachedMessageStore;
+};
+
+const getChannelNavigation = () => {
+        if (CachedChannelNavigation) return CachedChannelNavigation;
+        const nav =
+                BdApi?.Webpack?.getByProps?.("transitionToChannel") ||
+                WebpackModules?.findByProps?.("transitionToChannel") ||
+                BdApi.Webpack.getModule(m => m?.transitionToChannel, { searchExports: true });
+
+        CachedChannelNavigation = nav || null;
+        return CachedChannelNavigation;
+};
+
+const getPrivateChannelActions = () => {
+        if (CachedPrivateChannelActions) return CachedPrivateChannelActions;
+        const actions =
+                BdApi?.Webpack?.getByProps?.("openPrivateChannel", "closePrivateChannel") ||
+                WebpackModules?.findByProps?.("openPrivateChannel", "closePrivateChannel") ||
+                BdApi.Webpack.getModule(m => m?.openPrivateChannel && m?.closePrivateChannel, { searchExports: true });
+
+        CachedPrivateChannelActions = actions || null;
+        return CachedPrivateChannelActions;
+};
+
+const getQuickSwitcherModule = () => {
+        if (CachedQuickSwitcherModule) return CachedQuickSwitcherModule;
+        const mod =
+                BdApi?.Webpack?.getByProps?.("show", "hide") ||
+                WebpackModules?.findByProps?.("show", "hide") ||
+                BdApi.Webpack.getModule(m => m && typeof m.show === "function" && typeof m.hide === "function", { searchExports: true }) ||
+                BdApi.Webpack.getModule(m => m && typeof m.toggleQuickSwitcher === "function", { searchExports: true });
+
+        CachedQuickSwitcherModule = mod || null;
+        return CachedQuickSwitcherModule;
 };
 
 const coerceMessageFromWrapperEntry = (entry) => {
@@ -307,7 +439,128 @@ const getDmMessageBounds = (channelId) => {
 };
 
 const USER_COL_KEY = "__USER__";
-const MESSAGE_BOUNDS_COL_KEY = "__MESSAGE_BOUNDS__";
+const OLDEST_MESSAGE_COL_KEY = "__OLDEST_MESSAGE__";
+const NEWEST_MESSAGE_COL_KEY = "__NEWEST_MESSAGE__";
+
+const validateDirectDmChannel = (channel, userId) => {
+        const isDm = channel?.isDM?.() || channel?.type === 1;
+        const recipients = Array.isArray(channel?.recipients) ? channel.recipients : [];
+        return !!(isDm && recipients.length === 1 && recipients[0] === userId);
+};
+
+const getExistingDirectDmChannelId = (userId) => {
+        const channelStore = getChannelStore();
+        if (!userId || !channelStore) return null;
+
+        const mappedChannelId = channelStore.getDMFromUserId?.(userId) || null;
+        if (mappedChannelId) {
+                const mappedChannel = channelStore.getChannel?.(mappedChannelId);
+                if (validateDirectDmChannel(mappedChannel, userId)) {
+                        logDmDebug("[UserTags/DM] Existing 1:1 DM resolved from getDMFromUserId", {
+                                module: "ChannelStore",
+                                function: "getDMFromUserId",
+                                userId,
+                                channelId: mappedChannelId,
+                                validation: "type=DM && recipients=[targetUser]"
+                        });
+                        return mappedChannelId;
+                }
+        }
+
+        const rawPrivate =
+                channelStore.getMutablePrivateChannels?.() ||
+                channelStore.getPrivateChannels?.() ||
+                channelStore.getSortedPrivateChannels?.() ||
+                null;
+
+        const channels = Array.isArray(rawPrivate)
+                ? rawPrivate
+                : rawPrivate && typeof rawPrivate === "object"
+                        ? Object.values(rawPrivate)
+                        : [];
+
+        for (const channel of channels) {
+                if (validateDirectDmChannel(channel, userId)) {
+                        logDmDebug("[UserTags/DM] Existing 1:1 DM resolved from private channel index", {
+                                module: "ChannelStore",
+                                function: "getMutablePrivateChannels|getPrivateChannels|getSortedPrivateChannels",
+                                userId,
+                                channelId: channel.id,
+                                validation: "type=DM && recipients=[targetUser]"
+                        });
+                        return channel.id;
+                }
+        }
+
+        return null;
+};
+
+const getQuickSwitcherInput = () =>
+        document.querySelector("input[aria-label='Quick Switcher']") ||
+        document.querySelector("input[placeholder*='Where would you like to go']") ||
+        document.querySelector("div[role='dialog'] input");
+
+const openQuickSwitcher = async () => {
+        const quickSwitcher = getQuickSwitcherModule();
+        if (quickSwitcher?.show) {
+                quickSwitcher.show("");
+                logDmDebug("[UserTags/DM] Opened Quick Switcher", { modulePath: "QuickSwitcher.show('')" });
+        } else if (quickSwitcher?.toggleQuickSwitcher) {
+                quickSwitcher.toggleQuickSwitcher();
+                logDmDebug("[UserTags/DM] Opened Quick Switcher", { modulePath: "QuickSwitcher.toggleQuickSwitcher()" });
+        } else {
+                window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }));
+                window.dispatchEvent(new KeyboardEvent("keyup", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }));
+                logDmDebug("[UserTags/DM] Opened Quick Switcher", { modulePath: "KeyboardEvent Ctrl+K fallback" });
+        }
+
+        for (let i = 0; i < 10; i++) {
+                const input = getQuickSwitcherInput();
+                if (input) return input;
+                await wait(80);
+        }
+
+        return null;
+};
+
+const closeQuickSwitcher = () => {
+        const quickSwitcher = getQuickSwitcherModule();
+        if (quickSwitcher?.hide) {
+                quickSwitcher.hide();
+                return;
+        }
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true }));
+        document.dispatchEvent(new KeyboardEvent("keyup", { key: "Escape", code: "Escape", bubbles: true }));
+};
+
+const runQuickSwitcherQueryAndEnter = async (query) => {
+        const input = await openQuickSwitcher();
+        if (!input) return false;
+
+        input.focus();
+        input.value = query;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        logDmDebug("[UserTags/DM] Quick Switcher query", { query });
+        await wait(180);
+
+        input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", code: "Enter", bubbles: true }));
+        input.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter", code: "Enter", bubbles: true }));
+        logDmDebug("[UserTags/DM] Quick Switcher selected result via Enter", { query });
+        await wait(220);
+        closeQuickSwitcher();
+        return true;
+};
+
+const pollDmMessageBound = async (channelId, boundKey, attempts = 12, delayMs = 250) => {
+        for (let attempt = 0; attempt < attempts; attempt++) {
+                const bounds = getDmMessageBounds(channelId);
+                const target = bounds?.[boundKey] || null;
+                if (target?.timestamp) return bounds;
+                await wait(delayMs);
+        }
+
+        return getDmMessageBounds(channelId);
+};
 
 const formatTimestampForGrid = (timestamp) => {
 	if (!timestamp) return "—";
@@ -326,6 +579,11 @@ class UserTags {
 		this.modalSizingFrameId = null;
 		this.modalSizingTimeoutId = null;
 		this.modalSizingDeadline = 0;
+	}
+
+	// Compatibility: older revisions referenced this.getExistingDirectDmChannelId; keep as instance method wrapper.
+	getExistingDirectDmChannelId(userId) {
+		return getExistingDirectDmChannelId(userId);
 	}
 
 	getName() { return this._config.info.name; }
@@ -610,6 +868,201 @@ class UserTags {
         }
 
 
+        async getDmMessageBoundsForChannel(channelId, dmUserId) {
+                // Wait for Discord to load messages into the MessageStore for this DM, then derive bounds.
+                // We never create/open/close the DM here; the caller is responsible for navigation only.
+                let bounds = await pollDmMessageBound(channelId, "newest", 16, 250);
+                if (!bounds?.oldest?.timestamp) {
+                        bounds = await pollDmMessageBound(channelId, "oldest", 16, 250);
+                }
+
+                try {
+                        const existing = Data.load(this._config.info.name, "DmMessageBoundsByUser") || {};
+                        existing[String(dmUserId)] = {
+                                oldest: bounds?.oldest || null,
+                                newest: bounds?.newest || null,
+                                totalMessages: bounds?.totalMessages ?? 0,
+                                updatedAt: Date.now()
+                        };
+                        Data.save(this._config.info.name, "DmMessageBoundsByUser", existing);
+                        this._forceOverviewRefresh?.();
+                } catch (_) { }
+
+                return bounds;
+        }
+
+        openExistingDmForUser(userId, username, context = {}) {
+                const ts = new Date().toISOString();
+                const boundKey = context?.boundKey ?? null;
+
+                try {
+                        const ChannelStore = getChannelStore();
+                        const channelId = ChannelStore?.getDMFromUserId?.(userId) || null;
+
+                        if (!channelId) {
+                                console.error(`[UserTags][OpenDM][${ts}]`, {
+                                        userId,
+                                        username,
+                                        boundKey,
+                                        step: "no_existing_dm",
+                                        errorMessage: "No existing DM channelId from ChannelStore.getDMFromUserId",
+                                        stack: null
+                                });
+                                return false;
+                        }
+
+                        // Prefer Discord's router/navigation modules if available; fall back to SPA history navigation.
+                        const ChannelNavigation = WebpackModules.findByProps?.("transitionToChannel") || null;
+                        const Router = WebpackModules.findByProps?.("transitionTo") || null;
+
+                        let navMethod = null;
+                        if (ChannelNavigation?.transitionToChannel) {
+                                ChannelNavigation.transitionToChannel(channelId);
+                                navMethod = "ChannelNavigation.transitionToChannel";
+                        } else if (Router?.transitionTo) {
+                                Router.transitionTo(`/channels/@me/${channelId}`);
+                                navMethod = "Router.transitionTo";
+                        } else {
+                                history.pushState(null, "", `/channels/@me/${channelId}`);
+                                window.dispatchEvent(new PopStateEvent("popstate"));
+                                navMethod = "history.pushState";
+                        }
+
+                        logDmDebug("[UserTags/DM] OpenDM navigation issued", {
+                                userId,
+                                username,
+                                boundKey,
+                                channelId,
+                                navMethod
+                        });
+
+                        return true;
+                } catch (error) {
+                        console.error(`[UserTags][OpenDM][${ts}]`, {
+                                userId,
+                                username,
+                                boundKey,
+                                step: "failed",
+                                errorMessage: String(error?.message || error),
+                                stack: error?.stack || null
+                        });
+                        return false;
+                }
+        }
+
+
+        async refreshDmMessageBoundForUser(userId, boundKey, username) {
+                if (!userId || !["oldest", "newest"].includes(boundKey)) {
+                        throw new Error("Missing DM lookup dependencies.");
+                }
+
+                const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
+                const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
+
+                // Option 1: Use ChannelStore.getDMFromUserId as the authoritative source for an *existing* DM.
+                // Do NOT attempt to create/open/close DMs here. We only scrape when a DM already exists.
+                const ChannelStore = Webpack.getStore("ChannelStore") || Webpack.getStore("PrivateChannelStore");
+                const dm = ChannelStore?.getDMFromUserId?.(userId) || null;
+                const expectedChannelId = dm?.id || dm?.channelId || dm?.channel_id || null;
+
+                if (!expectedChannelId) {
+                        throw new Error("No existing DM. Can't fetch.");
+                }
+
+                const stepLog = (step, extra = {}) => {
+                        try {
+                                console.log("[UserTags/DM]", {
+                                        userId,
+                                        username,
+                                        boundKey,
+                                        expectedChannelId,
+                                        previousChannelId,
+                                        step,
+                                        ...extra
+                                });
+                        } catch (_) { }
+                };
+
+                const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+                const waitForChannelId = async (channelId, timeoutMs) => {
+                        const start = Date.now();
+                        while (Date.now() - start < timeoutMs) {
+                                const cur = SelectedChannelStore?.getChannelId?.();
+                                if (cur === channelId) return true;
+                                await sleep(50);
+                        }
+                        return SelectedChannelStore?.getChannelId?.() === channelId;
+                };
+
+                const transitionToDmChannel = (channelId) => {
+                        // Prefer Discord's router/navigation modules if available; fall back to SPA history navigation.
+                        const ChannelNavigation = WebpackModules.findByProps?.("transitionToChannel") || null;
+                        const Router = WebpackModules.findByProps?.("transitionTo") || null;
+
+                        if (ChannelNavigation?.transitionToChannel) {
+                                ChannelNavigation.transitionToChannel(channelId);
+                                return "ChannelNavigation.transitionToChannel";
+                        }
+
+                        if (Router?.transitionTo) {
+                                Router.transitionTo(`/channels/@me/${channelId}`);
+                                return "Router.transitionTo";
+                        }
+
+                        // Last resort: update the URL and trigger a popstate so Discord's router reacts.
+                        try {
+                                history.pushState(null, "", `/channels/@me/${channelId}`);
+                                window.dispatchEvent(new PopStateEvent("popstate"));
+                                return "history.pushState";
+                        } catch (_) {
+                                // If this fails, the caller will handle via the selection wait timeout.
+                                return "history.pushState_failed";
+                        }
+                };
+
+                // 1) Resolve DM from store and navigate to it (no Quick Switcher / legacy helpers)
+                stepLog("dm_resolved_from_store", {
+                        module: ChannelStore ? (ChannelStore?.constructor?.name || "Store") : null,
+                        function: "getDMFromUserId",
+                        channelId: expectedChannelId
+                });
+
+                stepLog("navigate_to_dm_begin");
+                const navMethod = transitionToDmChannel(expectedChannelId);
+                stepLog("navigate_to_dm_issued", { navMethod });
+
+                // 2) Wait for the DM to actually be selected
+                stepLog("wait_selected_dm");
+                const entered = await waitForChannelId(expectedChannelId, 5000);
+                if (!entered) {
+                        stepLog("dm_not_entered", { selected: SelectedChannelStore?.getChannelId?.() || null });
+                        throw new Error("Failed to enter DM after navigation.");
+                }
+
+                // 3) Read message bounds in the currently selected DM
+                stepLog("read_message_bounds");
+                const bounds = await this.getDmMessageBoundsForChannel(expectedChannelId, userId);
+                stepLog("bounds_result", { totalMessages: bounds?.totalMessages ?? null, oldest: bounds?.oldest ?? null, newest: bounds?.newest ?? null });
+
+                // 4) Best-effort restore previous channel (do NOT close the DM; just navigate back)
+                stepLog("restore_previous_begin");
+                let restoreSuccess = false;
+                if (previousChannelId) {
+                        try {
+                                history.back();
+                                restoreSuccess = await waitForChannelId(previousChannelId, 3000);
+                        } catch (err) {
+                                stepLog("restore_previous_failed", { error: String(err?.message || err) });
+                        }
+                }
+                stepLog("restore_previous_end", { restoreSuccess, selected: SelectedChannelStore?.getChannelId?.() || null });
+
+                return bounds;
+        }
+
+
+
 	/**
 	 * Attaches a dropdown of existing tags to a tag input.
 	 */
@@ -870,23 +1323,17 @@ class UserTags {
                                 font-variant-numeric: tabular-nums;
                                 color: var(--text-muted);
                                 white-space: nowrap;
+                                transition: opacity 120ms ease;
                         }
-                        .usertags-datecell-clickable {
-                                cursor: pointer;
-                                color: var(--text-link);
-                                text-decoration: underline dotted;
-                        }
-                        .usertags-datecell-clickable:hover {
-                                text-decoration: underline;
+                        .usertags-datecell:hover {
                                 color: var(--text-normal);
-                        }
-                        .usertags-date-cell-missing {
-                                cursor: pointer;
                                 text-decoration: underline;
-                                opacity: 0.8;
                         }
-                        .usertags-date-cell-missing:hover {
-                                opacity: 1;
+                        .usertags-datecell-loading {
+                                opacity: 0.7;
+                        }
+                        .usertags-datecell-error {
+                                color: var(--text-danger);
                         }
                         .usertags-cell.has-tag {
                                 background-color: var(--status-positive-background);
@@ -2145,7 +2592,8 @@ class UserTags {
 			// Build grid template columns based on current widths
                         const columnWidths = [
                                 colWidths[USER_COL_KEY] || 220,
-                                colWidths[MESSAGE_BOUNDS_COL_KEY] || 210,
+                                colWidths[OLDEST_MESSAGE_COL_KEY] || 180,
+                                colWidths[NEWEST_MESSAGE_COL_KEY] || 180,
                                 // default tag width: 40px
                                 ...sortedTags.map(tag => colWidths[tag] || 40)
                         ];
@@ -2177,16 +2625,35 @@ class UserTags {
                                 React.createElement(
                                         "div",
                                         {
-                                                key: "header-message-bounds",
+                                                key: "header-oldest-message",
                                                 className: "usertags-grid-header"
                                         },
                                         React.createElement(
                                                 "div",
                                                 { className: "usertags-header-cell" },
-                                                React.createElement("span", { className: "usertags-header-label" }, "Oldest/Newest Message"),
+                                                React.createElement("span", { className: "usertags-header-label" }, "Oldest Message"),
                                                 React.createElement("span", {
                                                         className: "usertags-col-resizer",
-                                                        onMouseDown: (e) => startResize(e, MESSAGE_BOUNDS_COL_KEY)
+                                                        onMouseDown: (e) => startResize(e, OLDEST_MESSAGE_COL_KEY)
+                                                })
+                                        )
+                                )
+                        );
+
+                        gridChildren.push(
+                                React.createElement(
+                                        "div",
+                                        {
+                                                key: "header-newest-message",
+                                                className: "usertags-grid-header"
+                                        },
+                                        React.createElement(
+                                                "div",
+                                                { className: "usertags-header-cell" },
+                                                React.createElement("span", { className: "usertags-header-label" }, "Newest Message"),
+                                                React.createElement("span", {
+                                                        className: "usertags-col-resizer",
+                                                        onMouseDown: (e) => startResize(e, NEWEST_MESSAGE_COL_KEY)
                                                 })
                                         )
                                 )
@@ -2300,15 +2767,33 @@ class UserTags {
                                 const messageBounds = dmBoundsByUserId[user.userId] || {};
                                 const oldestLabel = formatTimestampForGrid(messageBounds.oldest?.timestamp);
                                 const newestLabel = formatTimestampForGrid(messageBounds.newest?.timestamp);
+                                const oldestValue = oldestLabel;
+                                const newestValue = newestLabel;
+
+                                const oldestClass = "usertags-cell usertags-datecell";
+                                const newestClass = "usertags-cell usertags-datecell";
+
                                 gridChildren.push(
                                         React.createElement(
                                                 "div",
                                                 {
-                                                        key: `row-${user.userId}-message-bounds`,
-                                                        className: "usertags-cell usertags-datecell",
-                                                        title: `${user.username}: oldest ${oldestLabel}, newest ${newestLabel}`
+                                                        key: `row-${user.userId}-oldest-message`,
+                                                        className: oldestClass,
+                                                        title: `${user.username}: oldest message`
                                                 },
-                                                `${oldestLabel} / ${newestLabel}`
+                                                oldestValue
+                                        )
+                                );
+
+                                gridChildren.push(
+                                        React.createElement(
+                                                "div",
+                                                {
+                                                        key: `row-${user.userId}-newest-message`,
+                                                        className: newestClass,
+                                                        title: `${user.username}: newest message`
+                                                },
+                                                newestValue
                                         )
                                 );
 
@@ -2362,7 +2847,7 @@ class UserTags {
 					"Grid of all friends (plus any tagged non-friends) and which tags they have. ",
 					"Click a cell to toggle that tag for a user; drag any header edge to resize its column. ",
 					"Right-click a tag header for more options (require/hide/rename/duplicate/delete). ",
-					"Click a user to open their profile."
+					"Click a user to open their profile. Ctrl+Click an Oldest/Newest Message cell to open an existing DM."
 				),
 				React.createElement(
 					"p",
