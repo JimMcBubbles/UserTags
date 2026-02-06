@@ -1,6 +1,6 @@
 {
     "currentVersionInfo": {
-        "version": "1.10.0",
+        "version": "1.11.0",
         "hasShownChangelog": true
     },
     "UserData": {
@@ -5760,7 +5760,9 @@
         },
         "285348268982927360": {
             "username": "cynthia_royal",
-            "tags": [],
+            "tags": [
+                "100"
+            ],
             "friendSinceMs": null,
             "lastMessagedMs": null
         },
@@ -5778,7 +5780,9 @@
         },
         "382631515743322113": {
             "username": "tronis2.0",
-            "tags": [],
+            "tags": [
+                "NEW"
+            ],
             "friendSinceMs": null,
             "lastMessagedMs": null
         },
@@ -5793,6 +5797,12 @@
             "tags": [],
             "friendSinceMs": null,
             "lastMessagedMs": null
+        },
+        "530687975529644046": {
+            "username": "xemo69",
+            "tags": [
+                "NEW"
+            ]
         }
     },
     "TagIndex": {
@@ -5940,6 +5950,10 @@
             {
                 "userId": "939496632955846696",
                 "username": "orbitalicarus"
+            },
+            {
+                "userId": "285348268982927360",
+                "username": "cynthia_royal"
             }
         ],
         "DTF": [
@@ -9810,6 +9824,14 @@
             {
                 "userId": "391354925210271744",
                 "username": "klula"
+            },
+            {
+                "userId": "382631515743322113",
+                "username": "tronis2.0"
+            },
+            {
+                "userId": "530687975529644046",
+                "username": "xemo69"
             }
         ],
         "MRK": [
