@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.8
+ * @version 1.12.9
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.8",
+			version: "1.12.9",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06j",
+			items: [
+				"Changed timestamp refresh to select Quick Switcher results directly from the result list (query by userId first) before confirming navigation.",
+				"Improved Quick Switcher-driven validation/logging and kept return-to-previous-channel + in-cell error feedback for non-1:1 or mismatched results."
+			]
+		},
 		{
 			title: "2026-02-06i",
 			items: [
@@ -395,25 +402,6 @@ const validateDirectDmChannel = (channel, userId) => {
         return !!(isDm && recipients.length === 1 && recipients[0] === userId);
 };
 
-const getKnownPrivateChannelIds = () => {
-        const channelStore = getChannelStore();
-        if (!channelStore) return new Set();
-
-        const rawPrivate =
-                channelStore.getMutablePrivateChannels?.() ||
-                channelStore.getPrivateChannels?.() ||
-                channelStore.getSortedPrivateChannels?.() ||
-                null;
-
-        const channels = Array.isArray(rawPrivate)
-                ? rawPrivate
-                : rawPrivate && typeof rawPrivate === "object"
-                        ? Object.values(rawPrivate)
-                        : [];
-
-        return new Set(channels.map(ch => ch?.id).filter(Boolean));
-};
-
 const getQuickSwitcherInput = () =>
         document.querySelector("input[aria-label='Quick Switcher']") ||
         document.querySelector("input[placeholder*='Where would you like to go']") ||
@@ -452,23 +440,54 @@ const closeQuickSwitcher = () => {
         document.dispatchEvent(new KeyboardEvent("keyup", { key: "Escape", code: "Escape", bubbles: true }));
 };
 
-const runQuickSwitcherQueryAndEnter = async (query) => {
+const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
         const input = await openQuickSwitcher();
-        if (!input) return false;
+        if (!input) return { selected: false, reason: "missing_quick_switcher_input" };
 
         input.focus();
         input.value = query;
         input.dispatchEvent(new Event("input", { bubbles: true }));
         logDmDebug("[UserTags/DM] Quick Switcher query", { query });
-        await wait(180);
+        await wait(220);
+
+        const dialog = input.closest("div[role='dialog']") || document;
+        const candidates = Array.from(dialog.querySelectorAll(
+                "[role='option'], [id*='quick-switcher-result'], [data-list-item-id], li, button"
+        )).filter(el => {
+                const text = (el.textContent || "").toLowerCase();
+                if (!text) return false;
+                if (text.includes("group dm")) return false;
+                if (String(userId) && text.includes(String(userId).toLowerCase())) return true;
+                if (username && text.includes(String(username).toLowerCase())) return true;
+                if (query && text.includes(String(query).toLowerCase())) return true;
+                return false;
+        });
+
+        const selectedEntry = candidates[0] || null;
+        if (selectedEntry) {
+                selectedEntry.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+                selectedEntry.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+                logDmDebug("[UserTags/DM] Quick Switcher selected result element", {
+                        query,
+                        userId,
+                        resultText: (selectedEntry.textContent || "").trim().slice(0, 140)
+                });
+                await wait(80);
+        }
 
         input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", code: "Enter", bubbles: true }));
         input.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter", code: "Enter", bubbles: true }));
-        logDmDebug("[UserTags/DM] Quick Switcher selected result via Enter", { query });
-        await wait(220);
+        logDmDebug("[UserTags/DM] Quick Switcher selected result via Enter", { query, hadElementMatch: !!selectedEntry });
+        await wait(260);
         closeQuickSwitcher();
-        return true;
+
+        return {
+                selected: true,
+                hadElementMatch: !!selectedEntry,
+                selectedText: selectedEntry ? (selectedEntry.textContent || "").trim().slice(0, 140) : null
+        };
 };
+
 
 const pollDmMessageBound = async (channelId, boundKey, attempts = 12, delayMs = 250) => {
         for (let attempt = 0; attempt < attempts; attempt++) {
@@ -791,8 +810,6 @@ class UserTags {
                 const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
                 const channelStore = getChannelStore();
                 const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
-                const knownPrivateChannelIds = getKnownPrivateChannelIds();
-
                 if (!channelNavigation?.transitionToChannel) {
                         throw new Error("Missing navigation dependencies.");
                 }
@@ -804,8 +821,8 @@ class UserTags {
 
                 try {
                         for (const query of quickSwitcherQueries) {
-                                const opened = await runQuickSwitcherQueryAndEnter(String(query));
-                                if (!opened) continue;
+                                const selection = await runQuickSwitcherQueryAndEnter(String(query), userId, username);
+                                if (!selection?.selected) continue;
 
                                 openedChannelId = SelectedChannelStore?.getChannelId?.() || null;
                                 const openedChannel = openedChannelId ? channelStore?.getChannel?.(openedChannelId) : null;
@@ -813,17 +830,17 @@ class UserTags {
                                 bounds = openedChannelId ? await pollDmMessageBound(openedChannelId, boundKey, 6, 180) : null;
                                 targetValue = bounds?.[boundKey] || null;
                                 const hasAnyMessages = !!(bounds?.oldest?.timestamp || bounds?.newest?.timestamp || (bounds?.totalMessages || 0) > 0);
-                                const existedBeforeQuery = openedChannelId ? knownPrivateChannelIds.has(openedChannelId) : false;
                                 const isValid = isValidDirectDm && hasAnyMessages;
 
                                 logDmDebug("[UserTags/DM] Quick Switcher navigation validation", {
                                         query,
                                         openedChannelId,
+                                        selectedResult: selection?.selectedText || null,
+                                        hadElementMatch: !!selection?.hadElementMatch,
                                         validationResult: isValid,
                                         details: {
                                                 isValidDirectDm,
-                                                hasAnyMessages,
-                                                existedBeforeQuery
+                                                hasAnyMessages
                                         }
                                 });
 
