@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.9
+ * @version 1.12.10
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.9",
+			version: "1.12.10",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06k",
+			items: [
+				"Removed hard navigation-module gating for timestamp refresh; now reports missing Quick Switcher/navigation modules explicitly when unavailable.",
+				"Kept Quick Switcher as primary flow and added history.back fallback for return-to-previous when router transition module is missing."
+			]
+		},
 		{
 			title: "2026-02-06j",
 			items: [
@@ -441,8 +448,18 @@ const closeQuickSwitcher = () => {
 };
 
 const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
+        const quickSwitcher = getQuickSwitcherModule();
+        const openViaModule = !!(quickSwitcher?.show || quickSwitcher?.toggleQuickSwitcher);
+
         const input = await openQuickSwitcher();
-        if (!input) return { selected: false, reason: "missing_quick_switcher_input" };
+        if (!input) {
+                const reason = [
+                        "Quick Switcher input not found after open attempt.",
+                        openViaModule ? null : "QuickSwitcher module (show/toggleQuickSwitcher) not found.",
+                        "Tried Ctrl+K keyboard fallback."
+                ].filter(Boolean).join(" ");
+                return { selected: false, reason };
+        }
 
         input.focus();
         input.value = query;
@@ -484,9 +501,11 @@ const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
         return {
                 selected: true,
                 hadElementMatch: !!selectedEntry,
-                selectedText: selectedEntry ? (selectedEntry.textContent || "").trim().slice(0, 140) : null
+                selectedText: selectedEntry ? (selectedEntry.textContent || "").trim().slice(0, 140) : null,
+                reason: null
         };
 };
+
 
 
 const pollDmMessageBound = async (channelId, boundKey, attempts = 12, delayMs = 250) => {
@@ -810,19 +829,19 @@ class UserTags {
                 const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
                 const channelStore = getChannelStore();
                 const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
-                if (!channelNavigation?.transitionToChannel) {
-                        throw new Error("Missing navigation dependencies.");
-                }
-
                 const quickSwitcherQueries = [userId, username].filter(Boolean);
                 let openedChannelId = null;
                 let bounds = null;
                 let targetValue = null;
+                let lastSelectionReason = null;
 
                 try {
                         for (const query of quickSwitcherQueries) {
                                 const selection = await runQuickSwitcherQueryAndEnter(String(query), userId, username);
-                                if (!selection?.selected) continue;
+                                if (!selection?.selected) {
+                                        lastSelectionReason = selection?.reason || "Quick Switcher selection failed.";
+                                        continue;
+                                }
 
                                 openedChannelId = SelectedChannelStore?.getChannelId?.() || null;
                                 const openedChannel = openedChannelId ? channelStore?.getChannel?.(openedChannelId) : null;
@@ -860,7 +879,13 @@ class UserTags {
                         }
 
                         if (!openedChannelId || !bounds || !targetValue?.timestamp) {
-                                throw new Error("No existing DM; can't fetch.");
+                                const missing = [];
+                                if (!getQuickSwitcherModule()) missing.push("QuickSwitcher module(show/toggleQuickSwitcher)");
+                                if (!channelNavigation?.transitionToChannel) missing.push("ChannelNavigation.transitionToChannel");
+                                const details = [lastSelectionReason, missing.length ? `Missing modules: ${missing.join(", ")}` : null]
+                                        .filter(Boolean)
+                                        .join(" | ");
+                                throw new Error(details ? `No existing DM; can't fetch. ${details}` : "No existing DM; can't fetch.");
                         }
 
                         logDmDebug("[UserTags/DM] Scraped bound after Quick Switcher navigation", {
@@ -883,13 +908,25 @@ class UserTags {
 
                         return targetValue;
                 } finally {
+                        let returnMethod = null;
+                        let returnSuccess = false;
+
                         if (previousChannelId && channelNavigation?.transitionToChannel) {
                                 channelNavigation.transitionToChannel(previousChannelId);
-                                logDmDebug("[UserTags/DM] Returned to previous channel", {
-                                        previousChannelId,
-                                        success: true
-                                });
+                                returnMethod = "ChannelNavigation.transitionToChannel";
+                                returnSuccess = true;
+                        } else if (previousChannelId && typeof window?.history?.back === "function") {
+                                window.history.back();
+                                returnMethod = "window.history.back";
+                                returnSuccess = true;
                         }
+
+                        logDmDebug("[UserTags/DM] Returned to previous channel", {
+                                previousChannelId,
+                                success: returnSuccess,
+                                returnMethod,
+                                missingTransitionModule: !channelNavigation?.transitionToChannel
+                        });
 
                         if (openedChannelId && privateChannelActions?.closePrivateChannel) {
                                 privateChannelActions.closePrivateChannel(openedChannelId);
