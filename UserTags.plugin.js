@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.1
+ * @version 1.12.0
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,18 +23,12 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.1",
+			version: "1.12.0",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
-		{
-			title: "2026-02-06b",
-			items: [
-				"Fixed the toolbar button modal sizing so the overview opens at full scale instead of a squished layout."
-			]
-		},
 		{
 			title: "2026-02-06",
 			items: [
@@ -1052,38 +1046,38 @@ class UserTags {
 				color: var(--interactive-hover);
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal {
+			.bd-modal-root.bd-addon-modal:has(.usertags-settings) {
 				width: min(90vw, 1200px);
 				max-width: 95vw;
 				max-height: 90vh;
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal .bd-modal-inner {
+			.bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-inner {
 				max-height: 90vh;
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal .bd-modal-body {
+			.bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body {
 				max-height: calc(90vh - 120px);
 				display: flex;
 				overflow: hidden; /* keep scrolling inside .usertags-grid */
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal .bd-modal-body > .usertags-settings {
+			.bd-modal-root.bd-addon-modal:has(.usertags-settings) .bd-modal-body > .usertags-settings {
 				flex: 1 1 auto;
 				min-height: 0;
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal.usertags-toolbar-modal {
+			.bd-modal-root.bd-addon-modal.usertags-toolbar-modal:has(.usertags-settings) {
 				width: min(95vw, 1400px);
 				max-width: 95vw;
 				max-height: 95vh;
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal.usertags-toolbar-modal .bd-modal-inner {
+			.bd-modal-root.bd-addon-modal.usertags-toolbar-modal:has(.usertags-settings) .bd-modal-inner {
 				max-height: 95vh;
 			}
 
-			.bd-modal-root.bd-addon-modal.usertags-settings-modal.usertags-toolbar-modal .bd-modal-body {
+			.bd-modal-root.bd-addon-modal.usertags-toolbar-modal:has(.usertags-settings) .bd-modal-body {
 				max-height: calc(95vh - 120px);
 				overflow: hidden; /* keep scrolling inside .usertags-grid */
 			}
@@ -2445,16 +2439,13 @@ class UserTags {
 	}
 
 	showSettingsModal(title = "UserTags Settings", modalOptions = {}) {
-		const className = ["usertags-settings-modal", modalOptions.className].filter(Boolean).join(" ");
-
 		UI.showConfirmationModal(
 			title,
 			this.renderOverviewPanel(),
 			{
 				confirmText: "Close",
 				cancelText: null,
-				...modalOptions,
-				className
+				...modalOptions
 			}
 		);
 	}
