@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.14
+ * @version 1.12.15
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,18 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.14",
+			version: "1.12.15",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06p",
+			items: [
+				"Fixed User column header click crash (React #130) by hardening missing-component/module handling in the overview header click path."
+			]
+		},
 		{
 			title: "2026-02-06o",
 			items: [
@@ -2626,6 +2632,26 @@ class UserTags {
 				);
 			}
 
+			const handleUserHeaderClick = (event) => {
+				event?.preventDefault?.();
+				event?.stopPropagation?.();
+
+				if (typeof setSortMode !== "function") {
+					console.error("[UserTags][UserHeaderClick]", {
+						step: "handleUserHeaderClick:setSortMode-check",
+						missingDependency: "setSortMode",
+						stack: new Error().stack
+					});
+					return;
+				}
+
+				setSortMode((prev) => {
+					if (prev === "name_asc") return "name_desc";
+					if (prev === "name_desc") return "name_asc";
+					return "name_asc";
+				});
+			};
+
 			// Build grid template columns based on current widths
                         const columnWidths = [
                                 colWidths[USER_COL_KEY] || 220,
@@ -2644,7 +2670,8 @@ class UserTags {
                                         "div",
                                         {
                                                 key: "header-user",
-                                                className: "usertags-grid-header usertags-grid-header-user"
+                                                className: "usertags-grid-header usertags-grid-header-user",
+                                                onClick: handleUserHeaderClick
                                         },
                                         React.createElement(
                                                 "div",
