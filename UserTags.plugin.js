@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.6
+ * @version 1.12.7
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.6",
+			version: "1.12.7",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06h",
+			items: [
+				"Reworked timestamp-cell refresh to drive an explicit Quick Switcher flow (open, query, enter, validate DM, scrape, return) with detailed debug logging.",
+				"Added strict post-navigation validation and safety cleanup so non-matching/group results abort and restore the previous route without touching storage."
+			]
+		},
 		{
 			title: "2026-02-06g",
 			items: [
@@ -233,6 +240,7 @@ let CachedChannelStore = null;
 let CachedMessageStore = null;
 let CachedChannelNavigation = null;
 let CachedPrivateChannelActions = null;
+let CachedQuickSwitcherModule = null;
 
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const normalizeTimestamp = (value) => {
@@ -300,6 +308,18 @@ const getPrivateChannelActions = () => {
 
         CachedPrivateChannelActions = actions || null;
         return CachedPrivateChannelActions;
+};
+
+const getQuickSwitcherModule = () => {
+        if (CachedQuickSwitcherModule) return CachedQuickSwitcherModule;
+        const mod =
+                BdApi?.Webpack?.getByProps?.("show", "hide") ||
+                WebpackModules?.findByProps?.("show", "hide") ||
+                BdApi.Webpack.getModule(m => m && typeof m.show === "function" && typeof m.hide === "function", { searchExports: true }) ||
+                BdApi.Webpack.getModule(m => m && typeof m.toggleQuickSwitcher === "function", { searchExports: true });
+
+        CachedQuickSwitcherModule = mod || null;
+        return CachedQuickSwitcherModule;
 };
 
 const coerceMessageFromWrapperEntry = (entry) => {
@@ -413,6 +433,62 @@ const getExistingDirectDmChannelId = (userId) => {
         }
 
         return null;
+};
+
+const getQuickSwitcherInput = () =>
+        document.querySelector("input[aria-label='Quick Switcher']") ||
+        document.querySelector("input[placeholder*='Where would you like to go']") ||
+        document.querySelector("div[role='dialog'] input");
+
+const openQuickSwitcher = async () => {
+        const quickSwitcher = getQuickSwitcherModule();
+        if (quickSwitcher?.show) {
+                quickSwitcher.show("");
+                logDmDebug("[UserTags/DM] Opened Quick Switcher", { modulePath: "QuickSwitcher.show('')" });
+        } else if (quickSwitcher?.toggleQuickSwitcher) {
+                quickSwitcher.toggleQuickSwitcher();
+                logDmDebug("[UserTags/DM] Opened Quick Switcher", { modulePath: "QuickSwitcher.toggleQuickSwitcher()" });
+        } else {
+                window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }));
+                window.dispatchEvent(new KeyboardEvent("keyup", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }));
+                logDmDebug("[UserTags/DM] Opened Quick Switcher", { modulePath: "KeyboardEvent Ctrl+K fallback" });
+        }
+
+        for (let i = 0; i < 10; i++) {
+                const input = getQuickSwitcherInput();
+                if (input) return input;
+                await wait(80);
+        }
+
+        return null;
+};
+
+const closeQuickSwitcher = () => {
+        const quickSwitcher = getQuickSwitcherModule();
+        if (quickSwitcher?.hide) {
+                quickSwitcher.hide();
+                return;
+        }
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true }));
+        document.dispatchEvent(new KeyboardEvent("keyup", { key: "Escape", code: "Escape", bubbles: true }));
+};
+
+const runQuickSwitcherQueryAndEnter = async (query) => {
+        const input = await openQuickSwitcher();
+        if (!input) return false;
+
+        input.focus();
+        input.value = query;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        logDmDebug("[UserTags/DM] Quick Switcher query", { query });
+        await wait(180);
+
+        input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", code: "Enter", bubbles: true }));
+        input.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter", code: "Enter", bubbles: true }));
+        logDmDebug("[UserTags/DM] Quick Switcher selected result via Enter", { query });
+        await wait(220);
+        closeQuickSwitcher();
+        return true;
 };
 
 const pollDmMessageBound = async (channelId, boundKey, attempts = 12, delayMs = 250) => {
@@ -726,99 +802,108 @@ class UserTags {
                 this.lastViewedDmChannelId = null;
         }
 
-        async refreshDmMessageBoundForUser(userId, boundKey) {
+        async refreshDmMessageBoundForUser(userId, boundKey, username) {
                 if (!userId || !["oldest", "newest"].includes(boundKey)) {
                         throw new Error("Missing DM lookup dependencies.");
                 }
 
-                const channelId = getExistingDirectDmChannelId(userId);
-                if (!channelId) {
+                const channelNavigation = getChannelNavigation();
+                const privateChannelActions = getPrivateChannelActions();
+                const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
+                const channelStore = getChannelStore();
+                const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
+
+                if (!channelNavigation?.transitionToChannel) {
+                        throw new Error("Missing navigation dependencies.");
+                }
+
+                const expectedChannelId = getExistingDirectDmChannelId(userId);
+                if (!expectedChannelId) {
                         logDmDebug("[UserTags/DM] Aborting refresh: no existing direct DM channel", {
                                 userId,
                                 boundKey,
-                                validation: "No call to ensure/create helpers; existing 1:1 DM required"
+                                validation: "Quick Switcher flow requires existing 1:1 DM; no create/ensure allowed"
                         });
                         throw new Error("No existing DM; can't fetch.");
                 }
 
-                let bounds = getDmMessageBounds(channelId);
-                let targetValue = bounds?.[boundKey] || null;
+                const quickSwitcherQueries = [userId, username].filter(Boolean);
+                let openedChannelId = null;
+                let validated = false;
 
-                if (!targetValue?.timestamp) {
-                        const channelNavigation = getChannelNavigation();
-                        const privateChannelActions = getPrivateChannelActions();
-                        const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
-                        const channelStore = getChannelStore();
-                        const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
+                try {
+                        for (const query of quickSwitcherQueries) {
+                                const opened = await runQuickSwitcherQueryAndEnter(String(query));
+                                if (!opened) continue;
 
-                        if (!channelNavigation?.transitionToChannel && !privateChannelActions?.openPrivateChannel) {
+                                openedChannelId = SelectedChannelStore?.getChannelId?.() || null;
+                                const openedChannel = openedChannelId ? channelStore?.getChannel?.(openedChannelId) : null;
+                                const isValid = validateDirectDmChannel(openedChannel, userId) && openedChannelId === expectedChannelId;
+                                logDmDebug("[UserTags/DM] Quick Switcher navigation validation", {
+                                        query,
+                                        openedChannelId,
+                                        expectedChannelId,
+                                        validationResult: isValid
+                                });
+
+                                if (isValid) {
+                                        validated = true;
+                                        break;
+                                }
+
+                                if (openedChannelId && privateChannelActions?.closePrivateChannel) {
+                                        privateChannelActions.closePrivateChannel(openedChannelId);
+                                }
+
+                                if (previousChannelId && channelNavigation?.transitionToChannel) {
+                                        channelNavigation.transitionToChannel(previousChannelId);
+                                }
+                        }
+
+                        if (!validated) {
+                                throw new Error("No existing DM; can't fetch.");
+                        }
+
+                        const bounds = await pollDmMessageBound(expectedChannelId, boundKey);
+                        const targetValue = bounds?.[boundKey] || null;
+                        logDmDebug("[UserTags/DM] Scraped bound after Quick Switcher navigation", {
+                                boundKey,
+                                channelId: expectedChannelId,
+                                value: targetValue?.timestamp || null
+                        });
+
+                        if (!targetValue?.timestamp) {
                                 throw new Error(`Could not read ${boundKey} message timestamp.`);
                         }
 
-                        const shouldNavigate = previousChannelId !== channelId;
-                        const navigationPath = privateChannelActions?.openPrivateChannel
-                                ? "PrivateChannelActions.openPrivateChannel(channelId)"
-                                : "ChannelNavigation.transitionToChannel(channelId)";
+                        const existing = Data.load(this._config.info.name, "DmMessageBoundsByUser") || {};
+                        const previous = existing[userId] || {};
+                        existing[userId] = {
+                                ...previous,
+                                oldest: boundKey === "oldest" ? bounds.oldest : (previous.oldest || null),
+                                newest: boundKey === "newest" ? bounds.newest : (previous.newest || null),
+                                totalMessages: bounds.totalMessages || previous.totalMessages || 0,
+                                updatedAt: Date.now()
+                        };
+                        Data.save(this._config.info.name, "DmMessageBoundsByUser", existing);
+                        this._forceOverviewRefresh?.();
 
-                        logDmDebug("[UserTags/DM] Refresh fallback using Quick Switcher-style open path", {
-                                userId,
-                                boundKey,
-                                channelId,
-                                modulePath: navigationPath,
-                                validation: "existing channel + type=DM + single recipient target user + no ensure/create helpers"
-                        });
+                        return targetValue;
+                } finally {
+                        if (previousChannelId && channelNavigation?.transitionToChannel) {
+                                channelNavigation.transitionToChannel(previousChannelId);
+                                logDmDebug("[UserTags/DM] Returned to previous channel", {
+                                        previousChannelId,
+                                        success: true
+                                });
+                        }
 
-                        try {
-                                if (shouldNavigate) {
-                                        if (privateChannelActions?.openPrivateChannel) {
-                                                privateChannelActions.openPrivateChannel(channelId);
-                                        } else {
-                                                channelNavigation.transitionToChannel(channelId);
-                                        }
-                                }
-
-                                await wait(200);
-                                const navigatedChannel = channelStore?.getChannel?.(channelId);
-                                if (!validateDirectDmChannel(navigatedChannel, userId)) {
-                                        throw new Error("No existing DM; can't fetch.");
-                                }
-
-                                bounds = await pollDmMessageBound(channelId, boundKey);
-                                targetValue = bounds?.[boundKey] || null;
-                        } finally {
-                                if (shouldNavigate && previousChannelId && channelNavigation?.transitionToChannel) {
-                                        channelNavigation.transitionToChannel(previousChannelId);
-                                }
-
-                                if (shouldNavigate && privateChannelActions?.closePrivateChannel) {
-                                        privateChannelActions.closePrivateChannel(channelId);
-                                        logDmDebug("[UserTags/DM] Best-effort close after refresh", {
-                                                modulePath: "PrivateChannelActions.closePrivateChannel(channelId)",
-                                                channelId,
-                                                note: "Helps avoid leaving reopened DM visible in list"
-                                        });
-                                }
+                        if (openedChannelId && openedChannelId === expectedChannelId && privateChannelActions?.closePrivateChannel) {
+                                privateChannelActions.closePrivateChannel(openedChannelId);
                         }
                 }
-
-                if (!targetValue?.timestamp) {
-                        throw new Error(`Could not read ${boundKey} message timestamp.`);
-                }
-
-                const existing = Data.load(this._config.info.name, "DmMessageBoundsByUser") || {};
-                const previous = existing[userId] || {};
-                existing[userId] = {
-                        ...previous,
-                        oldest: boundKey === "oldest" ? bounds.oldest : (previous.oldest || null),
-                        newest: boundKey === "newest" ? bounds.newest : (previous.newest || null),
-                        totalMessages: bounds.totalMessages || previous.totalMessages || 0,
-                        updatedAt: Date.now()
-                };
-                Data.save(this._config.info.name, "DmMessageBoundsByUser", existing);
-                this._forceOverviewRefresh?.();
-
-                return targetValue;
         }
+
 
 
 	/**
@@ -1948,7 +2033,7 @@ class UserTags {
                                 }));
                         };
 
-                        const handleRefreshMessageCell = async (userId, boundKey) => {
+                        const handleRefreshMessageCell = async (userId, boundKey, username) => {
                                 const cellKey = `${userId}:${boundKey}`;
                                 const now = Date.now();
                                 const cooldownUntil = cellCooldownRef.current.get(cellKey) || 0;
@@ -1960,7 +2045,7 @@ class UserTags {
                                 updateCellState(userId, boundKey, { loading: true, error: null });
 
                                 try {
-                                        await plugin.refreshDmMessageBoundForUser(userId, boundKey);
+                                        await plugin.refreshDmMessageBoundForUser(userId, boundKey, username);
                                         updateCellState(userId, boundKey, { loading: false, error: null, updatedAt: Date.now() });
                                         setVersion(v => v + 1);
                                 } catch (error) {
@@ -2580,7 +2665,7 @@ class UserTags {
                                                         key: `row-${user.userId}-oldest-message`,
                                                         className: oldestClass,
                                                         title: oldestState.error || `${user.username}: refresh oldest message`,
-                                                        onClick: () => handleRefreshMessageCell(user.userId, "oldest")
+                                                        onClick: () => handleRefreshMessageCell(user.userId, "oldest", user.username)
                                                 },
                                                 oldestValue
                                         )
@@ -2593,7 +2678,7 @@ class UserTags {
                                                         key: `row-${user.userId}-newest-message`,
                                                         className: newestClass,
                                                         title: newestState.error || `${user.username}: refresh newest message`,
-                                                        onClick: () => handleRefreshMessageCell(user.userId, "newest")
+                                                        onClick: () => handleRefreshMessageCell(user.userId, "newest", user.username)
                                                 },
                                                 newestValue
                                         )
