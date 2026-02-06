@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.12
+ * @version 1.12.13
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.12",
+			version: "1.12.13",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06n",
+			items: [
+				"Removed all DM close calls from timestamp refresh; flow now relies on route restore only.",
+				"Hardened Quick Switcher input detection to avoid matching UserTags modal inputs and abort safely when Quick Switcher is not confirmed open."
+			]
+		},
 		{
 			title: "2026-02-06m",
 			items: [
@@ -274,7 +281,6 @@ const DEBUG_DM_LOGS = true;
 let CachedChannelStore = null;
 let CachedMessageStore = null;
 let CachedRouterModule = null;
-let CachedPrivateChannelActions = null;
 let CachedQuickSwitcherModule = null;
 let CachedQuickSwitcherQueryModule = null;
 
@@ -333,17 +339,6 @@ const getRouterModule = () => {
 
         CachedRouterModule = router || null;
         return CachedRouterModule;
-};
-
-const getPrivateChannelActions = () => {
-        if (CachedPrivateChannelActions) return CachedPrivateChannelActions;
-        const actions =
-                BdApi?.Webpack?.getByProps?.("openPrivateChannel", "closePrivateChannel") ||
-                WebpackModules?.findByProps?.("openPrivateChannel", "closePrivateChannel") ||
-                BdApi.Webpack.getModule(m => m?.openPrivateChannel && m?.closePrivateChannel, { searchExports: true });
-
-        CachedPrivateChannelActions = actions || null;
-        return CachedPrivateChannelActions;
 };
 
 
@@ -445,10 +440,15 @@ const validateDirectDmChannel = (channel, userId) => {
         return !!(isDm && recipients.length === 1 && recipients[0] === userId);
 };
 
-const getQuickSwitcherInput = () =>
-        document.querySelector("input[aria-label='Quick Switcher']") ||
-        document.querySelector("input[placeholder*='Where would you like to go']") ||
-        document.querySelector("div[role='dialog'] input");
+const getQuickSwitcherInput = () => {
+        const byAria = document.querySelector("input[aria-label='Quick Switcher']");
+        if (byAria) return byAria;
+
+        const byDataList = document.querySelector("[aria-label='Quick Switcher'] input, [data-list-id*='quickswitcher'] input");
+        if (byDataList) return byDataList;
+
+        return null;
+};
 
 const openQuickSwitcher = async () => {
         const quickSwitcher = getQuickSwitcherModule();
@@ -517,7 +517,7 @@ const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
                         selected: false,
                         openPath,
                         queryPath: null,
-                        reason: `Quick Switcher input not found after open attempt. Missing modules: ${missing.join(", ") || "none"}`
+                        reason: `Quick Switcher not confirmed open; aborting query set. Missing modules: ${missing.join(", ") || "none"}`
                 };
         }
 
@@ -904,7 +904,6 @@ class UserTags {
                 }
 
                 const router = getRouterModule();
-                const privateChannelActions = getPrivateChannelActions();
                 const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
                 const channelStore = getChannelStore();
                 const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
@@ -943,10 +942,6 @@ class UserTags {
                                 });
 
                                 if (isValid) break;
-
-                                if (openedChannelId && privateChannelActions?.closePrivateChannel) {
-                                        privateChannelActions.closePrivateChannel(openedChannelId);
-                                }
 
                                 openedChannelId = null;
                                 bounds = null;
@@ -1013,9 +1008,6 @@ class UserTags {
                                 missingRouterModule: !router
                         });
 
-                        if (openedChannelId && privateChannelActions?.closePrivateChannel) {
-                                privateChannelActions.closePrivateChannel(openedChannelId);
-                        }
                 }
         }
 
