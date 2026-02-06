@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.11.0
+ * @version 1.12.0
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.11.0",
+			version: "1.12.0",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06",
+			items: [
+				"Added a user sort selector in the overview toolbar.",
+				"Added an Oldest/Newest message column populated from viewed DM message bounds."
+			]
+		},
 		{
 			title: "2026-02-05",
 			items: [
@@ -288,6 +295,14 @@ const getDmMessageBounds = (channelId) => {
 };
 
 const USER_COL_KEY = "__USER__";
+const MESSAGE_BOUNDS_COL_KEY = "__MESSAGE_BOUNDS__";
+
+const formatTimestampForGrid = (timestamp) => {
+	if (!timestamp) return "—";
+	const date = new Date(timestamp);
+	if (Number.isNaN(+date)) return "—";
+	return date.toLocaleString();
+};
 
 class UserTags {
 	constructor() {
@@ -533,8 +548,22 @@ class UserTags {
 
                         this.lastViewedDmChannelId = channelId;
                         const bounds = getDmMessageBounds(channelId);
+                        const dmUserId = channel?.recipients?.[0] || null;
+                        if (dmUserId) {
+                                const existing = Data.load(this._config.info.name, "DmMessageBoundsByUser") || {};
+                                existing[dmUserId] = {
+                                        oldest: bounds.oldest,
+                                        newest: bounds.newest,
+                                        totalMessages: bounds.totalMessages,
+                                        updatedAt: Date.now()
+                                };
+                                Data.save(this._config.info.name, "DmMessageBoundsByUser", existing);
+                                this._forceOverviewRefresh?.();
+                        }
+
                         logDmDebug("[UserTags/DM] Viewed DM message bounds", {
                                 channelId,
+                                dmUserId,
                                 totalMessages: bounds.totalMessages,
                                 oldest: bounds.oldest
                                         ? {
@@ -933,6 +962,17 @@ class UserTags {
 			}
 			.usertags-filter-input-error {
 				border-color: var(--status-danger-text);
+			}
+			.usertags-sort-select {
+				font-size: 12px;
+				padding: 3px 6px;
+				border-radius: 4px;
+				border: 1px solid var(--background-tertiary);
+				background-color: var(--background-secondary);
+				color: var(--text-normal);
+				width: 100%;
+				box-sizing: border-box;
+				margin-top: 6px;
 			}
 			.usertags-filter-error {
 				font-size: 11px;
@@ -1497,6 +1537,7 @@ class UserTags {
                         const [excludeTags, setExcludeTags] = React.useState([]);
                         const [hoverUserId, setHoverUserId] = React.useState(null);
                         const [hoverTag, setHoverTag] = React.useState(null);
+                        const [sortMode, setSortMode] = React.useState("name_asc");
                         const rootRef = React.useRef(null);
 
                         React.useEffect(() => {
@@ -1670,6 +1711,8 @@ class UserTags {
 			plugin.saveUserData(data);
 
 			const allTags = plugin.getAllTags();
+
+			const dmBoundsByUserId = Data.load(plugin._config.info.name, "DmMessageBoundsByUser") || {};
 
 			const handleToggle = (userId, tagKey) => {
 				const data = Data.load(plugin._config.info.name, "UserData") || {};
@@ -1890,8 +1933,24 @@ class UserTags {
                                 return 0;
                         };
 
+                        const getNewestTs = (user) => dmBoundsByUserId[user.userId]?.newest?.timestamp || 0;
+                        const getOldestTs = (user) => dmBoundsByUserId[user.userId]?.oldest?.timestamp || 0;
+
                         const sortedUsers = [...visibleUsers];
-                        sortedUsers.sort(alphaCompare);
+                        sortedUsers.sort((a, b) => {
+                                if (sortMode === "name_desc") return alphaCompare(b, a);
+                                if (sortMode === "newest_desc") {
+                                        const delta = getNewestTs(b) - getNewestTs(a);
+                                        return delta || alphaCompare(a, b);
+                                }
+                                if (sortMode === "oldest_asc") {
+                                        const aOldest = getOldestTs(a) || Number.MAX_SAFE_INTEGER;
+                                        const bOldest = getOldestTs(b) || Number.MAX_SAFE_INTEGER;
+                                        const delta = aOldest - bOldest;
+                                        return delta || alphaCompare(a, b);
+                                }
+                                return alphaCompare(a, b);
+                        });
 
                         const usersToRender = sortedUsers;
 
@@ -2071,6 +2130,7 @@ class UserTags {
 			// Build grid template columns based on current widths
                         const columnWidths = [
                                 colWidths[USER_COL_KEY] || 220,
+                                colWidths[MESSAGE_BOUNDS_COL_KEY] || 210,
                                 // default tag width: 40px
                                 ...sortedTags.map(tag => colWidths[tag] || 40)
                         ];
@@ -2093,6 +2153,25 @@ class UserTags {
                                                 React.createElement("span", {
                                                         className: "usertags-col-resizer",
                                                         onMouseDown: (e) => startResize(e, USER_COL_KEY)
+                                                })
+                                        )
+                                )
+                        );
+
+                        gridChildren.push(
+                                React.createElement(
+                                        "div",
+                                        {
+                                                key: "header-message-bounds",
+                                                className: "usertags-grid-header"
+                                        },
+                                        React.createElement(
+                                                "div",
+                                                { className: "usertags-header-cell" },
+                                                React.createElement("span", { className: "usertags-header-label" }, "Oldest/Newest Message"),
+                                                React.createElement("span", {
+                                                        className: "usertags-col-resizer",
+                                                        onMouseDown: (e) => startResize(e, MESSAGE_BOUNDS_COL_KEY)
                                                 })
                                         )
                                 )
@@ -2203,6 +2282,21 @@ class UserTags {
                                         )
                                 );
 
+                                const messageBounds = dmBoundsByUserId[user.userId] || {};
+                                const oldestLabel = formatTimestampForGrid(messageBounds.oldest?.timestamp);
+                                const newestLabel = formatTimestampForGrid(messageBounds.newest?.timestamp);
+                                gridChildren.push(
+                                        React.createElement(
+                                                "div",
+                                                {
+                                                        key: `row-${user.userId}-message-bounds`,
+                                                        className: "usertags-cell usertags-datecell",
+                                                        title: `${user.username}: oldest ${oldestLabel}, newest ${newestLabel}`
+                                                },
+                                                `${oldestLabel} / ${newestLabel}`
+                                        )
+                                );
+
                                 // Tag cells
                                 sortedTags.forEach(tag => {
                                         const has = user.tags.includes(tag);
@@ -2276,6 +2370,18 @@ class UserTags {
 							value: filter,
 							onChange: (e) => setFilter(e.target.value)
 						}),
+						React.createElement(
+							"select",
+							{
+								className: "usertags-sort-select",
+								value: sortMode,
+								onChange: (e) => setSortMode(e.target.value)
+							},
+							React.createElement("option", { value: "name_asc" }, "Sort: Name (A-Z)"),
+							React.createElement("option", { value: "name_desc" }, "Sort: Name (Z-A)"),
+							React.createElement("option", { value: "newest_desc" }, "Sort: Newest message"),
+							React.createElement("option", { value: "oldest_asc" }, "Sort: Oldest message")
+						),
 						regexError
 							? React.createElement("div", { className: "usertags-filter-error" }, "Invalid regex")
 						: tagExprError
