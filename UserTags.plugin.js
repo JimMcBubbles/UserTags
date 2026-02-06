@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.2
+ * @version 1.12.14
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,95 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.2",
+			version: "1.12.14",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06o",
+			items: [
+				"Moved timestamp refresh failure details to console.error with [UserTags][TimestampRefresh] prefix and simplified in-cell error state.",
+				"Added structured step/module diagnostics (QS open/query/select, bounds scrape, route restore) while keeping DM-close disabled."
+			]
+		},
+		{
+			title: "2026-02-06n",
+			items: [
+				"Removed all DM close calls from timestamp refresh; flow now relies on route restore only.",
+				"Hardened Quick Switcher input detection to avoid matching UserTags modal inputs and abort safely when Quick Switcher is not confirmed open."
+			]
+		},
+		{
+			title: "2026-02-06m",
+			items: [
+				"Removed remaining no-existing-DM failure messaging; timestamp refresh now always attempts Quick Switcher open/query/enter first.",
+				"Added key-event typing fallback for Quick Switcher query when internal query modules are unavailable, with detailed module/fallback diagnostics."
+			]
+		},
+		{
+			title: "2026-02-06l",
+			items: [
+				"Timestamp refresh now sets Quick Switcher query through internal module methods instead of writing into focused DOM inputs.",
+				"Replaced transitionToChannel dependency with router-style transition/back handling and richer error details for missing module lookups and selected fallback paths."
+			]
+		},
+		{
+			title: "2026-02-06k",
+			items: [
+				"Removed hard navigation-module gating for timestamp refresh; now reports missing Quick Switcher/navigation modules explicitly when unavailable.",
+				"Kept Quick Switcher as primary flow and added history.back fallback for return-to-previous when router transition module is missing."
+			]
+		},
+		{
+			title: "2026-02-06j",
+			items: [
+				"Changed timestamp refresh to select Quick Switcher results directly from the result list (query by userId first) before confirming navigation.",
+				"Improved Quick Switcher-driven validation/logging and kept return-to-previous-channel + in-cell error feedback for non-1:1 or mismatched results."
+			]
+		},
+		{
+			title: "2026-02-06i",
+			items: [
+				"Timestamp-cell refresh now always drives a Quick Switcher-style open/query/enter flow before scraping, then returns to the previous channel in finally.",
+				"Added explicit in-cell error text and click event suppression on date cells to prevent accidental grid action bubbling."
+			]
+		},
+		{
+			title: "2026-02-06h",
+			items: [
+				"Reworked timestamp-cell refresh to drive an explicit Quick Switcher flow (open, query, enter, validate DM, scrape, return) with detailed debug logging.",
+				"Added strict post-navigation validation and safety cleanup so non-matching/group results abort and restore the previous route without touching storage."
+			]
+		},
+		{
+			title: "2026-02-06g",
+			items: [
+				"Timestamp cell refresh now uses a Quick Switcher-style open path for existing 1:1 DMs, with strict recipient/type validation and automatic return to the previous channel.",
+				"Added debug logs documenting the exact module/function path used and the no-group/no-create validations; plus best-effort DM close after scrape to avoid lingering open DMs."
+			]
+		},
+		{
+			title: "2026-02-06f",
+			items: [
+				"Timestamp cell refresh now uses background reads first, then temporary navigation only to an existing 1:1 DM and automatically returns to the previous channel.",
+				"Blocked any refresh path that could create a DM/group by requiring an existing direct DM channel before attempting fetch."
+			]
+		},
+		{
+			title: "2026-02-06e",
+			items: [
+				"Fixed per-cell message refresh to never create/open/navigate DMs; it now only uses existing DM channels and shows an in-cell error when no DM exists."
+			]
+		},
+		{
+			title: "2026-02-06d",
+			items: [
+				"Split the combined Oldest/Newest Message column into separate Oldest Message and Newest Message columns.",
+				"Made oldest/newest cells clickable to refresh that one user/one cell with in-cell loading, error feedback, and click-throttle protection."
+			]
+		},
 		{
 			title: "2026-02-06c",
 			items: [
@@ -204,7 +287,11 @@ const DEBUG_DM_LOGS = true;
 
 let CachedChannelStore = null;
 let CachedMessageStore = null;
+let CachedRouterModule = null;
+let CachedQuickSwitcherModule = null;
+let CachedQuickSwitcherQueryModule = null;
 
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const normalizeTimestamp = (value) => {
         if (!value && value !== 0) return null;
         if (typeof value === "number") return value;
@@ -228,6 +315,12 @@ const logDmDebug = (...args) => {
         console.log(...args);
 };
 
+const createTimestampRefreshError = (message, meta = {}) => {
+        const error = new Error(message);
+        error.timestampRefreshMeta = meta;
+        return error;
+};
+
 const getChannelStore = () => {
         if (CachedChannelStore) return CachedChannelStore;
         const store =
@@ -248,6 +341,50 @@ const getMessageStore = () => {
 
         CachedMessageStore = store || null;
         return CachedMessageStore;
+};
+
+const getRouterModule = () => {
+        if (CachedRouterModule) return CachedRouterModule;
+        const router =
+                BdApi?.Webpack?.getByProps?.("transitionTo", "replaceWith", "back") ||
+                WebpackModules?.findByProps?.("transitionTo", "replaceWith", "back") ||
+                BdApi.Webpack.getModule(m => m?.transitionTo && (m?.back || m?.replaceWith), { searchExports: true });
+
+        CachedRouterModule = router || null;
+        return CachedRouterModule;
+};
+
+
+const getQuickSwitcherQueryModule = () => {
+        if (CachedQuickSwitcherQueryModule) return CachedQuickSwitcherQueryModule;
+        const mod =
+                BdApi?.Webpack?.getByProps?.("setQuery") ||
+                WebpackModules?.findByProps?.("setQuery") ||
+                BdApi?.Webpack?.getByProps?.("search", "setSearchQuery") ||
+                WebpackModules?.findByProps?.("search", "setSearchQuery") ||
+                BdApi.Webpack.getModule(
+                        m => m && (
+                                typeof m.setQuery === "function" ||
+                                typeof m.setSearchQuery === "function" ||
+                                typeof m.search === "function"
+                        ),
+                        { searchExports: true }
+                );
+
+        CachedQuickSwitcherQueryModule = mod || null;
+        return CachedQuickSwitcherQueryModule;
+};
+
+const getQuickSwitcherModule = () => {
+        if (CachedQuickSwitcherModule) return CachedQuickSwitcherModule;
+        const mod =
+                BdApi?.Webpack?.getByProps?.("show", "hide") ||
+                WebpackModules?.findByProps?.("show", "hide") ||
+                BdApi.Webpack.getModule(m => m && typeof m.show === "function" && typeof m.hide === "function", { searchExports: true }) ||
+                BdApi.Webpack.getModule(m => m && typeof m.toggleQuickSwitcher === "function", { searchExports: true });
+
+        CachedQuickSwitcherModule = mod || null;
+        return CachedQuickSwitcherModule;
 };
 
 const coerceMessageFromWrapperEntry = (entry) => {
@@ -307,7 +444,174 @@ const getDmMessageBounds = (channelId) => {
 };
 
 const USER_COL_KEY = "__USER__";
-const MESSAGE_BOUNDS_COL_KEY = "__MESSAGE_BOUNDS__";
+const OLDEST_MESSAGE_COL_KEY = "__OLDEST_MESSAGE__";
+const NEWEST_MESSAGE_COL_KEY = "__NEWEST_MESSAGE__";
+
+const validateDirectDmChannel = (channel, userId) => {
+        const isDm = channel?.isDM?.() || channel?.type === 1;
+        const recipients = Array.isArray(channel?.recipients) ? channel.recipients : [];
+        return !!(isDm && recipients.length === 1 && recipients[0] === userId);
+};
+
+const getQuickSwitcherInput = () => {
+        const byAria = document.querySelector("input[aria-label='Quick Switcher']");
+        if (byAria) return byAria;
+
+        const byDataList = document.querySelector("[aria-label='Quick Switcher'] input, [data-list-id*='quickswitcher'] input");
+        if (byDataList) return byDataList;
+
+        return null;
+};
+
+const openQuickSwitcher = async () => {
+        const quickSwitcher = getQuickSwitcherModule();
+        if (quickSwitcher?.show) {
+                quickSwitcher.show("");
+                logDmDebug("[UserTags/DM] Opened Quick Switcher", { modulePath: "QuickSwitcher.show('')" });
+        } else if (quickSwitcher?.toggleQuickSwitcher) {
+                quickSwitcher.toggleQuickSwitcher();
+                logDmDebug("[UserTags/DM] Opened Quick Switcher", { modulePath: "QuickSwitcher.toggleQuickSwitcher()" });
+        } else {
+                window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }));
+                window.dispatchEvent(new KeyboardEvent("keyup", { key: "k", code: "KeyK", ctrlKey: true, bubbles: true }));
+                logDmDebug("[UserTags/DM] Opened Quick Switcher", { modulePath: "KeyboardEvent Ctrl+K fallback" });
+        }
+
+        for (let i = 0; i < 10; i++) {
+                const input = getQuickSwitcherInput();
+                if (input) return input;
+                await wait(80);
+        }
+
+        return null;
+};
+
+const closeQuickSwitcher = () => {
+        const quickSwitcher = getQuickSwitcherModule();
+        if (quickSwitcher?.hide) {
+                quickSwitcher.hide();
+                return;
+        }
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true }));
+        document.dispatchEvent(new KeyboardEvent("keyup", { key: "Escape", code: "Escape", bubbles: true }));
+};
+
+const typeIntoQuickSwitcherInput = async (input, query) => {
+        input.focus();
+        const text = String(query || "");
+        for (const ch of text) {
+                input.dispatchEvent(new KeyboardEvent("keydown", { key: ch, bubbles: true }));
+                input.dispatchEvent(new KeyboardEvent("keypress", { key: ch, bubbles: true }));
+                input.dispatchEvent(new KeyboardEvent("keyup", { key: ch, bubbles: true }));
+        }
+
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+        if (setter) setter.call(input, text);
+        else input.value = text;
+        input.dispatchEvent(new InputEvent("input", { bubbles: true, data: text, inputType: "insertText" }));
+        await wait(120);
+};
+
+const runQuickSwitcherQueryAndEnter = async (query, userId, username) => {
+        const quickSwitcher = getQuickSwitcherModule();
+        const queryModule = getQuickSwitcherQueryModule();
+        const openPath = quickSwitcher?.show
+                ? "QuickSwitcher.show"
+                : quickSwitcher?.toggleQuickSwitcher
+                        ? "QuickSwitcher.toggleQuickSwitcher"
+                        : "KeyboardEvent Ctrl+K fallback";
+
+        const input = await openQuickSwitcher();
+        if (!input) {
+                const missing = [];
+                if (!quickSwitcher) missing.push("QuickSwitcher module(show/hide or toggleQuickSwitcher)");
+                if (!queryModule && !quickSwitcher?.show) missing.push("QuickSwitcher query module(setQuery/setSearchQuery/search)");
+                return {
+                        selected: false,
+                        openPath,
+                        queryPath: null,
+                        reason: `Quick Switcher not confirmed open; aborting query set. Missing modules: ${missing.join(", ") || "none"}`,
+                        step: "qs_input_not_found",
+                        missingModules: missing
+                };
+        }
+
+        let queryPath = null;
+        if (quickSwitcher?.show) {
+                quickSwitcher.show(String(query));
+                queryPath = "QuickSwitcher.show(query)";
+        } else if (queryModule?.setQuery) {
+                queryModule.setQuery(String(query));
+                queryPath = "QuickSwitcherQuery.setQuery(query)";
+        } else if (queryModule?.setSearchQuery) {
+                queryModule.setSearchQuery(String(query));
+                queryPath = "QuickSwitcherQuery.setSearchQuery(query)";
+        } else if (queryModule?.search) {
+                queryModule.search(String(query));
+                queryPath = "QuickSwitcherQuery.search(query)";
+        } else {
+                await typeIntoQuickSwitcherInput(input, query);
+                queryPath = "Keyboard typing fallback on Quick Switcher input";
+        }
+
+        logDmDebug("[UserTags/DM] Quick Switcher query", { query, openPath, queryPath });
+        await wait(240);
+
+        const dialog = input.closest("div[role='dialog']") || document;
+        const candidates = Array.from(dialog.querySelectorAll(
+                "[role='option'], [id*='quick-switcher-result'], [data-list-item-id], li, button"
+        )).filter(el => {
+                const text = (el.textContent || "").toLowerCase();
+                if (!text) return false;
+                if (text.includes("group dm")) return false;
+                if (String(userId) && text.includes(String(userId).toLowerCase())) return true;
+                if (username && text.includes(String(username).toLowerCase())) return true;
+                return false;
+        });
+
+        const selectedEntry = candidates[0] || null;
+        let selectPath = "Keyboard Enter";
+        if (selectedEntry) {
+                selectedEntry.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+                selectedEntry.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+                selectPath = "QuickSwitcherResult.click + Enter";
+                logDmDebug("[UserTags/DM] Quick Switcher selected result element", {
+                        query,
+                        userId,
+                        resultText: (selectedEntry.textContent || "").trim().slice(0, 140)
+                });
+                await wait(80);
+        }
+
+        input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", code: "Enter", bubbles: true }));
+        input.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter", code: "Enter", bubbles: true }));
+        logDmDebug("[UserTags/DM] Quick Switcher selected result via Enter", { query, hadElementMatch: !!selectedEntry, selectPath });
+        await wait(260);
+        closeQuickSwitcher();
+
+        return {
+                selected: true,
+                hadElementMatch: !!selectedEntry,
+                selectedText: selectedEntry ? (selectedEntry.textContent || "").trim().slice(0, 140) : null,
+                openPath,
+                queryPath,
+                selectPath,
+                reason: null
+        };
+};
+
+
+
+const pollDmMessageBound = async (channelId, boundKey, attempts = 12, delayMs = 250) => {
+        for (let attempt = 0; attempt < attempts; attempt++) {
+                const bounds = getDmMessageBounds(channelId);
+                const target = bounds?.[boundKey] || null;
+                if (target?.timestamp) return bounds;
+                await wait(delayMs);
+        }
+
+        return getDmMessageBounds(channelId);
+};
 
 const formatTimestampForGrid = (timestamp) => {
 	if (!timestamp) return "—";
@@ -609,6 +913,143 @@ class UserTags {
                 this.lastViewedDmChannelId = null;
         }
 
+        async refreshDmMessageBoundForUser(userId, boundKey, username) {
+                if (!userId || !["oldest", "newest"].includes(boundKey)) {
+                        throw createTimestampRefreshError("Missing DM lookup dependencies.", {
+                                step: "precheck",
+                                missingModules: []
+                        });
+                }
+
+                const router = getRouterModule();
+                const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
+                const channelStore = getChannelStore();
+                const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
+                const quickSwitcherQueries = [userId, username].filter(Boolean);
+                let openedChannelId = null;
+                let bounds = null;
+                let targetValue = null;
+                let lastSelectionReason = null;
+
+                try {
+                        for (const query of quickSwitcherQueries) {
+                                const selection = await runQuickSwitcherQueryAndEnter(String(query), userId, username);
+                                if (!selection?.selected) {
+                                        lastSelectionReason = selection?.reason || "Quick Switcher selection failed.";
+                                        if (!selection?.step) selection.step = "qs_select_or_enter_failed";
+                                        continue;
+                                }
+
+                                openedChannelId = SelectedChannelStore?.getChannelId?.() || null;
+                                const openedChannel = openedChannelId ? channelStore?.getChannel?.(openedChannelId) : null;
+                                const isValidDirectDm = validateDirectDmChannel(openedChannel, userId);
+                                bounds = openedChannelId ? await pollDmMessageBound(openedChannelId, boundKey, 6, 180) : null;
+                                targetValue = bounds?.[boundKey] || null;
+                                const hasAnyMessages = !!(bounds?.oldest?.timestamp || bounds?.newest?.timestamp || (bounds?.totalMessages || 0) > 0);
+                                const isValid = isValidDirectDm && hasAnyMessages;
+
+                                logDmDebug("[UserTags/DM] Quick Switcher navigation validation", {
+                                        query,
+                                        openedChannelId,
+                                        selectedResult: selection?.selectedText || null,
+                                        hadElementMatch: !!selection?.hadElementMatch,
+                                        validationResult: isValid,
+                                        details: {
+                                                isValidDirectDm,
+                                                hasAnyMessages
+                                        }
+                                });
+
+                                if (isValid) break;
+
+                                openedChannelId = null;
+                                bounds = null;
+                                targetValue = null;
+
+                                if (previousChannelId && router?.transitionTo) {
+                                        router.transitionTo(`/channels/@me/${previousChannelId}`);
+                                } else if (typeof window?.history?.back === "function") {
+                                        window.history.back();
+                                }
+                        }
+
+                        if (!openedChannelId || !bounds || !targetValue?.timestamp) {
+                                const missing = [];
+                                if (!getQuickSwitcherModule()) missing.push("QuickSwitcher module(show/toggleQuickSwitcher)");
+                                if (!router?.transitionTo && !router?.back && typeof window?.history?.back !== "function") missing.push("Router module(transitionTo/back)");
+                                const details = [lastSelectionReason, missing.length ? `Missing modules: ${missing.join(", ")}` : null, "Fallback path: QuickSwitcher internal query (or key-typing fallback) + Router/back restore"]
+                                        .filter(Boolean)
+                                        .join(" | ");
+                                throw createTimestampRefreshError(
+                                        details ? `Could not open matching 1:1 DM via Quick Switcher. ${details}` : "Could not open matching 1:1 DM via Quick Switcher.",
+                                        {
+                                                step: "qs_open_or_validate",
+                                                missingModules: missing,
+                                                details,
+                                                lastSelectionReason
+                                        }
+                                );
+                        }
+
+                        logDmDebug("[UserTags/DM] Scraped bound after Quick Switcher navigation", {
+                                boundKey,
+                                channelId: openedChannelId,
+                                value: targetValue.timestamp
+                        });
+
+                        const existing = Data.load(this._config.info.name, "DmMessageBoundsByUser") || {};
+                        const previous = existing[userId] || {};
+                        existing[userId] = {
+                                ...previous,
+                                oldest: boundKey === "oldest" ? bounds.oldest : (previous.oldest || null),
+                                newest: boundKey === "newest" ? bounds.newest : (previous.newest || null),
+                                totalMessages: bounds.totalMessages || previous.totalMessages || 0,
+                                updatedAt: Date.now()
+                        };
+                        Data.save(this._config.info.name, "DmMessageBoundsByUser", existing);
+                        this._forceOverviewRefresh?.();
+
+                        return targetValue;
+                } finally {
+                        let returnMethod = null;
+                        let returnSuccess = false;
+
+                        if (previousChannelId && router?.transitionTo) {
+                                router.transitionTo(`/channels/@me/${previousChannelId}`);
+                                returnMethod = "Router.transitionTo('/channels/@me/:channelId')";
+                                returnSuccess = true;
+                        } else if (router?.back) {
+                                router.back();
+                                returnMethod = "Router.back()";
+                                returnSuccess = true;
+                        } else if (previousChannelId && typeof window?.history?.back === "function") {
+                                window.history.back();
+                                returnMethod = "window.history.back";
+                                returnSuccess = true;
+                        }
+
+                        logDmDebug("[UserTags/DM] Returned to previous channel", {
+                                previousChannelId,
+                                success: returnSuccess,
+                                returnMethod,
+                                missingRouterModule: !router
+                        });
+
+                        if (previousChannelId && !returnSuccess) {
+                                console.error("[UserTags][TimestampRefresh]", {
+                                        userId,
+                                        username,
+                                        boundKey,
+                                        step: "restore_route_failed",
+                                        missingModules: [!router ? "Router module(transitionTo/back)" : null].filter(Boolean),
+                                        stack: (new Error("Route restore failed")).stack
+                                });
+                        }
+
+                }
+        }
+
+
 
 	/**
 	 * Attaches a dropdown of existing tags to a tag input.
@@ -870,23 +1311,17 @@ class UserTags {
                                 font-variant-numeric: tabular-nums;
                                 color: var(--text-muted);
                                 white-space: nowrap;
+                                transition: opacity 120ms ease;
                         }
-                        .usertags-datecell-clickable {
-                                cursor: pointer;
-                                color: var(--text-link);
-                                text-decoration: underline dotted;
-                        }
-                        .usertags-datecell-clickable:hover {
-                                text-decoration: underline;
+                        .usertags-datecell:hover {
                                 color: var(--text-normal);
-                        }
-                        .usertags-date-cell-missing {
-                                cursor: pointer;
                                 text-decoration: underline;
-                                opacity: 0.8;
                         }
-                        .usertags-date-cell-missing:hover {
-                                opacity: 1;
+                        .usertags-datecell-loading {
+                                opacity: 0.7;
+                        }
+                        .usertags-datecell-error {
+                                color: var(--text-danger);
                         }
                         .usertags-cell.has-tag {
                                 background-color: var(--status-positive-background);
@@ -1553,6 +1988,9 @@ class UserTags {
                         const [hoverUserId, setHoverUserId] = React.useState(null);
                         const [hoverTag, setHoverTag] = React.useState(null);
                         const [sortMode, setSortMode] = React.useState("name_asc");
+                        const [cellRefreshState, setCellRefreshState] = React.useState({});
+                        const userRefreshInFlightRef = React.useRef(new Set());
+                        const cellCooldownRef = React.useRef(new Map());
                         const rootRef = React.useRef(null);
 
                         React.useEffect(() => {
@@ -1728,6 +2166,52 @@ class UserTags {
 			const allTags = plugin.getAllTags();
 
 			const dmBoundsByUserId = Data.load(plugin._config.info.name, "DmMessageBoundsByUser") || {};
+
+                        const updateCellState = (userId, boundKey, patch) => {
+                                const cellKey = `${userId}:${boundKey}`;
+                                setCellRefreshState(prev => ({
+                                        ...prev,
+                                        [cellKey]: {
+                                                ...(prev[cellKey] || {}),
+                                                ...patch
+                                        }
+                                }));
+                        };
+
+                        const handleRefreshMessageCell = async (userId, boundKey, username) => {
+                                const cellKey = `${userId}:${boundKey}`;
+                                const now = Date.now();
+                                const cooldownUntil = cellCooldownRef.current.get(cellKey) || 0;
+                                if (now < cooldownUntil) return;
+                                if (userRefreshInFlightRef.current.has(cellKey)) return;
+
+                                userRefreshInFlightRef.current.add(cellKey);
+                                cellCooldownRef.current.set(cellKey, now + 1200);
+                                updateCellState(userId, boundKey, { loading: true, error: null });
+
+                                try {
+                                        await plugin.refreshDmMessageBoundForUser(userId, boundKey, username);
+                                        updateCellState(userId, boundKey, { loading: false, error: null, updatedAt: Date.now() });
+                                        setVersion(v => v + 1);
+                                } catch (error) {
+                                        const meta = error?.timestampRefreshMeta || {};
+                                        console.error("[UserTags][TimestampRefresh]", {
+                                                userId,
+                                                username,
+                                                boundKey,
+                                                step: meta.step || "unknown",
+                                                missingModules: meta.missingModules || [],
+                                                message: error?.message || "Refresh failed",
+                                                stack: error?.stack || null
+                                        });
+                                        updateCellState(userId, boundKey, {
+                                                loading: false,
+                                                error: "Error"
+                                        });
+                                } finally {
+                                        userRefreshInFlightRef.current.delete(cellKey);
+                                }
+                        };
 
 			const handleToggle = (userId, tagKey) => {
 				const data = Data.load(plugin._config.info.name, "UserData") || {};
@@ -2145,7 +2629,8 @@ class UserTags {
 			// Build grid template columns based on current widths
                         const columnWidths = [
                                 colWidths[USER_COL_KEY] || 220,
-                                colWidths[MESSAGE_BOUNDS_COL_KEY] || 210,
+                                colWidths[OLDEST_MESSAGE_COL_KEY] || 180,
+                                colWidths[NEWEST_MESSAGE_COL_KEY] || 180,
                                 // default tag width: 40px
                                 ...sortedTags.map(tag => colWidths[tag] || 40)
                         ];
@@ -2177,16 +2662,35 @@ class UserTags {
                                 React.createElement(
                                         "div",
                                         {
-                                                key: "header-message-bounds",
+                                                key: "header-oldest-message",
                                                 className: "usertags-grid-header"
                                         },
                                         React.createElement(
                                                 "div",
                                                 { className: "usertags-header-cell" },
-                                                React.createElement("span", { className: "usertags-header-label" }, "Oldest/Newest Message"),
+                                                React.createElement("span", { className: "usertags-header-label" }, "Oldest Message"),
                                                 React.createElement("span", {
                                                         className: "usertags-col-resizer",
-                                                        onMouseDown: (e) => startResize(e, MESSAGE_BOUNDS_COL_KEY)
+                                                        onMouseDown: (e) => startResize(e, OLDEST_MESSAGE_COL_KEY)
+                                                })
+                                        )
+                                )
+                        );
+
+                        gridChildren.push(
+                                React.createElement(
+                                        "div",
+                                        {
+                                                key: "header-newest-message",
+                                                className: "usertags-grid-header"
+                                        },
+                                        React.createElement(
+                                                "div",
+                                                { className: "usertags-header-cell" },
+                                                React.createElement("span", { className: "usertags-header-label" }, "Newest Message"),
+                                                React.createElement("span", {
+                                                        className: "usertags-col-resizer",
+                                                        onMouseDown: (e) => startResize(e, NEWEST_MESSAGE_COL_KEY)
                                                 })
                                         )
                                 )
@@ -2300,15 +2804,38 @@ class UserTags {
                                 const messageBounds = dmBoundsByUserId[user.userId] || {};
                                 const oldestLabel = formatTimestampForGrid(messageBounds.oldest?.timestamp);
                                 const newestLabel = formatTimestampForGrid(messageBounds.newest?.timestamp);
+                                const oldestState = cellRefreshState[`${user.userId}:oldest`] || {};
+                                const newestState = cellRefreshState[`${user.userId}:newest`] || {};
+
+                                const oldestValue = oldestState.loading ? "…" : (oldestState.error ? "Error" : oldestLabel);
+                                const newestValue = newestState.loading ? "…" : (newestState.error ? "Error" : newestLabel);
+
+                                const oldestClass = `usertags-cell usertags-datecell${oldestState.loading ? " usertags-datecell-loading" : ""}${oldestState.error ? " usertags-datecell-error" : ""}`;
+                                const newestClass = `usertags-cell usertags-datecell${newestState.loading ? " usertags-datecell-loading" : ""}${newestState.error ? " usertags-datecell-error" : ""}`;
+
                                 gridChildren.push(
                                         React.createElement(
                                                 "div",
                                                 {
-                                                        key: `row-${user.userId}-message-bounds`,
-                                                        className: "usertags-cell usertags-datecell",
-                                                        title: `${user.username}: oldest ${oldestLabel}, newest ${newestLabel}`
+                                                        key: `row-${user.userId}-oldest-message`,
+                                                        className: oldestClass,
+                                                        title: `${user.username}: refresh oldest message`,
+                                                        onClick: (e) => { e.preventDefault(); e.stopPropagation(); handleRefreshMessageCell(user.userId, "oldest", user.username); }
                                                 },
-                                                `${oldestLabel} / ${newestLabel}`
+                                                oldestValue
+                                        )
+                                );
+
+                                gridChildren.push(
+                                        React.createElement(
+                                                "div",
+                                                {
+                                                        key: `row-${user.userId}-newest-message`,
+                                                        className: newestClass,
+                                                        title: `${user.username}: refresh newest message`,
+                                                        onClick: (e) => { e.preventDefault(); e.stopPropagation(); handleRefreshMessageCell(user.userId, "newest", user.username); }
+                                                },
+                                                newestValue
                                         )
                                 );
 
