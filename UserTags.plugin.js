@@ -1,6 +1,6 @@
 /**
  * @name UserTags
- * @version 1.12.4
+ * @version 1.12.5
  * @description add user localized customizable tags to other users using a searchable table/grid or per user context menu.
  * @author Nyx
  * @authorId 270848136006729728
@@ -23,12 +23,19 @@ const config = {
 				discord_id: "381157302369255424"
 			}
 		],
-			version: "1.12.4",
+			version: "1.12.5",
 		description: "Add user-localized customizable tags to other users using a searchable table or context menu."
 	},
 	github: "https://github.com/SrS2225a/BetterDiscord/blob/master/plugins/UserTags/UserTags.plugin.js",
 	github_raw: "https://raw.githubusercontent.com/SrS2225a/BetterDiscord/master/plugins/UserTags/UserTags.plugin.js",
 	changelog: [
+		{
+			title: "2026-02-06f",
+			items: [
+				"Timestamp cell refresh now uses background reads first, then temporary navigation only to an existing 1:1 DM and automatically returns to the previous channel.",
+				"Blocked any refresh path that could create a DM/group by requiring an existing direct DM channel before attempting fetch."
+			]
+		},
 		{
 			title: "2026-02-06e",
 			items: [
@@ -217,6 +224,9 @@ const DEBUG_DM_LOGS = true;
 
 let CachedChannelStore = null;
 let CachedMessageStore = null;
+let CachedChannelNavigation = null;
+
+const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const normalizeTimestamp = (value) => {
         if (!value && value !== 0) return null;
         if (typeof value === "number") return value;
@@ -260,6 +270,17 @@ const getMessageStore = () => {
 
         CachedMessageStore = store || null;
         return CachedMessageStore;
+};
+
+const getChannelNavigation = () => {
+        if (CachedChannelNavigation) return CachedChannelNavigation;
+        const nav =
+                BdApi?.Webpack?.getByProps?.("transitionToChannel") ||
+                WebpackModules?.findByProps?.("transitionToChannel") ||
+                BdApi.Webpack.getModule(m => m?.transitionToChannel, { searchExports: true });
+
+        CachedChannelNavigation = nav || null;
+        return CachedChannelNavigation;
 };
 
 const coerceMessageFromWrapperEntry = (entry) => {
@@ -321,6 +342,32 @@ const getDmMessageBounds = (channelId) => {
 const USER_COL_KEY = "__USER__";
 const OLDEST_MESSAGE_COL_KEY = "__OLDEST_MESSAGE__";
 const NEWEST_MESSAGE_COL_KEY = "__NEWEST_MESSAGE__";
+
+const getExistingDirectDmChannelId = (userId) => {
+        const channelStore = getChannelStore();
+        if (!userId || !channelStore) return null;
+
+        const channelId = channelStore.getDMFromUserId?.(userId) || null;
+        if (!channelId) return null;
+
+        const channel = channelStore.getChannel?.(channelId);
+        const isDm = channel?.isDM?.() || channel?.type === 1;
+        const recipients = Array.isArray(channel?.recipients) ? channel.recipients : [];
+        if (!isDm || recipients.length !== 1 || recipients[0] !== userId) return null;
+
+        return channelId;
+};
+
+const pollDmMessageBound = async (channelId, boundKey, attempts = 12, delayMs = 250) => {
+        for (let attempt = 0; attempt < attempts; attempt++) {
+                const bounds = getDmMessageBounds(channelId);
+                const target = bounds?.[boundKey] || null;
+                if (target?.timestamp) return bounds;
+                await wait(delayMs);
+        }
+
+        return getDmMessageBounds(channelId);
+};
 
 const formatTimestampForGrid = (timestamp) => {
 	if (!timestamp) return "—";
@@ -623,18 +670,41 @@ class UserTags {
         }
 
         async refreshDmMessageBoundForUser(userId, boundKey) {
-                const channelStore = getChannelStore();
-                if (!userId || !channelStore || !["oldest", "newest"].includes(boundKey)) {
+                if (!userId || !["oldest", "newest"].includes(boundKey)) {
                         throw new Error("Missing DM lookup dependencies.");
                 }
 
-                const channelId = channelStore.getDMFromUserId?.(userId) || null;
+                const channelId = getExistingDirectDmChannelId(userId);
                 if (!channelId) {
-                        throw new Error("Open DM to collect message bounds.");
+                        throw new Error("No existing DM; can't fetch.");
                 }
 
-                const bounds = getDmMessageBounds(channelId);
-                const targetValue = bounds?.[boundKey] || null;
+                let bounds = getDmMessageBounds(channelId);
+                let targetValue = bounds?.[boundKey] || null;
+
+                if (!targetValue?.timestamp) {
+                        const channelNavigation = getChannelNavigation();
+                        const SelectedChannelStore = Webpack.getStore("SelectedChannelStore");
+                        const previousChannelId = SelectedChannelStore?.getChannelId?.() || null;
+
+                        if (!channelNavigation?.transitionToChannel) {
+                                throw new Error(`Could not read ${boundKey} message timestamp.`);
+                        }
+
+                        const shouldNavigate = previousChannelId !== channelId;
+                        try {
+                                if (shouldNavigate) {
+                                        channelNavigation.transitionToChannel(channelId);
+                                }
+                                bounds = await pollDmMessageBound(channelId, boundKey);
+                                targetValue = bounds?.[boundKey] || null;
+                        } finally {
+                                if (shouldNavigate && previousChannelId && channelNavigation?.transitionToChannel) {
+                                        channelNavigation.transitionToChannel(previousChannelId);
+                                }
+                        }
+                }
+
                 if (!targetValue?.timestamp) {
                         throw new Error(`Could not read ${boundKey} message timestamp.`);
                 }
